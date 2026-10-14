@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use SSI, please cite the NeurIPS 2026 paper."
+type: software
+title: "Spectral-Spatial Interpretation"
+authors:
+  - family-names: Ma
+    given-names: Haotian
+  - family-names: Yang
+    given-names: Ruqi
+  - family-names: Townsend
+    given-names: Philip
+repository-code: "https://github.com/AtheavenMa/Spectral-Spatial-Interpretation"
+year: 2026
+preferred-citation:
+  type: conference-paper
+  title: "Spectral-Spatial Interpretation"
+  authors:
+    - family-names: Ma
+      given-names: Haotian
+    - family-names: Yang
+      given-names: Ruqi
+    - family-names: Townsend
+      given-names: Philip
+  conference:
+    name: "Advances in Neural Information Processing Systems (NeurIPS 2026)"
+  year: 2026

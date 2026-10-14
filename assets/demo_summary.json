@@ -1,0 +1,60 @@
+{
+  "sample_sha256": "c10a6dce62bc5889d6c3179fb3ced2f924057a16748d7b81c70b32b2914523fa",
+  "weights_sha256": "8f33126da4d47d6dc1159a7e5dbd191aeb02ec08e9b3427de2565c2bba3b8109",
+  "model_implementation": "MIT HLS adapter with pinned mateuszbuda convolution blocks",
+  "model_source_sha256": "470b02b11d94c88aca530bdd4ce7c70239b7117bba682587cce14f4982a3c57f",
+  "image_shape": [
+    6,
+    128,
+    128
+  ],
+  "grid": [
+    8,
+    8
+  ],
+  "bands": [
+    "Blue",
+    "Green",
+    "Red",
+    "NIR",
+    "SWIR1",
+    "SWIR2"
+  ],
+  "target": "mean burn-class logit over the fixed ground-truth burn region",
+  "baseline": "mean",
+  "baseline_normalized": [
+    -0.39958634972572327,
+    -0.22098442912101746,
+    -0.1225990280508995,
+    -0.7998159527778625,
+    -0.12976273894309998,
+    -0.15640178322792053
+  ],
+  "method": "permutation",
+  "n_permutations": 10,
+  "seed": 0,
+  "n_evaluations": 2152,
+  "attribution_forward_batches": 107,
+  "attribution_seconds": 6.51589491602499,
+  "device": "cpu",
+  "cpu_threads": 4,
+  "batch_size": 32,
+  "full_value": 2.3719677925109863,
+  "mean_burn_probability_on_gt": 0.7574641704559326,
+  "sample_burn_iou": 0.8144329896907216,
+  "max_local_efficiency_error": 1.3877787807814457e-17,
+  "spectral_attribution": {
+    "Blue": -0.08398438096046448,
+    "Green": 0.17865210771560666,
+    "Red": -0.3042839258909226,
+    "NIR": 0.1157180815935135,
+    "SWIR1": -0.5477095991373065,
+    "SWIR2": 4.576117828488347
+  },
+  "versions": {
+    "python": "3.11.6",
+    "numpy": "1.24.3",
+    "torch": "2.14.1"
+  },
+  "scope": "One illustrative training-split sample; not a held-out benchmark or full-paper reproduction."
+}

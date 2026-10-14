@@ -1,0 +1,61 @@
+{
+  "revision": "1864285e25010d346a842e4f068b1a1d4248ed6d",
+  "archive_url": "https://huggingface.co/datasets/ibm-nasa-geospatial/hls_burn_scars/resolve/1864285e25010d346a842e4f068b1a1d4248ed6d/hls_burn_scars.tar.gz",
+  "files": [
+    {
+      "archive_path": "training/subsetted_512x512_HLS.S30.T14SNB.2018215.v1.4_merged.tif",
+      "filename": "subsetted_512x512_HLS.S30.T14SNB.2018215.v1.4_merged.tif",
+      "sha256": "f110ef682c330585ce2b523e808d5413fc44154e9ef61ac9b47f2f0e3de6abfa",
+      "bytes": 6295168
+    },
+    {
+      "archive_path": "training/subsetted_512x512_HLS.S30.T14SNB.2018215.v1.4.mask.tif",
+      "filename": "subsetted_512x512_HLS.S30.T14SNB.2018215.v1.4.mask.tif",
+      "sha256": "d4dee509a49d5ed558d3e71fe729995503d7258cd85b5dfac7600031c5f6eb5c",
+      "bytes": 525272
+    }
+  ],
+  "dataset": "HLS Foundation Burnscars Dataset",
+  "dataset_url": "https://huggingface.co/datasets/ibm-nasa-geospatial/hls_burn_scars",
+  "doi": "10.57967/hf/0956",
+  "creators": [
+    "Christopher Phillips",
+    "Sujit Roy",
+    "Kumar Ankur",
+    "Rahul Ramachandran"
+  ],
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "split": "training",
+  "selection": "First image encountered in the official archive; selected before model evaluation.",
+  "sample_sha256": "c10a6dce62bc5889d6c3179fb3ced2f924057a16748d7b81c70b32b2914523fa",
+  "bands": [
+    "Blue",
+    "Green",
+    "Red",
+    "NIR",
+    "SWIR1",
+    "SWIR2"
+  ],
+  "band_ids": [
+    "B02",
+    "B03",
+    "B04",
+    "B8A",
+    "B11",
+    "B12"
+  ],
+  "image_units": "surface reflectance, prior to model normalization",
+  "preprocessing": [
+    "Read HWC GeoTIFF, transpose to CHW",
+    "Resize image from 512x512 to 128x128 with PyTorch bilinear interpolation, align_corners=False",
+    "Resize GT mask by nearest-neighbor interpolation; map no-data -1 to 255",
+    "Store reflectance and mask; demo normalizes reflectance*10000 with constants in hls.py"
+  ],
+  "label_values": {
+    "0": "not burned",
+    "1": "burn scar",
+    "255": "no data"
+  },
+  "source_training_mean": "Normalized training-split mean constants copied from original SSI mask_baseline.py; not recomputed from this sample."
+}
