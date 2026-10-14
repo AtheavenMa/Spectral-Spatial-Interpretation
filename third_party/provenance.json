@@ -1,0 +1,20 @@
+{
+  "repository": "https://github.com/mateuszbuda/brain-segmentation-pytorch",
+  "commit": "d45f8908ab2f0246ba204c702a6161c9eb25f902",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2019 mateuszbuda",
+  "files": [
+    {
+      "source_url": "https://github.com/mateuszbuda/brain-segmentation-pytorch/blob/d45f8908ab2f0246ba204c702a6161c9eb25f902/unet.py",
+      "path": "third_party/brain_unet.py",
+      "sha256": "47b2fbc1792897ba216fff24b4b034f0a1bdb0776e6848a5ada65623928239e7",
+      "modified": false
+    },
+    {
+      "source_url": "https://github.com/mateuszbuda/brain-segmentation-pytorch/blob/d45f8908ab2f0246ba204c702a6161c9eb25f902/LICENSE",
+      "path": "LICENSES/brain-segmentation-pytorch-MIT.txt",
+      "sha256": "abab224573115eb895db88fdf7f7196e777a9f32f05f9ad18c99af845ba65d48",
+      "modified": false
+    }
+  ]
+}

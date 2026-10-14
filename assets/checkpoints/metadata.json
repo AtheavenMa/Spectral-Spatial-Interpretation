@@ -1,0 +1,22 @@
+{
+  "source_experiment": "HLS_BurnScars/unet/segmentation/train_1",
+  "source_checkpoint_sha256": "c20da64b29ef8105113c6e6e8a5664efef56b490e45bdb7f9b64de8d42f7be57",
+  "weights_sha256": "8f33126da4d47d6dc1159a7e5dbd191aeb02ec08e9b3427de2565c2bba3b8109",
+  "source_epoch": 66,
+  "source_global_step": 2278,
+  "architecture": {
+    "name": "unet",
+    "n_classes": 2,
+    "n_channels": 6,
+    "bilinear": true,
+    "base_channels": 4
+  },
+  "conversion": "Retain model.* tensors, remove model. prefix; discard optimizer, callbacks, training state and private paths. No retraining.",
+  "runtime_implementation": {
+    "adapter": "model.py",
+    "upstream_repository": "mateuszbuda/brain-segmentation-pytorch",
+    "upstream_commit": "d45f8908ab2f0246ba204c702a6161c9eb25f902",
+    "code_license": "MIT",
+    "key_conversion": "Historical keys are renamed at load time; all tensor values and the serialized checkpoint remain unchanged. Native adapter state dictionaries are also accepted."
+  }
+}
