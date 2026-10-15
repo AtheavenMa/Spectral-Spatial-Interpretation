@@ -44,7 +44,7 @@ SSI instead asks: **given the rest of this observed image, how do the channels a
 ## 📐 What SSI Computes
 
 <p align="center">
-  <img src="assets/figures/fig2.png" alt="Figure 2: SSI fixes external context and allocates contributions within each spatial cell" width="900"/>
+  <img src="assets/figures/figure2.pdf" alt="Figure 2: SSI fixes external context and allocates contributions within each spatial cell" width="900"/>
 </p>
 
 **Figure 2.** SSI holds the surrounding image fixed and allocates each spatial cell's contribution among its channels.
