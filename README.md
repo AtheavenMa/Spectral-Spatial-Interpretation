@@ -7,6 +7,7 @@ file, and the bundled HLS Burn Scar demo runs offline after installation.
 
 <p align="center">
   <b>📄 Accepted at NeurIPS 2026</b> &nbsp; | &nbsp;
+  <a href="https://arxiv.org/abs/2610.21114"><b>📄 Paper (arXiv)</b></a> &nbsp; | &nbsp;
   <a href="#-demo"><b>🧪 Demo</b></a>
 </p>
 
@@ -455,3 +456,21 @@ See [CITATION.cff](CITATION.cff) for citation metadata.
 Code and documentation are licensed under **MIT**, Copyright © 2026 SSI contributors. See [LICENSE](LICENSE).
 HLS data and derived materials retain **CC-BY-4.0** attribution. The bundled model weights and manuscript figures are
 not covered by the root MIT license. See [third-party notices](THIRD_PARTY_NOTICES.md).
+
+---
+
+## 📚 Citation
+
+If you use this work, please cite the paper:
+
+```bibtex
+@inproceedings{ma2026spectral,
+  title = {Spectral-Spatial Interpretation},
+  author = {Haotian Ma and Ruqi Yang and Philip Townsend},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year = {2026},
+  eprint = {2610.21114},
+  archivePrefix = {arXiv},
+  url = {https://arxiv.org/abs/2610.21114}
+}
+```
