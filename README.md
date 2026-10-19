@@ -49,6 +49,19 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 
 ---
 
+## 🎛️ Interactive SSI Playground
+
+Choose a real model and input, change the grid size or baseline, and explore the resulting spatial and spectral attributions. The first runnable example uses the bundled HLS UNet checkpoint and input on CPU.
+
+```bash
+python -m pip install -r requirements_lab.txt
+uvicorn lab.app:app --host 127.0.0.1 --port 7860
+```
+
+Open **http://127.0.0.1:7860** to play with SSI. The app includes a JSON [API](deploy/README.md), channel and cell exploration, result download and reproduction commands. Development and dataset-extension tasks are listed in the [Work Plan](work_plan/01_ssi_playground.md).
+
+---
+
 ## 💡 How SSI Works
 
 A channel's contribution can change across an image. SSI asks how the channels **within one spatial cell** affect the chosen model score, conditioned on the **observed values of all other cells**.
