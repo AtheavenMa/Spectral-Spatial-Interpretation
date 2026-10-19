@@ -1,6 +1,6 @@
 # Work Plan 01 · SSI Interactive Playground
 
-Status: **CPU implementation committed; CI/real-model verification and external deployment to be confirmed.**
+Status: **CPU implementation complete; real-checkpoint tests, recorded-reference parity, and Docker API smoke test passed on GitHub Actions.** External Space publication and five additional dataset assets remain pending.
 Date: 2026-10-19
 Repository: [Spectral-Spatial-Interpretation](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation)
 
@@ -87,14 +87,14 @@ Completed in source:
 - [x] Valid JSON output shape and interactive 2D signed attribution visualization.
 - [x] Channel selection, selected-cell bar chart, export and reproduction command.
 - [x] API input validation and basic compute concurrency protection.
-- [x] FastAPI integration tests and GitHub Actions step added.
+- [x] FastAPI integration tests and GitHub Actions CPU tests + Docker service smoke test pass.
 
 Remaining confirmation tasks (not GPU tasks):
 
-- [ ] Run GitHub Actions on the final commit, inspect failures and fix until green.
-- [ ] Confirm model result at bundled HLS default setting matches the stored reference to expected float tolerance.
+- [x] GitHub Actions tests pass with CPU PyTorch and actual HLS checkpoint (including JavaScript syntax validation).
+- [x] Default 8×8, mean baseline, 10 permutations, seed 0 run agrees with assets/demo_summary.json spectral totals and 2,152 evaluations.
 - [ ] Check actual browser rendering on desktop/mobile for overflow, colorbar scaling, canvas click alignment and initial loading feedback.
-- [ ] Build and smoke-test Docker image on a machine with network access; verify that the CPU wheel is available.
+- [x] GitHub Actions built the CPU Docker image, started the FastAPI service, checked asset readiness, and requested genuine 4×4 SSI inference.
 - [ ] Publish a Docker Hugging Face Space under the desired account/organization once write access and Space name are available.
 - [ ] Validate live Space CPU cold start, memory and multi-visitor behavior.
 
