@@ -20,3 +20,26 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validate JavaScript syntax
         run: node --check lab/static/app.js
+  docker-smoke:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build CPU Docker image
+        run: docker build -t ssi-lab-smoke .
+      - name: Start the SSI API
+        run: docker run -d --name ssi-lab-smoke -p 7860:7860 ssi-lab-smoke
+      - name: Smoke test deployed API and real inference
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:7860/api/health > /tmp/ssi_health.json; then break; fi
+            sleep 2
+          done
+          python -c 'import json; d=json.load(open("/tmp/ssi_health.json")); assert d["model_ready"] and d["sample_ready"]'
+          curl --fail-with-body -sS -X POST http://127.0.0.1:7860/api/explain \
+            -H 'Content-Type: application/json' \
+            -d '{"grid":4,"method":"permutation","permutations":1}' > /tmp/ssi_explain.json
+          python -c 'import json; d=json.load(open("/tmp/ssi_explain.json")); assert len(d["attribution"]) == 4; assert len(d["attribution"][0][0]) == 6; assert d["local_efficiency_error"] < 1e-5'
+      - name: Show server logs on failure
+        if: failure()
+        run: docker logs ssi-lab-smoke
