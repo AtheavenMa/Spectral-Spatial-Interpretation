@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Play with Spectral-Spatial Interpretation on a real HLS satellite image and UNet checkpoint.">
+  <title>SSI Playground · OpenSAE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="https://github.com/OpenSAE" target="_blank" rel="noopener">OpenSAE <span>/ RESEARCH LAB</span></a>
+    <nav aria-label="Related links">
+      <a href="https://arxiv.org/abs/2610.21114" target="_blank" rel="noopener">Paper ↗</a>
+      <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation" target="_blank" rel="noopener">Code ↗</a>
+      <a href="/docs" target="_blank" rel="noopener">API ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="heading">
+      <div class="eyebrow"><span class="dot"></span> SSI / INTERACTIVE</div>
+      <h1>Which channels matter, <em>and where?</em></h1>
+      <p>Choose an image. Change the grid. Explore the attribution.</p>
+    </section>
+
+    <div class="workspace">
+      <aside class="controls panel">
+        <div class="section-top"><span>01 / Setup</span><span class="tiny">REAL MODEL · CPU</span></div>
+        <label class="field" for="model">Model</label>
+        <select id="model" aria-label="Model"></select>
+        <label class="field" for="sample">Input</label>
+        <select id="sample" aria-label="Input"></select>
+
+        <fieldset class="field-group">
+          <legend class="field">Grid size</legend>
+          <div class="segments" id="gridOptions">
+            <button data-grid="4" type="button">4 × 4</button>
+            <button data-grid="8" type="button" class="active" aria-pressed="true">8 × 8</button>
+            <button data-grid="16" type="button">16 × 16</button>
+          </div>
+        </fieldset>
+        <fieldset class="field-group">
+          <legend class="field">Baseline</legend>
+          <div class="segments two" id="baselineOptions">
+            <button data-baseline="mean" type="button" class="active" aria-pressed="true">Mean</button>
+            <button data-baseline="zero" type="button">Zero</button>
+          </div>
+        </fieldset>
+        <details class="advanced">
+          <summary>Advanced settings <span>⌄</span></summary>
+          <label class="field" for="method">Estimation</label>
+          <select id="method">
+            <option value="auto">Auto</option>
+            <option value="permutation" selected>Permutation</option>
+            <option value="exact">Exact</option>
+          </select>
+          <label class="field" for="permutations">Permutations <output id="permLabel">10</output></label>
+          <input id="permutations" type="range" min="1" max="20" value="10" step="1">
+          <label class="field" for="seed">Seed</label>
+          <input id="seed" type="number" min="0" max="100000" value="0" step="1">
+        </details>
+        <button id="run" class="primary" type="button">▶ &nbsp; Run SSI</button>
+        <div id="status" class="status" role="status" aria-live="polite">Loading model and input…</div>
+        <div class="config-footer">Checkpoint + input + parameters <span>→</span> SSI</div>
+      </aside>
+
+      <section class="viewer">
+        <div class="previews panel">
+          <div class="section-top"><span>02 / Input</span><span class="tiny">HLS · 6 BANDS</span></div>
+          <div class="preview-grid">
+            <figure><div class="photo"><img id="inputImage" alt="HLS true-color image"></div><figcaption>Input · RGB</figcaption></figure>
+            <figure><div class="photo"><img id="gtImage" alt="Burn-scar ground truth"></div><figcaption>Ground truth</figcaption></figure>
+            <figure><div class="photo"><img id="predImage" alt="Model segmentation prediction"></div><figcaption>UNet prediction</figcaption></figure>
+          </div>
+        </div>
+        <div class="analysis panel" id="analysis">
+          <div class="section-top"><span>03 / Interpretation</span><span class="tiny" id="runMeta">AWAITING RUN</span></div>
+          <div class="result-head">
+            <div>
+              <h2 id="resultTitle">Spatial attribution</h2>
+              <p id="resultSub">Sum across spectral channels</p>
+            </div>
+            <div class="channel-row" id="channels" aria-label="Attribution channel"></div>
+          </div>
+          <div class="result-layout">
+            <div class="map-wrap">
+              <div class="map-box">
+                <canvas id="map" width="512" height="512" aria-label="SSI map. Click a cell to inspect its channel scores."></canvas>
+                <div class="map-empty" id="mapEmpty">Run SSI to compute the map</div>
+              </div>
+              <div class="color-scale"><span>Negative</span><div class="gradient"></div><span>Positive</span></div>
+            </div>
+            <div class="scores">
+              <div class="score-switch">
+                <button class="selected" type="button" id="globalBtn" aria-pressed="true">All cells</button>
+                <button type="button" id="cellBtn" aria-pressed="false">Selected cell</button>
+              </div>
+              <p class="score-context" id="scoreContext">Sum over spatial cells</p>
+              <div id="bars" class="bars"></div>
+              <p class="cell-hint" id="cellHint">Click any cell on the attribution map to inspect its six channels.</p>
+            </div>
+          </div>
+          <div class="result-footer">
+            <div class="stats" id="stats"></div>
+            <div class="result-actions">
+              <button type="button" id="download" disabled>↓ Result JSON</button>
+              <button type="button" id="copyCommand" disabled>⧉ Reproduce</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <details class="more">
+      <summary>How to reproduce this run</summary>
+      <div class="reproduce">
+        <pre id="command">python demo.py --grid 8 --baseline mean --method permutation --permutations 10 --seed 0</pre>
+        <p>The source checkpoint, prepared HLS input, and SSI implementation are included in the repository. The Run button uses the same scoring adapter and Shapley implementation as the command above.</p>
+      </div>
+    </details>
+    <footer>OPENSAE · SPECTRAL-SPATIAL INTERPRETATION <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/tree/main/examples">Visual Atlas ↗</a></footer>
+  </main>
+</body>
+</html>
