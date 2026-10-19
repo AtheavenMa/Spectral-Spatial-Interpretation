@@ -1,6 +1,6 @@
 # Work Plan 02 · Finalize SSI Playground
 
-**Status: IMPLEMENTED LOCALLY. Final Actions URL is recorded after the push.**
+**Status: DONE LOCALLY AND ON ACTIONS.** Verification run [39336910580](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39336910580) passed on `8f19b52`, including unit tests, the CPU Docker image, real inference and the browser smoke. Hugging Face was not deployed.
 **Date: 2026-10-19**
 **Baseline: main at a8842dfc09240a8828cbf4e312bff364a544892a**
 **Previous plan: [01_ssi_playground.md](01_ssi_playground.md)**
@@ -180,9 +180,9 @@ Parallelize independent code tasks where useful, but do not race commits for the
 - [x] Compute lifecycle prevents stale output and provides responsive user feedback.
 - [x] Full exports and working reproducible CLI/API commands for all supported models.
 - [x] Original HLS demo still runs; complete numerical and regression tests pass.
-- [ ] Multi-model desktop/mobile browser tests and Docker tests pass.
+- [x] Multi-model desktop/mobile browser tests and Docker tests pass.
 - [x] README, asset notices, quickstart, validation, performance docs and local Docker setup finished.
-- [ ] Final main SHA and green Actions URL recorded here, with real measured numbers.
+- [x] Final main SHA and green Actions URL recorded here, with real measured numbers. The green run is [39336910580](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39336910580) on `8f19b52`.
 - [x] **No Hugging Face deployment performed.**
 
 ### Execution log (fill during the work)
@@ -191,7 +191,7 @@ Local browser smoke passed for HLS, CUB-200, EuroSAT and PaviaU, including Top 1
 
 Band labels: the three hyperspectral `.mat` files have no wavelength vector, so the UI uses `Band 001` style indices. EuroSAT keeps Sentinel-2 ids. HLS keeps named bands. LongKou `region_agreement` 0.4496 is recall on the fixed ground-truth region (367 pixels), not accuracy; the tile stays registered. CPU numbers are in `docs/PLAYGROUND_PERFORMANCE.md`. Peak RSS for the ramp was 811328 KB at 4 threads. EuroSAT 8×8 / 10 took 51.6 s and is no longer offered. Salinas 8×8 / 3 took 46.5 s and LongKou 8×8 / 3 took 72.9 s; those caps are now 1 permutation. Grid 16 is not offered for the three hyperspectral models. EuroSAT 16×16 / 1 was measured separately at 19.859 s.
 
-The two open boxes above are the Actions run on the commit that contains this log.
+Actions run [39336910580](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39336910580) on `8f19b52` passed both the unit job and `docker-smoke`, including the browser test inside the image. This checklist edit is docs-only.
 
 ### Final handoff
 
