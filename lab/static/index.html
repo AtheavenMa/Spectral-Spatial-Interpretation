@@ -35,6 +35,8 @@
         <select id="model" aria-label="Model"></select>
         <label class="field" for="sample">Input</label>
         <select id="sample" aria-label="Input"></select>
+        <label class="field" for="preset">Preset</label>
+        <select id="preset" aria-label="Preset"></select>
 
         <fieldset class="field-group">
           <legend class="field">Grid size</legend>
@@ -64,14 +66,17 @@
           <label class="field" for="seed">Seed</label>
           <input id="seed" type="number" min="0" max="100000" value="0" step="1">
         </details>
-        <button id="run" class="primary" type="button">▶ &nbsp; Run SSI</button>
+        <div class="run-row">
+          <button id="run" class="primary" type="button">▶ &nbsp; Run SSI</button>
+          <button id="cancel" class="secondary" type="button" hidden>Cancel</button>
+        </div>
         <div id="status" class="status" role="status" aria-live="polite">Loading model and input…</div>
         <div class="config-footer">Checkpoint + input + parameters <span>→</span> SSI</div>
       </aside>
 
       <section class="viewer">
         <div class="previews panel">
-          <div class="section-top"><span>02 / Input</span><span class="tiny" id="previewMeta">HLS · 6 BANDS</span></div>
+          <div class="section-top"><span>02 / Input</span><span class="tiny" id="previewMeta">Loading</span></div>
           <div class="preview-grid">
             <figure><div class="photo"><img id="inputImage" alt="Model input"></div><figcaption id="inputCaption">Input · RGB</figcaption></figure>
             <figure><div class="photo"><img id="gtImage" alt="Ground truth"></div><figcaption id="gtCaption">Ground truth</figcaption></figure>
@@ -90,10 +95,11 @@
           <div class="result-layout">
             <div class="map-wrap">
               <div class="map-box">
-                <canvas id="map" width="512" height="512" aria-label="SSI map. Click a cell to inspect its channel scores."></canvas>
+                <canvas id="map" width="512" height="512" tabindex="0" aria-label="SSI map. Click a cell, or use arrow keys, to inspect its channel scores."></canvas>
                 <div class="map-empty" id="mapEmpty">Run SSI to compute the map</div>
               </div>
               <div class="color-scale"><span>Negative</span><div class="gradient"></div><span>Positive</span></div>
+              <p class="scale-note" id="scaleNote"></p>
             </div>
             <div class="scores">
               <div class="score-switch">
@@ -101,8 +107,12 @@
                 <button type="button" id="cellBtn" aria-pressed="false">Selected cell</button>
               </div>
               <p class="score-context" id="scoreContext">Sum over spatial cells</p>
+              <div class="band-tools" id="bandTools" hidden>
+                <input id="bandSearch" type="search" placeholder="Find a band" aria-label="Find a band">
+                <button type="button" id="bandMode">Top 10</button>
+              </div>
               <div id="bars" class="bars"></div>
-              <p class="cell-hint" id="cellHint">Click any cell on the attribution map to inspect its six channels.</p>
+              <p class="cell-hint" id="cellHint">Click any cell on the attribution map to inspect its channels.</p>
             </div>
           </div>
           <div class="result-footer">
@@ -119,8 +129,8 @@
     <details class="more">
       <summary>How to reproduce this run</summary>
       <div class="reproduce">
-        <pre id="command">python demo.py --grid 8 --baseline mean --method permutation --permutations 10 --seed 0</pre>
-        <p>The source checkpoint, prepared HLS input, and SSI implementation are included in the repository. The Run button uses the same scoring adapter and Shapley implementation as the command above.</p>
+        <pre id="command">python -m lab.cli explain --model-id hls-unet --sample-id hls-burn-scar --grid 8 --baseline mean --method permutation --permutations 10 --seed 0</pre>
+        <p>Run uses the same checkpoint, input and SSI implementation as this command.</p>
       </div>
     </details>
     <footer>OPENSAE · SPECTRAL-SPATIAL INTERPRETATION <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/tree/main/examples">Visual Atlas ↗</a></footer>

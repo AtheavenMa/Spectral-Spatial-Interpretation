@@ -6,14 +6,17 @@ from threading import Lock
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from . import engine
+from .jobs import JOBS, Busy
 
 STATIC = Path(__file__).resolve().parent / "static"
 app = FastAPI(title="SSI Playground", version="0.1.0")
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 COMPUTE_LOCK = Lock()
 
@@ -56,6 +59,38 @@ def get_preview(model_id: str = engine.MODEL_ID, sample_id: str = engine.SAMPLE_
             COMPUTE_LOCK.release()
     except (ValueError, FileNotFoundError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+def _params(req: ExplainRequest) -> dict:
+    return {
+        "model_id": req.model_id, "sample_id": req.sample_id, "grid": req.grid,
+        "baseline": req.baseline, "method": req.method,
+        "permutations": req.permutations, "seed": req.seed,
+    }
+
+
+@app.post("/api/jobs")
+def start_job(req: ExplainRequest):
+    try:
+        return {"job_id": JOBS.start(_params(req))}
+    except Busy as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.get("/api/jobs/{job_id}")
+def read_job(job_id: str):
+    try:
+        return JOBS.get(job_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Unknown job.") from exc
+
+
+@app.delete("/api/jobs/{job_id}")
+def stop_job(job_id: str):
+    try:
+        return JOBS.cancel(job_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Unknown job.") from exc
 
 
 @app.post("/api/explain")

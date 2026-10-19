@@ -15,7 +15,8 @@
       "region_agreement": 1.0
     },
     "whu-hi-longkou": {
-      "region_agreement": 0.44959128065395093
+      "region_agreement": 0.44959128065395093,
+      "region_agreement_definition": "Fraction of pixels inside the fixed ground-truth target region whose unperturbed argmax equals the target class. This is region recall, not accuracy and not IoU."
     }
   },
   "files": {

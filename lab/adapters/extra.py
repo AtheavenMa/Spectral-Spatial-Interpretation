@@ -16,6 +16,8 @@ import torch
 import torch.nn.functional as F
 
 from lab.adapters.backbones import ResNet18Classifier
+from lab.commands import explain_command
+from lab.runtime import raise_if_cancelled, wrap_value
 from model import UNet, convert_legacy_state_dict
 from ssi import explain as explain_ssi
 
@@ -41,8 +43,15 @@ LONGKOU_NAMES = {
 }
 
 
-def _waves(n: int, lo: float, hi: float) -> list[str]:
-    return [f"{lo + (hi - lo) * i / (n - 1):.0f} nm" for i in range(n)]
+def _bands(n: int) -> tuple[str, ...]:
+    """Original channel index. These cubes do not store instrument wavelengths."""
+    return tuple(f"Band {index + 1:03d}" for index in range(n))
+
+
+HSI_BAND_NOTE = (
+    "The source cube has no wavelength vector. Labels are 1-based channel indices "
+    "in the file's original order, not measured nanometer centers."
+)
 
 
 def _spec(**kwargs) -> dict:
@@ -59,7 +68,17 @@ SPECS = {
         kind="cls", head="linear", small_input=False, dropout=0.0,
         in_channels=3, n_classes=200, channels=("Red", "Green", "Blue"),
         target="Predicted class logit, fixed before masking",
+        band_note="RGB channels after ImageNet normalization. Red, Green, Blue are the stored order.",
         batch_size=4,
+        compute={
+            "default_grid": 8, "default_permutations": 4,
+            "default_baseline": "mean", "default_method": "permutation",
+            "permutation_cap": {"4": 20, "8": 10, "16": 1},
+            "presets": [
+                {"id": "quick", "label": "Quick", "grid": 4, "permutations": 1},
+                {"id": "balanced", "label": "Balanced", "grid": 8, "permutations": 4},
+            ],
+        },
     ),
     "eurosat": _spec(
         model_id="eurosat", sample_id="eurosat-1294", label="EuroSAT · ResNet-18",
@@ -73,37 +92,78 @@ SPECS = {
             "B10 1375 nm", "B11 1610 nm", "B12 2190 nm",
         ),
         target="Predicted class logit, fixed before masking",
+        band_note="Sentinel-2 band ids and nominal center wavelengths, in dataset order.",
         batch_size=16,
+        compute={
+            "default_grid": 8, "default_permutations": 3,
+            "default_baseline": "mean", "default_method": "permutation",
+            "permutation_cap": {"4": 20, "8": 3, "16": 1},
+            "presets": [
+                {"id": "quick", "label": "Quick", "grid": 4, "permutations": 1},
+                {"id": "balanced", "label": "Balanced", "grid": 8, "permutations": 3},
+            ],
+        },
     ),
     "paviau": _spec(
         model_id="paviau", sample_id="paviau-0008", label="Pavia University · UNet",
         sample_label="Self-Blocking Bricks · val tile 8",
         weight_file="paviau_unet.pt", sample_file="paviau_0008.npz",
         kind="seg", in_channels=103, n_classes=10, base_channels=64,
-        channels=tuple(_waves(103, 430, 860)),
+        grids=(4, 8),
+        channels=_bands(103),
+        band_note=HSI_BAND_NOTE,
         class_names=PAVIA_NAMES,
         target="Mean target-class logit on the fixed ground-truth region",
         batch_size=16,
+        compute={
+            "default_grid": 4, "default_permutations": 1,
+            "default_baseline": "mean", "default_method": "permutation",
+            "permutation_cap": {"4": 8, "8": 3},
+            "presets": [
+                {"id": "quick", "label": "Quick", "grid": 4, "permutations": 1},
+                {"id": "balanced", "label": "Balanced", "grid": 4, "permutations": 3},
+            ],
+        },
     ),
     "salinas": _spec(
         model_id="salinas", sample_id="salinas-0000", label="Salinas · UNet",
         sample_label="Brocoli green weeds 2 · val tile 0",
         weight_file="salinas_unet.pt", sample_file="salinas_0000.npz",
         kind="seg", in_channels=204, n_classes=17, base_channels=64,
-        channels=tuple(_waves(204, 400, 2500)),
+        grids=(4, 8),
+        channels=_bands(204),
+        band_note=HSI_BAND_NOTE,
         class_names=SALINAS_NAMES,
         target="Mean target-class logit on the fixed ground-truth region",
         batch_size=16,
+        compute={
+            "default_grid": 4, "default_permutations": 1,
+            "default_baseline": "mean", "default_method": "permutation",
+            "permutation_cap": {"4": 4, "8": 1},
+            "presets": [
+                {"id": "quick", "label": "Quick", "grid": 4, "permutations": 1},
+            ],
+        },
     ),
     "whu-hi-longkou": _spec(
         model_id="whu-hi-longkou", sample_id="longkou-0000", label="WHU-Hi-LongKou · UNet",
         sample_label="Broad-leaf soybean · val tile 0",
         weight_file="longkou_unet.pt", sample_file="longkou_0000.npz",
         kind="seg", in_channels=270, n_classes=10, base_channels=64,
-        channels=tuple(_waves(270, 400, 1000)),
+        grids=(4, 8),
+        channels=_bands(270),
+        band_note=HSI_BAND_NOTE,
         class_names=LONGKOU_NAMES,
         target="Mean target-class logit on the fixed ground-truth region",
         batch_size=8,
+        compute={
+            "default_grid": 4, "default_permutations": 1,
+            "default_baseline": "mean", "default_method": "permutation",
+            "permutation_cap": {"4": 3, "8": 1},
+            "presets": [
+                {"id": "quick", "label": "Quick", "grid": 4, "permutations": 1},
+            ],
+        },
     ),
 }
 
@@ -131,10 +191,12 @@ def catalog_entries() -> list[dict]:
                 "input": f"assets/lab/samples/{spec['sample_file']}",
             }],
             "channels": list(spec["channels"]),
-            "grids": [4, 8, 16],
+            "grids": list(spec.get("grids", (4, 8, 16))),
             "baselines": ["mean", "zero"],
             "methods": ["auto", "permutation", "exact"],
             "target": spec["target"],
+            "band_note": spec["band_note"],
+            "compute": spec["compute"],
         })
     return entries
 
@@ -204,6 +266,7 @@ class _Value:
         scores = []
         with torch.inference_mode():
             for start in range(0, len(masks), self.batch_size):
+                raise_if_cancelled()
                 coalition = torch.as_tensor(masks[start:start + self.batch_size])
                 coalition = coalition.permute(0, 2, 1).reshape(-1, self.channels, self.grid, self.grid).float()
                 coalition = F.interpolate(coalition, size=(self.height, self.width), mode="nearest")
@@ -236,6 +299,16 @@ def _png(rgb: np.ndarray) -> str:
     stream = BytesIO()
     Image.fromarray(np.asarray(rgb, dtype=np.uint8), mode="RGB").save(stream, format="PNG")
     return "data:image/png;base64," + base64.b64encode(stream.getvalue()).decode("ascii")
+
+
+def _stamp(rgb: np.ndarray, text: str) -> np.ndarray:
+    image = Image.fromarray(np.asarray(rgb, dtype=np.uint8), mode="RGB")
+    draw = ImageDraw.Draw(image)
+    height = 22
+    top = image.height - height
+    draw.rectangle((0, top, image.width, image.height), fill=(246, 246, 244))
+    draw.text((6, top + 4), text, fill=(28, 38, 68))
+    return np.asarray(image)
 
 
 def _card(text: str, side: int) -> np.ndarray:
@@ -290,26 +363,29 @@ def previews(model_id: str, sample_id: str) -> dict:
         pred_name = names[int(prediction)]
         return {
             "input": _png(rgb),
-            "ground_truth": _png(_card(gt_name, side)),
-            "prediction": _png(_card(pred_name, side)),
+            "ground_truth": _png(_stamp(rgb, gt_name)),
+            "prediction": _png(_stamp(rgb, pred_name)),
             "height": side, "width": int(rgb.shape[1]),
             "summary": f"{spec['label'].split('·')[0].strip()} · {len(spec['channels'])} bands",
+            "target_name": gt_name,
             "captions": {
                 "input": "Input",
-                "ground_truth": "Ground truth",
-                "prediction": "Predicted class",
+                "ground_truth": "True label",
+                "prediction": "Predicted label",
             },
         }
     pred = np.where(label == 255, 255, prediction)
+    target_name = spec["class_names"][target_class]
     return {
         "input": _png(rgb),
         "ground_truth": _png(_seg_rgb(label)),
         "prediction": _png(_seg_rgb(pred)),
         "height": side, "width": int(rgb.shape[1]),
         "summary": f"{spec['label'].split('·')[0].strip()} · {len(spec['channels'])} bands",
+        "target_name": target_name,
         "captions": {
             "input": "Input",
-            "ground_truth": "Ground truth",
+            "ground_truth": "Ground truth · " + target_name,
             "prediction": "Prediction",
         },
     }
@@ -319,7 +395,7 @@ def run(model_id: str, sample_id: str, grid: int, baseline: str, method: str, pe
     spec, x, _, label, mean, std, target_class, model, _ = _bundle(model_id)
     value = _Value(model, x, spec, label, mean, std, target_class, grid, baseline)
     result = explain_ssi(
-        value, n_cells=grid * grid, n_channels=value.channels,
+        wrap_value(value), n_cells=grid * grid, n_channels=value.channels,
         method=method, n_permutations=permutations, seed=seed,
     )
     attr = result.attribution.reshape(grid, grid, value.channels)
@@ -339,9 +415,39 @@ def run(model_id: str, sample_id: str, grid: int, baseline: str, method: str, pe
         "n_evaluations": result.n_evaluations,
         "local_efficiency_error": result.max_local_efficiency_error,
         "target": spec["target"],
-        "command": (
-            "python -c \"from lab.engine import run; "
-            f"print(run(model_id={model_id!r}, sample_id={sample_id!r}, grid={grid}, "
-            f"baseline={baseline!r}, method={method!r}, permutations={permutations}, seed={seed})['spectral'])\""
-        ),
+        "target_name": _target_name(spec, target_class),
+        "command": explain_command(model_id, sample_id, grid, baseline, method, permutations, seed),
+        "provenance": _provenance(spec),
+    }
+
+
+def score_masks(model_id: str, sample_id: str, grid: int, baseline: str, masks) -> np.ndarray:
+    """Score coalitions with the adapter directly, without calling ssi.explain."""
+    spec, x, _, label, mean, std, target_class, model, _ = _bundle(model_id)
+    value = _Value(model, x, spec, label, mean, std, target_class, grid, baseline)
+    return value(np.asarray(masks, dtype=bool))
+
+
+def _target_name(spec: dict, target_class: int) -> str:
+    if spec["kind"] == "seg":
+        return spec["class_names"][target_class]
+    names = json.loads(spec["sample"].with_suffix(".json").read_text())["class_names"]
+    return names[target_class]
+
+
+@lru_cache(maxsize=16)
+def _sha(path: str) -> str:
+    import hashlib
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _provenance(spec: dict) -> dict:
+    return {
+        "checkpoint_sha256": _sha(str(spec["checkpoint"])),
+        "sample_sha256": _sha(str(spec["sample"])),
+        "band_note": spec["band_note"],
     }

@@ -17,7 +17,19 @@ from PIL import Image
 import torch
 
 from hls import BAND_NAMES, HLSValueFunction, load_model, load_sample
+from lab.commands import explain_command
+from lab.runtime import wrap_value
 from ssi import explain as explain_ssi
+
+HLS_COMPUTE = {
+    "default_grid": 8, "default_permutations": 10,
+    "default_baseline": "mean", "default_method": "permutation",
+    "permutation_cap": {"4": 20, "8": 20, "16": 10},
+    "presets": [
+        {"id": "quick", "label": "Quick", "grid": 4, "permutations": 1},
+        {"id": "balanced", "label": "Balanced", "grid": 8, "permutations": 10},
+    ],
+}
 
 ROOT = Path(__file__).resolve().parents[1]
 CHECKPOINT = ROOT / "assets" / "checkpoints" / "hls_unet.pt"
@@ -47,6 +59,8 @@ def catalog() -> dict:
             "baselines": list(BASELINES),
             "methods": list(METHODS),
             "target": "Burn-class logit · fixed GT burn region",
+            "band_note": "HLS bands in order: Blue, Green, Red, NIR, SWIR1, SWIR2.",
+            "compute": HLS_COMPUTE,
         }, *catalog_entries()]
     }
 
@@ -108,7 +122,8 @@ def previews(model_id: str = MODEL_ID, sample_id: str = SAMPLE_ID) -> dict:
         "prediction": _png_data(_mask_rgb(np.where(mask == 255, 255, prediction))),
         "height": int(mask.shape[0]),
         "width": int(mask.shape[1]),
-        "summary": "HLS · 6 BANDS",
+        "summary": "HLS · 6 bands",
+        "target_name": "Burn scar",
         "captions": {
             "input": "Input · RGB",
             "ground_truth": "Ground truth",
@@ -125,6 +140,9 @@ def run(
     _check_selection(model_id, sample_id)
     if grid not in GRIDS:
         raise ValueError("Grid must be one of 4, 8, or 16.")
+    allowed = _model_grids(model_id)
+    if grid not in allowed:
+        raise ValueError(f"This model supports grids {allowed}.")
     if baseline not in BASELINES or method not in METHODS:
         raise ValueError("Unsupported baseline or estimation method.")
     if not isinstance(permutations, int) or not 1 <= permutations <= 20:
@@ -133,8 +151,11 @@ def run(
         raise ValueError("Seed must be between 0 and 100000.")
     if grid == 16 and method == "exact":
         raise ValueError("Exact enumeration is limited to grid sizes 4 and 8 in the lab.")
-    if grid == 16 and permutations > 10:
-        raise ValueError("On a 16×16 grid, use at most 10 permutations.")
+    cap = _permutation_cap(model_id, grid)
+    if method != "exact" and permutations > cap:
+        raise ValueError(
+            f"This model allows at most {cap} permutations on a {grid}×{grid} grid."
+        )
     if model_id != MODEL_ID:
         from lab.adapters.extra import channel_count, run as extra_run
         if method == "exact" and channel_count(model_id) > 6:
@@ -146,10 +167,10 @@ def run(
     image, mask, x, model, _ = _bundle()
     if any(d % grid for d in mask.shape):
         raise ValueError("Grid size must divide both image dimensions.")
-    value_fn = HLSValueFunction(
+    value_fn = wrap_value(HLSValueFunction(
         model, x, mask, grid=grid, baseline=baseline,
         batch_size=32, device="cpu",
-    )
+    ))
     result = explain_ssi(
         value_fn, n_cells=grid * grid, n_channels=len(BAND_NAMES),
         method=method, n_permutations=permutations, seed=seed,
@@ -172,8 +193,50 @@ def run(
         "n_evaluations": result.n_evaluations,
         "local_efficiency_error": result.max_local_efficiency_error,
         "target": catalog()["models"][0]["target"],
-        "command": (
-            f"python demo.py --grid {grid} --baseline {baseline} "
-            f"--method {method} --permutations {permutations} --seed {seed}"
-        ),
+        "target_name": "Burn scar",
+        "command": explain_command(model_id, sample_id, grid, baseline, method, permutations, seed),
+        "provenance": _hls_provenance(),
+    }
+
+
+def _model_grids(model_id: str) -> tuple[int, ...]:
+    for model in catalog()["models"]:
+        if model["id"] == model_id:
+            return tuple(model["grids"])
+    raise ValueError("Unknown model or input. Select an available pair from /api/catalog.")
+
+
+def _permutation_cap(model_id: str, grid: int) -> int:
+    for model in catalog()["models"]:
+        if model["id"] == model_id:
+            return int(model["compute"]["permutation_cap"][str(grid)])
+    raise ValueError("Unknown model or input. Select an available pair from /api/catalog.")
+
+
+def score_masks(model_id: str, sample_id: str, grid: int, baseline: str, masks):
+    """Score one coalition directly. This does not call ssi.explain."""
+    _check_selection(model_id, sample_id)
+    if model_id != MODEL_ID:
+        from lab.adapters.extra import score_masks as extra_score
+        return extra_score(model_id, sample_id, grid, baseline, masks)
+    _, mask, x, model, _ = _bundle()
+    value = HLSValueFunction(model, x, mask, grid=grid, baseline=baseline, batch_size=32, device="cpu")
+    return value(np.asarray(masks, dtype=bool))
+
+
+@lru_cache(maxsize=4)
+def _sha(path: str) -> str:
+    import hashlib
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _hls_provenance() -> dict:
+    return {
+        "checkpoint_sha256": _sha(str(CHECKPOINT)),
+        "sample_sha256": _sha(str(SAMPLE)),
+        "band_note": "HLS bands in order: Blue, Green, Red, NIR, SWIR1, SWIR2.",
     }

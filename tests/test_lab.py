@@ -35,7 +35,7 @@ class SSILabTests(unittest.TestCase):
         self.assertIn('id="run"', page.text)
         js = self.client.get("/static/app.js")
         self.assertEqual(js.status_code, 200)
-        self.assertIn("/api/explain", js.text)
+        self.assertIn("/api/jobs", js.text)
 
     def test_real_checkpoint_previews(self):
         response = self.client.get("/api/preview")

@@ -10,6 +10,13 @@ const state = {
   cell: null,
   scoreMode: "global",
   busy: false,
+  ticket: 0,
+  jobId: null,
+  showAllBands: false,
+  hadQuery: false,
+  pendingModel: null,
+  pendingSample: null,
+  pendingChannel: null,
 };
 
 function status(message, error = false) {
@@ -43,7 +50,15 @@ function markChanged() {
   $("stats").textContent = "";
   $("download").disabled = true;
   $("copyCommand").disabled = true;
+  if (state.catalog) {
+    syncControls();
+    writeQuery();
+  }
   status("Ready. Click Run SSI to compute attribution.");
+}
+
+function selected() {
+  return state.catalog.models.find((model) => model.id === $("model").value);
 }
 
 function renderCatalog(catalog) {
@@ -56,7 +71,17 @@ function renderCatalog(catalog) {
     item.textContent = model.label;
     models.append(item);
   });
+  if (state.pendingModel && catalog.models.some((model) => model.id === state.pendingModel))
+    models.value = state.pendingModel;
   renderSamples();
+  const model = selected();
+  if (!state.hadQuery) {
+    state.grid = model.compute.default_grid;
+    state.baseline = model.compute.default_baseline;
+    $("method").value = model.compute.default_method;
+    $("permutations").value = String(model.compute.default_permutations);
+  }
+  syncControls();
 }
 
 function renderSamples() {
@@ -69,6 +94,43 @@ function renderSamples() {
     item.textContent = sample.label;
     select.append(item);
   });
+  if (state.pendingSample && chosen.samples.some((sample) => sample.id === state.pendingSample))
+    select.value = state.pendingSample;
+}
+
+function syncControls() {
+  const model = selected();
+  const cap = Number(model.compute.permutation_cap[String(state.grid)]);
+  $("permutations").max = String(cap);
+  if (Number($("permutations").value) > cap) $("permutations").value = String(cap);
+  $("permLabel").textContent = $("permutations").value;
+  $("gridOptions").querySelectorAll("button").forEach((button) => {
+    button.disabled = !model.grids.includes(Number(button.dataset.grid));
+  });
+  activeChoice($("gridOptions"), "grid", state.grid);
+  activeChoice($("baselineOptions"), "baseline", state.baseline);
+  const exact = $("method").querySelector('option[value="exact"]');
+  exact.disabled = model.channels.length > 6;
+  if (exact.disabled && $("method").value === "exact") $("method").value = "permutation";
+  const preset = $("preset");
+  const current = preset.value;
+  preset.replaceChildren();
+  model.compute.presets.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = item.id;
+    option.textContent = item.label;
+    option.dataset.grid = String(item.grid);
+    option.dataset.permutations = String(item.permutations);
+    preset.append(option);
+  });
+  const custom = document.createElement("option");
+  custom.value = "custom";
+  custom.textContent = "Custom";
+  preset.append(custom);
+  const match = model.compute.presets.find((item) =>
+    item.grid === state.grid && item.permutations === Number($("permutations").value));
+  preset.value = match ? match.id : "custom";
+  if (!match && current === "custom") preset.value = "custom";
 }
 
 async function loadPreview() {
@@ -97,16 +159,54 @@ function parameters() {
 }
 
 function validate(params) {
-  const model = state.catalog && state.catalog.models.find((item) => item.id === params.model_id);
-  if (params.method === "exact" && model && model.channels.length > 6)
+  const model = selected();
+  const cap = Number(model.compute.permutation_cap[String(params.grid)]);
+  if (params.method === "exact" && model.channels.length > 6)
     return "Exact enumeration is only available for models with at most 6 channels.";
   if (params.grid === 16 && params.method === "exact")
     return "Exact enumeration is available on 4×4 and 8×8 grids.";
-  if (params.grid === 16 && params.permutations > 10)
-    return "Use at most 10 permutations for a 16×16 grid.";
+  if (params.permutations > cap)
+    return "This model allows at most " + cap + " permutations on a " + params.grid + "×" + params.grid + " grid.";
   if (!Number.isInteger(params.seed) || params.seed < 0 || params.seed > 100000)
     return "Seed must be an integer between 0 and 100000.";
   return null;
+}
+
+function writeQuery() {
+  if (!state.catalog) return;
+  const params = new URLSearchParams({
+    model: $("model").value,
+    sample: $("sample").value,
+    grid: String(state.grid),
+    baseline: state.baseline,
+    method: $("method").value,
+    permutations: $("permutations").value,
+    seed: $("seed").value,
+    channel: String(state.channel),
+  });
+  history.replaceState(null, "", location.pathname + "?" + params.toString());
+}
+
+function showResult(result) {
+  state.result = result;
+  state.cell = null;
+  state.scoreMode = "global";
+  state.showAllBands = false;
+  if (state.pendingChannel === null) state.channel = -1;
+  else state.channel = state.pendingChannel;
+  state.pendingChannel = null;
+  setScoreMode("global");
+  renderChannelButtons();
+  renderMap();
+  renderBars();
+  $("mapEmpty").classList.add("hidden");
+  $("runMeta").textContent = result.grid + " × " + result.grid + " · " + result.method.toUpperCase();
+  $("stats").textContent = result.n_evaluations.toLocaleString() + " evaluations · local error " + Number(result.local_efficiency_error).toExponential(1);
+  $("command").textContent = result.command;
+  $("download").disabled = false;
+  $("copyCommand").disabled = false;
+  status("Computed · " + result.grid + "×" + result.grid + " grid · " + result.channels.length + " channels");
+  writeQuery();
 }
 
 async function runSSI() {
@@ -114,42 +214,44 @@ async function runSSI() {
   const params = parameters();
   const error = validate(params);
   if (error) { status(error, true); return; }
+  const mine = ++state.ticket;
   state.busy = true;
   $("run").disabled = true;
+  $("cancel").hidden = false;
   $("run").textContent = "Computing SSI…";
   status("Running the real checkpoint on CPU…");
   try {
-    const result = await api("/api/explain", {
+    const started = await api("/api/jobs", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(params),
     });
-    state.result = result;
-    state.cell = null;
-    state.scoreMode = "global";
-    state.channel = -1;
-    $("globalBtn").click();
-    renderChannelButtons();
-    renderMap();
-    renderBars();
-    $("mapEmpty").classList.add("hidden");
-    $("runMeta").textContent = result.grid + " × " + result.grid + " · " + result.method.toUpperCase();
-    $("stats").textContent = result.n_evaluations.toLocaleString() + " evaluations · local error " + Number(result.local_efficiency_error).toExponential(1);
-    $("command").textContent = result.command;
-    $("download").disabled = false;
-    $("copyCommand").disabled = false;
-    status("Computed · " + result.grid + "×" + result.grid + " grid · " + result.channels.length + " channels");
-    const query = new URLSearchParams({
-      grid: String(params.grid), baseline: params.baseline,
-      method: params.method, permutations: String(params.permutations), seed: String(params.seed)
-    });
-    history.replaceState(null, "", location.pathname + "?" + query.toString());
+    if (mine !== state.ticket) return;
+    state.jobId = started.job_id;
+    let job;
+    for (;;) {
+      job = await api("/api/jobs/" + started.job_id);
+      if (mine !== state.ticket) return;
+      if (job.status === "running") {
+        status("Running · " + Number(job.evaluations).toLocaleString() + " evaluations");
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        continue;
+      }
+      break;
+    }
+    if (job.status === "cancelled") { status("Cancelled."); return; }
+    if (job.status !== "done") throw new Error(job.error || "Run failed.");
+    showResult(job.result);
   } catch (exc) {
-    status(exc.message, true);
+    if (mine === state.ticket) status(exc.message, true);
   } finally {
-    state.busy = false;
-    $("run").disabled = false;
-    $("run").textContent = "▶  Run SSI";
+    if (mine === state.ticket) {
+      state.busy = false;
+      state.jobId = null;
+      $("run").disabled = false;
+      $("cancel").hidden = true;
+      $("run").textContent = "▶  Run SSI";
+    }
   }
 }
 
@@ -167,6 +269,7 @@ function renderChannelButtons() {
       state.channel = -1;
       renderChannelButtons();
       renderMap();
+      writeQuery();
     });
     const select = document.createElement("select");
     select.setAttribute("aria-label", "Spectral channel");
@@ -174,7 +277,9 @@ function renderChannelButtons() {
     placeholder.value = "";
     placeholder.textContent = "One channel";
     select.append(placeholder);
+    const query = ($("bandSearch").value || "").trim().toLowerCase();
     state.result.channels.forEach((label, index) => {
+      if (query && !label.toLowerCase().includes(query) && index !== state.channel) return;
       const option = document.createElement("option");
       option.value = String(index);
       option.textContent = label;
@@ -185,6 +290,7 @@ function renderChannelButtons() {
       state.channel = select.value === "" ? -1 : Number(select.value);
       renderChannelButtons();
       renderMap();
+      writeQuery();
     });
     target.append(spatial, select);
     return;
@@ -202,6 +308,7 @@ function renderChannelButtons() {
       state.channel = choice.index;
       renderChannelButtons();
       renderMap();
+      writeQuery();
     });
     target.append(button);
   });
@@ -253,6 +360,10 @@ function renderMap() {
   }
   $("resultTitle").textContent = state.channel === -1 ? "Spatial attribution" : r.channels[state.channel] + " attribution";
   $("resultSub").textContent = state.channel === -1 ? "Sum across spectral channels" : "Signed contribution per spatial cell";
+  const range = "−" + max.toFixed(3) + " to +" + max.toFixed(3);
+  $("scaleNote").textContent = state.channel === -1
+    ? "Spatial sum · " + range
+    : "Channels share one scale · " + range;
 }
 
 function renderBars() {
@@ -260,11 +371,23 @@ function renderBars() {
   if (!r) return;
   const local = state.scoreMode === "cell" && state.cell;
   const values = local ? r.attribution[state.cell.y][state.cell.x] : r.spectral;
+  const many = r.channels.length > 8;
+  $("bandTools").hidden = !many;
+  $("bandMode").textContent = state.showAllBands ? "Top 10" : "All bands";
+  let rows = values.map((value, index) => ({value, index, name: r.channels[index]}));
+  const query = ($("bandSearch").value || "").trim().toLowerCase();
+  if (query) rows = rows.filter((row) => row.name.toLowerCase().includes(query));
+  if (many && !state.showAllBands && !query) {
+    rows.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+    rows = rows.slice(0, 10);
+  }
   const scale = Math.max(1e-12, ...values.map((v) => Math.abs(v)));
   const container = $("bars");
   container.replaceChildren();
-  r.channels.forEach((name, index) => {
-    const v = values[index];
+  rows.forEach((row) => {
+    const v = row.value;
+    const name = row.name;
+    const index = row.index;
     const line = document.createElement("div"); line.className = "bar-line";
     const label = document.createElement("span"); label.className = "bar-label"; label.textContent = name;
     const track = document.createElement("div"); track.className = "bar-track";
@@ -298,28 +421,44 @@ function setScoreMode(mode) {
 
 function restoreQuery() {
   const query = new URLSearchParams(location.search);
+  state.pendingModel = query.get("model");
+  state.pendingSample = query.get("sample");
+  state.hadQuery = ["grid", "permutations", "baseline", "method"].some((key) => query.has(key));
   const grid = Number(query.get("grid"));
   if ([4, 8, 16].includes(grid)) state.grid = grid;
-  activeChoice($("gridOptions"), "grid", state.grid);
   const baseline = query.get("baseline");
   if (["mean", "zero"].includes(baseline)) state.baseline = baseline;
-  activeChoice($("baselineOptions"), "baseline", state.baseline);
   const method = query.get("method");
   if (["auto", "permutation", "exact"].includes(method)) $("method").value = method;
   const permutations = Number(query.get("permutations"));
   if (query.has("permutations") && Number.isInteger(permutations) && permutations >= 1 && permutations <= 20)
     $("permutations").value = String(permutations);
-  $("permLabel").textContent = $("permutations").value;
   const seed = Number(query.get("seed"));
   if (query.has("seed") && Number.isInteger(seed) && seed >= 0 && seed <= 100000)
     $("seed").value = String(seed);
+  const channel = Number(query.get("channel"));
+  if (query.has("channel") && Number.isInteger(channel) && channel >= -1)
+    state.pendingChannel = channel;
+}
+
+async function abandonRun() {
+  state.ticket += 1;
+  const jobId = state.jobId;
+  state.jobId = null;
+  state.busy = false;
+  $("run").disabled = false;
+  $("cancel").hidden = true;
+  $("run").textContent = "▶  Run SSI";
+  if (jobId) {
+    try { await api("/api/jobs/" + jobId, {method: "DELETE"}); } catch (_) { /* already finished */ }
+  }
 }
 
 function setupEvents() {
   $("gridOptions").querySelectorAll("button").forEach((button) => {
     button.addEventListener("click", () => {
       state.grid = Number(button.dataset.grid);
-      activeChoice($("gridOptions"), "grid", state.grid);
+      syncControls();
       markChanged();
     });
   });
@@ -336,12 +475,42 @@ function setupEvents() {
     markChanged();
   });
   $("model").addEventListener("change", async () => {
-    renderSamples(); markChanged();
+    await abandonRun();
+    state.hadQuery = false;
+    state.channel = -1;
+    const model = selected();
+    state.grid = model.compute.default_grid;
+    state.baseline = model.compute.default_baseline;
+    $("method").value = model.compute.default_method;
+    $("permutations").value = String(model.compute.default_permutations);
+    renderSamples();
+    syncControls();
+    markChanged();
     try { await loadPreview(); } catch (exc) { status(exc.message, true); }
   });
   $("sample").addEventListener("change", async () => {
     markChanged();
     try { await loadPreview(); } catch (exc) { status(exc.message, true); }
+  });
+  $("preset").addEventListener("change", () => {
+    if ($("preset").value === "custom") return;
+    const option = $("preset").selectedOptions[0];
+    state.grid = Number(option.dataset.grid);
+    $("permutations").value = option.dataset.permutations;
+    syncControls();
+    markChanged();
+  });
+  $("bandSearch").addEventListener("input", () => {
+    renderBars();
+    renderChannelButtons();
+  });
+  $("bandMode").addEventListener("click", () => {
+    state.showAllBands = !state.showAllBands;
+    renderBars();
+  });
+  $("cancel").addEventListener("click", async () => {
+    await abandonRun();
+    status("Cancelled.");
   });
   $("run").addEventListener("click", runSSI);
   $("globalBtn").addEventListener("click", () => setScoreMode("global"));
@@ -354,6 +523,19 @@ function setupEvents() {
     const y = Math.min(state.result.grid - 1, Math.max(0,
       Math.floor((event.clientY - bounds.top) * state.result.grid / bounds.height)));
     state.cell = {x, y};
+    setScoreMode("cell");
+    renderMap();
+    $("map").focus();
+  });
+  $("map").addEventListener("keydown", (event) => {
+    if (!state.result || !state.cell) return;
+    const step = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1]}[event.key];
+    if (!step) return;
+    event.preventDefault();
+    state.cell = {
+      x: Math.min(state.result.grid - 1, Math.max(0, state.cell.x + step[0])),
+      y: Math.min(state.result.grid - 1, Math.max(0, state.cell.y + step[1])),
+    };
     setScoreMode("cell");
     renderMap();
   });
@@ -383,7 +565,7 @@ async function init() {
     const catalog = await api("/api/catalog");
     if (!catalog.models.length) throw new Error("No models are available.");
     renderCatalog(catalog);
-    status("Loading the real HLS image and checkpoint…");
+    status("Loading the selected model and input…");
     await loadPreview();
     await runSSI();
   } catch (exc) { status(exc.message, true); }

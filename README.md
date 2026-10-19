@@ -58,7 +58,7 @@ python -m pip install -r requirements_lab.txt
 uvicorn lab.app:app --host 127.0.0.1 --port 7860
 ```
 
-Open **http://127.0.0.1:7860** to play with SSI. The app includes a JSON [API](deploy/README.md), channel and cell exploration, result download and reproduction commands. Development history is in [Work Plan 01](work_plan/01_ssi_playground.md), and the final local-release tasks are in [Work Plan 02](work_plan/02_finalize_ssi_playground.md).
+Open **http://127.0.0.1:7860**. Setup, checks and timings are in the [quickstart](docs/PLAYGROUND_QUICKSTART.md).
 
 ---
 

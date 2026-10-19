@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+from lab.runtime import raise_if_cancelled
 from model import UNet, convert_legacy_state_dict
 
 BAND_NAMES = ("Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2")
@@ -78,6 +79,7 @@ class HLSValueFunction:
         scores = []
         with torch.inference_mode():
             for start in range(0, len(masks), self.batch_size):
+                raise_if_cancelled()
                 m = torch.as_tensor(masks[start:start+self.batch_size], device=self.device)
                 m = m.permute(0, 2, 1).reshape(-1, self.channels, self.grid, self.grid).float()
                 m = F.interpolate(m, size=(self.height, self.width), mode="nearest")

@@ -1,6 +1,6 @@
 # Work Plan 02 · Finalize SSI Playground
 
-**Status: TO EXECUTE**
+**Status: IMPLEMENTED LOCALLY. Final Actions URL is recorded after the push.**
 **Date: 2026-10-19**
 **Baseline: main at a8842dfc09240a8828cbf4e312bff364a544892a**
 **Previous plan: [01_ssi_playground.md](01_ssi_playground.md)**
@@ -171,23 +171,27 @@ Parallelize independent code tasks where useful, but do not race commits for the
 
 ## 10. Final completion checklist
 
-- [ ] Six models correctly use actual checkpoints, inputs and fixed scoring targets.
-- [ ] Checkpoint hashes, preprocessing, source attribution and numeric correctness audited.
-- [ ] All wavelength labels are true source data or honest original channel IDs.
-- [ ] LongKou region-agreement issue investigated and documented.
-- [ ] Real per-model CPU time and memory recorded; practical defaults/presets enabled.
-- [ ] Large hyperspectral channel selection and Top 10 are usable.
-- [ ] Compute lifecycle prevents stale output and provides responsive user feedback.
-- [ ] Full exports and working reproducible CLI/API commands for all supported models.
-- [ ] Original HLS demo still runs; complete numerical and regression tests pass.
+- [x] Six models correctly use actual checkpoints, inputs and fixed scoring targets.
+- [x] Checkpoint hashes, preprocessing, source attribution and numeric correctness audited.
+- [x] All wavelength labels are true source data or honest original channel IDs.
+- [x] LongKou region-agreement issue investigated and documented.
+- [x] Real per-model CPU time and memory recorded; practical defaults/presets enabled.
+- [x] Large hyperspectral channel selection and Top 10 are usable.
+- [x] Compute lifecycle prevents stale output and provides responsive user feedback.
+- [x] Full exports and working reproducible CLI/API commands for all supported models.
+- [x] Original HLS demo still runs; complete numerical and regression tests pass.
 - [ ] Multi-model desktop/mobile browser tests and Docker tests pass.
-- [ ] README, asset notices, quickstart, validation, performance docs and local Docker setup finished.
+- [x] README, asset notices, quickstart, validation, performance docs and local Docker setup finished.
 - [ ] Final main SHA and green Actions URL recorded here, with real measured numbers.
-- [ ] **No Hugging Face deployment performed.**
+- [x] **No Hugging Face deployment performed.**
 
 ### Execution log (fill during the work)
 
-Record what changed, files touched, measured per-model CPU times/memory, verified band sources, failed/changed configurations and fixes, screenshot paths, latest CI URL, final commit SHA, and any narrowly stated remaining non-deployment limitation. Do not check off an item on the strength of a plan alone.
+Local browser smoke passed for HLS, CUB-200, EuroSAT and PaviaU, including Top 10 search, a selected cell, URL state, and a 390 px layout with no horizontal overflow. Screenshots: `/tmp/ssi_playground_hls_desktop.png`, `/tmp/ssi_playground_desktop.png`, `/tmp/ssi_playground_mobile.png`. This machine has no Docker daemon, so the image build is left to the GitHub Actions `docker-smoke` job. Hugging Face was not deployed.
+
+Band labels: the three hyperspectral `.mat` files have no wavelength vector, so the UI uses `Band 001` style indices. EuroSAT keeps Sentinel-2 ids. HLS keeps named bands. LongKou `region_agreement` 0.4496 is recall on the fixed ground-truth region (367 pixels), not accuracy; the tile stays registered. CPU numbers are in `docs/PLAYGROUND_PERFORMANCE.md`. Peak RSS for the ramp was 811328 KB at 4 threads. EuroSAT 8×8 / 10 took 51.6 s and is no longer offered. Salinas 8×8 / 3 took 46.5 s and LongKou 8×8 / 3 took 72.9 s; those caps are now 1 permutation. Grid 16 is not offered for the three hyperspectral models. EuroSAT 16×16 / 1 was measured separately at 19.859 s.
+
+The two open boxes above are the Actions run on the commit that contains this log.
 
 ### Final handoff
 

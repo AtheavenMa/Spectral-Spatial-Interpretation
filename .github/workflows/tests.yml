@@ -49,9 +49,7 @@ jobs:
         if: always()
         with:
           name: ssi-playground-browser
-          path: |
-            /tmp/ssi_playground_desktop.png
-            /tmp/ssi_playground_mobile.png
+          path: /tmp/ssi_playground_*.png
           if-no-files-found: ignore
       - name: Show server logs on failure
         if: failure()

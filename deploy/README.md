@@ -11,7 +11,7 @@ python -m pip install -r requirements_lab.txt
 uvicorn lab.app:app --host 127.0.0.1 --port 7860
 ```
 
-Open http://127.0.0.1:7860. The frontend calls `/api/catalog`, `/api/preview`, and `/api/explain`. FastAPI also publishes its OpenAPI schema at `/openapi.json` and interactive API reference at `/docs`.
+Open http://127.0.0.1:7860. The page calls `/api/catalog`, `/api/preview`, and `/api/jobs`. `POST /api/explain` remains for scripts. OpenAPI is at `/docs`. A short tour is in [docs/PLAYGROUND_QUICKSTART.md](../docs/PLAYGROUND_QUICKSTART.md).
 
 ## CPU Docker
 
@@ -20,7 +20,7 @@ docker build -t ssi-playground .
 docker run --rm -p 7860:7860 ssi-playground
 ```
 
-For Hugging Face Spaces, create a **Docker** Space with the files from this repository and set `app_port: 7860` in the Space README metadata. The Dockerfile already starts the server on port 7860. No GPU is required by the bundled HLS example. Public deployment needs account/Space write permission and should happen separately from committing source files.
+The image listens on port 7860 and does not need a GPU. This repository is not published as a hosted Space.
 
 ## API
 
@@ -34,7 +34,11 @@ curl -s -X POST http://127.0.0.1:7860/api/explain \
 
 The API returns signed `attribution` of shape `[grid][grid][channel]`, `spatial`, `spectral`, computation settings, and a matching CLI reproduction command. The browser visualizes these arrays rather than swapping pre-rendered images.
 
-Only the bundled model and sample are registered initially. Model identifiers and sample identifiers are allowlisted; the server does not execute arbitrary uploaded checkpoints or accept filesystem paths from HTTP requests. Extend model choices by implementing a validated adapter and adding corresponding metadata. Future model/input placeholders are tracked in [work_plan/01_ssi_playground.md](../work_plan/01_ssi_playground.md).
+Model and sample ids are allowlisted. HTTP requests cannot pass filesystem paths or an arbitrary checkpoint. A local command can score one supported architecture from files you already have:
+
+```bash
+python -m lab.cli explain --model-id cub-200 --sample-id cub-0158 --grid 4 --permutations 1 --seed 0
+```
 
 ## Testing
 
