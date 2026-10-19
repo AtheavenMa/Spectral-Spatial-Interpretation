@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "note": "Asset-intake slots only. Entries are not runnable or exposed as selectable models until checkpoint/input/adapter validation is complete.",
+  "pending": [
+    {
+      "id": "cub-200",
+      "modality": "rgb",
+      "example_count": 10,
+      "required": [
+        "checkpoint",
+        "model_architecture",
+        "class_mapping",
+        "model_preprocessing",
+        "original_rgb_input",
+        "target_class_or_logit",
+        "baseline_values",
+        "input_provenance",
+        "artifact_hashes"
+      ],
+      "adapter": "lab.adapters.cub200"
+    },
+    {
+      "id": "eurosat",
+      "modality": "multispectral",
+      "example_count": 10,
+      "required": [
+        "checkpoint",
+        "model_architecture",
+        "13_band_input_and_band_order",
+        "normalization_statistics",
+        "class_target",
+        "baseline_values",
+        "input_provenance",
+        "artifact_hashes"
+      ],
+      "adapter": "lab.adapters.eurosat"
+    },
+    {
+      "id": "paviau",
+      "modality": "hyperspectral",
+      "example_count": 10,
+      "required": [
+        "checkpoint",
+        "model_architecture",
+        "original_spectral_cube",
+        "channel_names_or_wavelengths",
+        "class_labels_and_fixed_target_region",
+        "preprocessing_and_normalization",
+        "baseline_values",
+        "input_provenance",
+        "artifact_hashes"
+      ],
+      "adapter": "lab.adapters.paviau"
+    },
+    {
+      "id": "salinas",
+      "modality": "hyperspectral",
+      "example_count": 10,
+      "required": [
+        "checkpoint",
+        "model_architecture",
+        "original_spectral_cube",
+        "channel_names_or_wavelengths",
+        "class_labels_and_fixed_target_region",
+        "preprocessing_and_normalization",
+        "baseline_values",
+        "input_provenance",
+        "artifact_hashes"
+      ],
+      "adapter": "lab.adapters.salinas"
+    },
+    {
+      "id": "whu-hi-longkou",
+      "modality": "hyperspectral",
+      "example_count": 7,
+      "required": [
+        "checkpoint",
+        "model_architecture",
+        "original_spectral_cube",
+        "channel_names_or_wavelengths",
+        "class_labels_and_fixed_target_region",
+        "preprocessing_and_normalization",
+        "baseline_values",
+        "input_provenance",
+        "artifact_hashes"
+      ],
+      "adapter": "lab.adapters.whu_hi_longkou"
+    }
+  ]
+}
