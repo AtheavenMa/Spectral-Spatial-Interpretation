@@ -21,8 +21,6 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 
 **57 visualizations · 6 datasets · RGB, multispectral, and hyperspectral imagery.**
 
-These are illustrative, pre-rendered SSI visualizations. They are **not** an additional quantitative benchmark, and not every dataset has a bundled runnable model adapter.
-
 ### 🦜 RGB · CUB-200
 
 <p align="center">
