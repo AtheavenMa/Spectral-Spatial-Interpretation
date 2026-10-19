@@ -45,7 +45,7 @@ RGB previews stored in the sample NPZ are for display. They are not the tensors 
 `python -m unittest discover -s tests -v` includes:
 
 - The original HLS 8×8, mean, 10 permutations, seed 0 comparison with `assets/demo_summary.json`.
-- Each extra model at 4×4, mean, 1 permutation, seed 0 against `assets/lab/references.json`.
+- Each extra model at 4×4, mean, 1 permutation, seed 0 against `assets/lab/references.json`, with absolute tolerance `1e-4`. Those vectors were saved on PyTorch 2.11. The CPU 2.6 wheel used in GitHub Actions differs by about `1e-5` on CUB-200.
 - A direct model call, outside `ssi.explain`, for the unperturbed score and for one fully masked cell. The difference matches `spatial[0][0]` for HLS, CUB and PaviaU.
 - Mean and zero baselines on HLS, CUB and Salinas, with local efficiency under `1e-5`.
 - CUB exact enumeration against 20 permutations at 4×4. Both report the same full score. Their spectral vectors correlate above 0.8. They are not expected to be identical at finite sample size.
