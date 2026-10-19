@@ -46,6 +46,16 @@ node --check lab/static/app.js
 
 The integration tests exercise actual CPU inference on the included checkpoint and input; they verify preview dimensions, API validation, attribution shapes, aggregation consistency, and local efficiency.
 
+To inspect the actual HTML in a local Chromium session while the API is running:
+
+```bash
+python -m pip install "playwright>=1.54,<2"
+python -m playwright install chromium
+python lab/browser_smoke.py
+```
+
+The browser test changes grid size, switches bands, clicks a spatial cell, checks real images, verifies mobile overflow, and writes desktop/mobile screenshots to the system temporary directory. The GitHub Actions workflow performs these checks and uploads the screenshots as run artifacts.
+
 ## Notes
 
 A single compute lock limits concurrent inference, and the last 24 parameter combinations are cached in process. Grid sizes are 4, 8 and 16. The web UI limits 16 × 16 to permutation sampling with at most 10 permutations, and exact enumeration to 4 × 4 or 8 × 8. A production service with more traffic should add a bounded request queue, metrics, and rate limiting.
