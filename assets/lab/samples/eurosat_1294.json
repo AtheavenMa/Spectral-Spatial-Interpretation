@@ -1,0 +1,1 @@
+{"class_names": ["AnnualCrop", "Forest", "HerbaceousVegetation", "Highway", "Industrial", "Pasture", "PermanentCrop", "Residential", "River", "SeaLake"], "target_name": "HerbaceousVegetation", "split": "test", "index": 1294}

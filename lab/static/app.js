@@ -77,6 +77,11 @@ async function loadPreview() {
   $("inputImage").src = image.input;
   $("gtImage").src = image.ground_truth;
   $("predImage").src = image.prediction;
+  if (image.summary) $("previewMeta").textContent = image.summary;
+  const captions = image.captions || {};
+  if (captions.input) $("inputCaption").textContent = captions.input;
+  if (captions.ground_truth) $("gtCaption").textContent = captions.ground_truth;
+  if (captions.prediction) $("predCaption").textContent = captions.prediction;
 }
 
 function parameters() {
@@ -92,6 +97,9 @@ function parameters() {
 }
 
 function validate(params) {
+  const model = state.catalog && state.catalog.models.find((item) => item.id === params.model_id);
+  if (params.method === "exact" && model && model.channels.length > 6)
+    return "Exact enumeration is only available for models with at most 6 channels.";
   if (params.grid === 16 && params.method === "exact")
     return "Exact enumeration is available on 4×4 and 8×8 grids.";
   if (params.grid === 16 && params.permutations > 10)
@@ -149,6 +157,38 @@ function renderChannelButtons() {
   const target = $("channels");
   target.replaceChildren();
   if (!state.result) return;
+  if (state.result.channels.length > 8) {
+    const spatial = document.createElement("button");
+    spatial.type = "button";
+    spatial.textContent = "Spatial";
+    spatial.className = state.channel === -1 ? "active" : "";
+    spatial.setAttribute("aria-pressed", String(state.channel === -1));
+    spatial.addEventListener("click", () => {
+      state.channel = -1;
+      renderChannelButtons();
+      renderMap();
+    });
+    const select = document.createElement("select");
+    select.setAttribute("aria-label", "Spectral channel");
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "One channel";
+    select.append(placeholder);
+    state.result.channels.forEach((label, index) => {
+      const option = document.createElement("option");
+      option.value = String(index);
+      option.textContent = label;
+      select.append(option);
+    });
+    select.value = state.channel >= 0 ? String(state.channel) : "";
+    select.addEventListener("change", () => {
+      state.channel = select.value === "" ? -1 : Number(select.value);
+      renderChannelButtons();
+      renderMap();
+    });
+    target.append(spatial, select);
+    return;
+  }
   const choices = [{label: "Spatial", index: -1}].concat(
     state.result.channels.map((label, index) => ({label, index}))
   );
@@ -244,7 +284,7 @@ function renderBars() {
     "Sum over spatial cells";
   $("cellHint").textContent = state.cell ?
     "Selected cell: row " + (state.cell.y + 1) + ", column " + (state.cell.x + 1) :
-    "Click any cell on the map to inspect its six channels.";
+    "Click any cell on the map to inspect its " + r.channels.length + " channels.";
 }
 
 function setScoreMode(mode) {

@@ -1,6 +1,8 @@
 # Model adapter contract
 
-The runnable v1 adapter is the bundled HLS path in [lab/engine.py](../engine.py). The additional datasets listed in [pending_models.json](pending_models.json) are asset-intake slots, not synthetic demos.
+The bundled HLS path in [lab/engine.py](../engine.py) remains the default. CUB-200, EuroSAT, Pavia University, Salinas and WHU-Hi-LongKou are registered beside it through [extra.py](extra.py) and [backbones.py](backbones.py). Each uses one tensor-only checkpoint and one training-normalized input under `assets/lab/`. Hashes are in `assets/lab/manifest.json`. The recorded 4×4, one-permutation, seed-0 spectral vectors are in `assets/lab/references.json`.
+
+Inputs are stored after the training normalization. The **mean** baseline is 0 in that space. The **zero** baseline is `-mean/std`, which is a raw value of 0 after the same normalization. Classification scores the logit of a class id fixed from the unmasked prediction. Segmentation scores the mean target-class logit on pixels whose ground-truth label equals that class; label 255 is ignored and the region is not recomputed from masked predictions. Exact enumeration is rejected when a model has more than six channels.
 
 A new adapter must provide:
 

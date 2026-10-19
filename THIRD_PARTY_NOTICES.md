@@ -48,6 +48,18 @@ The root MIT license does not grant additional rights to the weights.
 
 `assets/demo_output.png` and `tests/fixtures/hls_legacy_reference.npz` are generated from the attributed HLS derivative above. Their underlying HLS material retains CC-BY-4.0 attribution and modification notices. The fixture contains numerical model outputs, attribution arrays and a synthetic input probe; it contains no legacy model source code. These generated materials are separate from the manuscript figures and pretrained weight file.
 
+## Additional playground weights and samples
+
+`assets/lab/checkpoints/` holds tensor-only weights stripped from the training checkpoints named in `assets/lab/manifest.json`. Optimizer state is not included. The segmentation weights load through the existing MIT U-Net block adapter in `model.py` (`convert_legacy_state_dict`); the GPL U-Net source is not copied into this repository. The ResNet-18 classifiers are reconstructed in `lab/adapters/backbones.py` under the root MIT license so their parameter names match those checkpoints. No torchvision package is required.
+
+`assets/lab/samples/` holds one training-normalized model input per dataset, plus a display RGB preview:
+
+- CUB-200-2011 test index 158. Source: Caltech-UCSD Birds-200-2011, used here as a single preprocessed research sample.
+- EuroSAT multispectral test index 1294. Band order is B01, B02, B03, B04, B05, B06, B07, B08, B8A, B09, B10, B11, B12.
+- Pavia University val tile 8, Salinas corrected val tile 0, and WHU-Hi-LongKou val tile 0. These are 32×32 patches from the public cubes, split with seed 1 and normalized by the labeled training-pixel mean and standard deviation. Salinas wavelengths are a linear index from 400 nm to 2500 nm across the corrected 204 bands. Pavia University uses 430–860 nm and WHU-Hi-LongKou uses 400–1000 nm, also linear in band index.
+
+The weight files and these samples are separate from the root MIT-licensed source code. SHA-256 hashes are in `assets/lab/manifest.json`.
+
 ## Code and documentation organization
 
 The SSI core is refactored from the supplied research implementation's observed-context, full-grid path. The new `ssi.py` and adapter contain no SAR implementation code. The implementation and demonstration are organized as a standalone SSI repository.

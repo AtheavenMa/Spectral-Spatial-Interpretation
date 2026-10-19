@@ -71,11 +71,11 @@
 
       <section class="viewer">
         <div class="previews panel">
-          <div class="section-top"><span>02 / Input</span><span class="tiny">HLS · 6 BANDS</span></div>
+          <div class="section-top"><span>02 / Input</span><span class="tiny" id="previewMeta">HLS · 6 BANDS</span></div>
           <div class="preview-grid">
-            <figure><div class="photo"><img id="inputImage" alt="HLS true-color image"></div><figcaption>Input · RGB</figcaption></figure>
-            <figure><div class="photo"><img id="gtImage" alt="Burn-scar ground truth"></div><figcaption>Ground truth</figcaption></figure>
-            <figure><div class="photo"><img id="predImage" alt="Model segmentation prediction"></div><figcaption>UNet prediction</figcaption></figure>
+            <figure><div class="photo"><img id="inputImage" alt="Model input"></div><figcaption id="inputCaption">Input · RGB</figcaption></figure>
+            <figure><div class="photo"><img id="gtImage" alt="Ground truth"></div><figcaption id="gtCaption">Ground truth</figcaption></figure>
+            <figure><div class="photo"><img id="predImage" alt="Model prediction"></div><figcaption id="predCaption">UNet prediction</figcaption></figure>
           </div>
         </div>
         <div class="analysis panel" id="analysis">

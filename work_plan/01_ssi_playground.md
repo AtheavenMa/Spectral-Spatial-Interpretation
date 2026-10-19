@@ -1,6 +1,6 @@
 # Work Plan 01 · SSI Interactive Playground
 
-Status: **CPU implementation and automated verification complete.** Real-checkpoint tests, reference parity, Docker API smoke test, headless desktop/mobile interactions all passed on GitHub Actions. External Space publication and five additional dataset assets remain pending.
+Status: **CPU playground and five additional datasets are runnable.** Real-checkpoint tests, reference parity, Docker API smoke test, and headless desktop/mobile interactions passed on GitHub Actions for the HLS demo. CUB-200, EuroSAT, PaviaU, Salinas and WHU-Hi-LongKou now load tensor-only checkpoints and one original training-normalized input each. Publishing a Hugging Face Space remains undone.
 Date: 2026-10-19
 Repository: [Spectral-Spatial-Interpretation](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation)
 
@@ -34,7 +34,7 @@ The site must never swap a PNG in place of recomputing SSI when the user changes
 | requirements_lab.txt / requirements_lab_test.txt | Runtime and test dependencies | [x] committed |
 | Dockerfile | CPU PyTorch + FastAPI container, port 7860 | [x] committed |
 | deploy/README.md | Local, Docker, Spaces, API and test instructions | [x] committed |
-| lab/adapters/pending_models.json | Non-runnable slots for five extra datasets | [x] committed |
+| lab/adapters/extra.py | CUB, EuroSAT, PaviaU, Salinas and WHU-Hi-LongKou adapters | [x] real checkpoint, input and numeric reference |
 | lab/adapters/README.md | Required adapter and asset schema | [x] committed |
 | .github/workflows/tests.yml | CPU tests and JavaScript syntax check | [x] source updated; wait for Actions result |
 | README.md | Lab entrypoint and local run commands | [x] source updated |
@@ -98,11 +98,11 @@ Remaining confirmation tasks (not GPU tasks):
 - [ ] Publish a Docker Hugging Face Space under the desired account/organization once write access and Space name are available.
 - [ ] Validate live Space CPU cold start, memory and multi-visitor behavior.
 
-## 5. Additional dataset placeholders: exact assets needed
+## 5. Additional datasets
 
-`lab/adapters/pending_models.json` lists CUB-200, EuroSAT, PaviaU, Salinas and WHU-Hi-LongKou as **not yet runnable**. Each currently has pre-rendered PNGs, not a confirmed complete checkpoint + original input + scoring adapter bundle.
+CUB-200, EuroSAT, PaviaU, Salinas and WHU-Hi-LongKou are selectable. `pending_models.json` is empty. Weights and one sample per dataset live under `assets/lab/`, with SHA-256 hashes in `assets/lab/manifest.json`. The gallery PNGs in `examples/` are still not the runnable inputs.
 
-For **each** dataset, the GPU/research agent should hand off:
+Each adapter now has:
 
 1. **Checkpoint:** tensor-only model state with an SHA-256, original training experiment ID, epoch/checkpoint selection rationale and license/provenance. If the checkpoint is a large file, store it under a Hugging Face model repository or use Git LFS, not ordinary Git blobs.
 2. **Exact model loader:** architecture/module code, configuration, framework versions and a minimal inference snippet that loads the state strictly.
@@ -124,11 +124,17 @@ Dataset-specific intake:
 | Salinas | Hyperspectral model, cube, label mapping and fixed target | Report spectral band selection/removal |
 | WHU-Hi-LongKou | Hyperspectral model, cube, labels and channel metadata | Specify the precise evaluation crop |
 
-Do **not** train substitute checkpoints merely to make a button work. Use artifacts corresponding to the actual examples/experiments. If a checkpoint is unavailable, keep that entry unselectable until the real artifacts arrive.
+These entries use the existing training checkpoints, not substitute models. The checked reference is grid 4, mean baseline, one permutation, seed 0. Hugging Face was not used for the weights.
+
+- [x] CUB-200 ResNet-18, test index 158, class logit 6
+- [x] EuroSAT ResNet-18, test index 1294, class logit 2
+- [x] PaviaU UNet, val tile 8, fixed Self-Blocking Bricks region
+- [x] Salinas UNet, val tile 0, fixed Brocoli green weeds 2 region
+- [x] WHU-Hi-LongKou UNet, val tile 0, fixed Broad-leaf soybean region
 
 ## 6. Adapter integration procedure
 
-1. Place a validated loader under `lab/adapters/<dataset>.py`. Follow [adapter contract](../lab/adapters/README.md).
+1. Place a validated loader under `lab/adapters/`. The five datasets share `extra.py` and `backbones.py`. Follow [adapter contract](../lab/adapters/README.md).
 2. Reuse `ssi.explain` without changing its mathematical semantics. Implement a value function from (batch, grid², C) Boolean coalitions to a 1D scalar score vector.
 3. Return previews, channel names and target metadata in the same API schema.
 4. Add the validated model/input IDs to `/api/catalog`, and route the request to the new adapter.
@@ -153,4 +159,4 @@ Visit http://127.0.0.1:7860, choose grid 4/8/16 and Run SSI. Inspect /docs for t
 
 **Publication milestone:** same source serves successfully through a public Docker Space, with acceptable CPU latency and no unsafe upload/execution path.
 
-**Expansion milestone:** each new dataset is enabled separately after its real checkpoint, raw input, metadata, scalar target, preprocessing and numeric reproducibility checks are available. Never mark a placeholder as runnable based solely on PNGs.
+**Expansion milestone:** CUB-200, EuroSAT, PaviaU, Salinas and WHU-Hi-LongKou are enabled from their real checkpoints, one training-normalized input each, fixed targets and a stored numeric reference. Gallery PNGs are not used as model inputs. A public Hugging Face Space is still not part of this milestone.

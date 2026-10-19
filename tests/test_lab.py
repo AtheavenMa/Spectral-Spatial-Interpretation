@@ -96,6 +96,41 @@ class SSILabTests(unittest.TestCase):
         self.assertEqual(unknown.status_code, 400)
         guard = self.client.post("/api/explain", json={"grid": 16, "permutations": 20})
         self.assertEqual(guard.status_code, 400)
+        wide = self.client.post("/api/explain", json={
+            "model_id": "eurosat", "sample_id": "eurosat-1294",
+            "grid": 4, "method": "exact", "permutations": 1,
+        })
+        self.assertEqual(wide.status_code, 400)
+
+    def test_extra_models_match_recorded_reference(self):
+        import json
+        reference = json.loads((engine.ROOT / "assets" / "lab" / "references.json").read_text())
+        models = self.client.get("/api/catalog").json()["models"]
+        self.assertEqual(
+            [model["id"] for model in models],
+            ["hls-unet", "cub-200", "eurosat", "paviau", "salinas", "whu-hi-longkou"],
+        )
+        for model in models[1:]:
+            settings = dict(
+                model_id=model["id"], sample_id=model["samples"][0]["id"],
+                grid=4, baseline="mean", method="permutation",
+                permutations=1, seed=0,
+            )
+            result = engine.run(**settings)
+            values = np.asarray(result["attribution"])
+            self.assertEqual(values.shape, (4, 4, len(model["channels"])))
+            self.assertTrue(np.isfinite(values).all())
+            np.testing.assert_allclose(values.sum(axis=(0, 1)), result["spectral"], atol=1e-6, rtol=0)
+            self.assertLess(result["local_efficiency_error"], 1e-5)
+            self.assertEqual(result["n_evaluations"], reference[model["id"]]["n_evaluations"])
+            np.testing.assert_allclose(result["spectral"], reference[model["id"]]["spectral"], atol=1e-6, rtol=0)
+            self.assertEqual(engine.run(**settings)["spectral"], result["spectral"])
+            preview = self.client.get("/api/preview", params={
+                "model_id": model["id"], "sample_id": model["samples"][0]["id"],
+            })
+            self.assertEqual(preview.status_code, 200, preview.text)
+            image = Image.open(BytesIO(base64.b64decode(preview.json()["input"].split(",", 1)[1])))
+            self.assertEqual(image.size[0], image.size[1])
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # SSI Playground deployment
 
-The repository includes a real CPU-compatible SSI Playground. It serves a minimal HTML interface and JSON API using the bundled HLS checkpoint and HLS sample.
+The repository includes a real CPU-compatible SSI Playground. It serves a minimal HTML interface and JSON API. The default model is the bundled HLS checkpoint and sample. CUB-200, EuroSAT, Pavia University, Salinas and WHU-Hi-LongKou are additional catalog entries under `assets/lab`.
 
 ## Local
 

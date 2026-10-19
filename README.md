@@ -51,7 +51,7 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 
 ## 🎛️ Interactive SSI Playground
 
-Choose a real model and input, change the grid size or baseline, and explore the resulting spatial and spectral attributions. The first runnable example uses the bundled HLS UNet checkpoint and input on CPU.
+Choose a real model and input, change the grid size or baseline, and explore the resulting spatial and spectral attributions. The catalog includes the bundled HLS UNet plus CUB-200, EuroSAT, Pavia University, Salinas and WHU-Hi-LongKou, all on CPU.
 
 ```bash
 python -m pip install -r requirements_lab.txt
@@ -203,7 +203,7 @@ python demo.py --method exact --output outputs/hls_exact
 
 The demo saves a visualization, NumPy attribution arrays, and a JSON summary. See the [HLS demo guide](docs/HLS_DEMO.md) for model and sample provenance, preprocessing, CLI options, expected output, and validation commands.
 
-**Important distinction:** the [Visual Atlas](examples/README.md) contains pre-rendered figures across six datasets; the self-contained runnable demo uses the bundled HLS sample and pretrained UNet adapter.
+**Important distinction:** the [Visual Atlas](examples/README.md) contains pre-rendered figures. The playground recomputes SSI from checkpoints and inputs: HLS from `assets/checkpoints` and `assets/examples`, and the other five datasets from `assets/lab`.
 
 ---
 

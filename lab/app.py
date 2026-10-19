@@ -51,7 +51,7 @@ def get_preview(model_id: str = engine.MODEL_ID, sample_id: str = engine.SAMPLE_
         if not COMPUTE_LOCK.acquire(blocking=False):
             raise HTTPException(status_code=429, detail="Model is busy; retry shortly.")
         try:
-            return engine.previews()
+            return engine.previews(model_id, sample_id)
         finally:
             COMPUTE_LOCK.release()
     except (ValueError, FileNotFoundError) as exc:

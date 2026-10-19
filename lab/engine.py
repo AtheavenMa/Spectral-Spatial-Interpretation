@@ -30,6 +30,7 @@ METHODS = ("auto", "permutation", "exact")
 
 
 def catalog() -> dict:
+    from lab.adapters.extra import catalog_entries
     return {
         "models": [{
             "id": MODEL_ID,
@@ -46,15 +47,21 @@ def catalog() -> dict:
             "baselines": list(BASELINES),
             "methods": list(METHODS),
             "target": "Burn-class logit · fixed GT burn region",
-        }]
+        }, *catalog_entries()]
     }
 
 
 def _check_selection(model_id: str, sample_id: str) -> None:
-    if model_id != MODEL_ID or sample_id != SAMPLE_ID:
+    if model_id == MODEL_ID and sample_id == SAMPLE_ID:
+        if not CHECKPOINT.is_file() or not SAMPLE.is_file():
+            raise FileNotFoundError("The bundled model checkpoint or input sample is missing.")
+        return
+    from lab.adapters.extra import SPECS, known
+    if not known(model_id, sample_id):
         raise ValueError("Unknown model or input. Select an available pair from /api/catalog.")
-    if not CHECKPOINT.is_file() or not SAMPLE.is_file():
-        raise FileNotFoundError("The bundled model checkpoint or input sample is missing.")
+    spec = SPECS[model_id]
+    if not spec["checkpoint"].is_file() or not spec["sample"].is_file():
+        raise FileNotFoundError(f"Checkpoint or input for {model_id} is missing.")
 
 
 @lru_cache(maxsize=1)
@@ -85,8 +92,12 @@ def _mask_rgb(labels: np.ndarray) -> np.ndarray:
     return colors[np.where(labels == 255, 2, labels)]
 
 
-@lru_cache(maxsize=1)
-def previews() -> dict:
+@lru_cache(maxsize=8)
+def previews(model_id: str = MODEL_ID, sample_id: str = SAMPLE_ID) -> dict:
+    _check_selection(model_id, sample_id)
+    if model_id != MODEL_ID:
+        from lab.adapters.extra import previews as extra_previews
+        return extra_previews(model_id, sample_id)
     image, mask, _, _, prediction = _bundle()
     rgb = image[[2, 1, 0]].transpose(1, 2, 0)
     low, high = np.percentile(rgb, [2, 98], axis=(0, 1))
@@ -97,6 +108,12 @@ def previews() -> dict:
         "prediction": _png_data(_mask_rgb(np.where(mask == 255, 255, prediction))),
         "height": int(mask.shape[0]),
         "width": int(mask.shape[1]),
+        "summary": "HLS · 6 BANDS",
+        "captions": {
+            "input": "Input · RGB",
+            "ground_truth": "Ground truth",
+            "prediction": "UNet prediction",
+        },
     }
 
 
@@ -118,6 +135,13 @@ def run(
         raise ValueError("Exact enumeration is limited to grid sizes 4 and 8 in the lab.")
     if grid == 16 and permutations > 10:
         raise ValueError("On a 16×16 grid, use at most 10 permutations.")
+    if model_id != MODEL_ID:
+        from lab.adapters.extra import channel_count, run as extra_run
+        if method == "exact" and channel_count(model_id) > 6:
+            raise ValueError(
+                "Exact enumeration in the lab is limited to models with at most 6 channels."
+            )
+        return extra_run(model_id, sample_id, grid, baseline, method, permutations, seed)
 
     image, mask, x, model, _ = _bundle()
     if any(d % grid for d in mask.shape):
