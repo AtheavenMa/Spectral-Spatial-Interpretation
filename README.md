@@ -68,7 +68,7 @@ $$
 SSI allocates that contrast using ordinary Shapley values within the cell:
 
 $$
-\Phi(g,c)=\operatorname{Sh}_c(w_g), \qquad \sum_c \Phi(g,c)=f(x)-f(x_{B_g}).
+\Phi(g,c)=\mathrm{Sh}_c(w_g), \qquad \sum_c \Phi(g,c)=f(x)-f(x_{B_g}).
 $$
 
 The resulting attribution matrix has shape **(spatial cells, channels)**. Summing over channels gives a spatial map; summing over cells gives a spectral summary. Values can be positive or negative.
@@ -189,10 +189,6 @@ python demo.py
 python demo.py --baseline zero
 python demo.py --method exact --output outputs/hls_exact
 ```
-
-<p align="center">
-  <a href="assets/demo_output.png"><img src="assets/demo_output.png" alt="Output of the bundled runnable HLS demonstration with six spectral channel attribution maps" width="900"></a>
-</p>
 
 The demo saves a visualization, NumPy attribution arrays, and a JSON summary. See the [HLS demo guide](docs/HLS_DEMO.md) for model and sample provenance, preprocessing, CLI options, expected output, and validation commands.
 
