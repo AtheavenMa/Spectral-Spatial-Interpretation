@@ -74,6 +74,19 @@ class SSILabTests(unittest.TestCase):
         self.assertIn("--grid 4", data["command"])
         self.assertEqual(engine.run(**settings)["attribution"], data["attribution"])
 
+    def test_default_hls_matches_recorded_reference(self):
+        import json
+        reference = json.loads((engine.ROOT / "assets" / "demo_summary.json").read_text())
+        result = engine.run(
+            model_id=engine.MODEL_ID, sample_id=engine.SAMPLE_ID,
+            grid=8, baseline="mean", method="permutation",
+            permutations=10, seed=0,
+        )
+        expected = [reference["spectral_attribution"][band] for band in engine.BAND_NAMES]
+        np.testing.assert_allclose(result["spectral"], expected, atol=2e-3, rtol=0)
+        self.assertEqual(result["n_evaluations"], reference["n_evaluations"])
+        self.assertLess(result["local_efficiency_error"], 1e-5)
+
     def test_bad_parameters_and_unknown_models(self):
         bad = self.client.post("/api/explain", json={"grid": 3})
         self.assertEqual(bad.status_code, 422)
