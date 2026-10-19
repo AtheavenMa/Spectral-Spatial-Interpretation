@@ -1,6 +1,6 @@
 # Work Plan 01 · SSI Interactive Playground
 
-Status: **CPU implementation complete; real-checkpoint tests, recorded-reference parity, and Docker API smoke test passed on GitHub Actions.** External Space publication and five additional dataset assets remain pending.
+Status: **CPU implementation and automated verification complete.** Real-checkpoint tests, reference parity, Docker API smoke test, headless desktop/mobile interactions all passed on GitHub Actions. External Space publication and five additional dataset assets remain pending.
 Date: 2026-10-19
 Repository: [Spectral-Spatial-Interpretation](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation)
 
@@ -93,7 +93,7 @@ Remaining confirmation tasks (not GPU tasks):
 
 - [x] GitHub Actions tests pass with CPU PyTorch and actual HLS checkpoint (including JavaScript syntax validation).
 - [x] Default 8×8, mean baseline, 10 permutations, seed 0 run agrees with assets/demo_summary.json spectral totals and 2,152 evaluations.
-- [ ] Check actual browser rendering on desktop/mobile for overflow, colorbar scaling, canvas click alignment and initial loading feedback.
+- [x] Headless Chromium checked desktop/mobile, input previews, real grid change, channel selection, cell inspection, and zero horizontal mobile overflow; saved screenshots as GitHub Actions artifacts.
 - [x] GitHub Actions built the CPU Docker image, started the FastAPI service, checked asset readiness, and requested genuine 4×4 SSI inference.
 - [ ] Publish a Docker Hugging Face Space under the desired account/organization once write access and Space name are available.
 - [ ] Validate live Space CPU cold start, memory and multi-visitor behavior.
