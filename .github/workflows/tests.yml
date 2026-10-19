@@ -12,5 +12,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install -r requirements.txt
-      - run: python -m unittest discover -s tests -v
+      - name: Install CPU PyTorch
+        run: python -m pip install "torch==2.6.0" --index-url https://download.pytorch.org/whl/cpu
+      - name: Install project and web test dependencies
+        run: python -m pip install -r requirements_lab_test.txt
+      - name: Unit and real-checkpoint integration tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate JavaScript syntax
+        run: node --check lab/static/app.js
