@@ -56,6 +56,23 @@ Each fixed-band map $g\mapsto\Phi(g,c)$ shows **where that band contributes**. S
 | Full unmasked model target logit | **+1.2065** | Not the sum of SSI contributions |
 | Sum of contextual spatial/spectral totals | **+0.8746** | Exact mutual aggregation; *not* a global score decomposition |
 
+### The distinctive joint-attribution observation
+
+**The two most positive bands are not spatially interchangeable.** From the true 256-cell attribution maps, SWIR1 and SWIR2 both have positive aggregate scores, yet their **Pearson spatial correlation is approximately −0.532** (signed-map cosine similarity approximately −0.456). Thus their *spatial attribution patterns are different, even opposed*, despite the positive global totals.
+
+Splitting each cell's attribution according to the fraction of its pixels inside the fixed GT region gives the following descriptive, **fraction-weighted cell accounting**:
+
+| Band | GT-weighted signed SSI | Non-GT-weighted signed SSI | Global total |
+|---|---:|---:|---:|
+| SWIR2 | +0.9362 | −0.1852 | +0.7510 |
+| SWIR1 | +0.0215 | +0.5453 | +0.5668 |
+
+These are fractional assignments of **grid-cell contributions**, not pixel-level Shapley attributions. In particular, SWIR1's positive aggregate contribution is primarily associated with cells outside the GT mask under this descriptive partition, whereas SWIR2 is strongly positive in the target region and negative in the remaining area.
+
+This is a **stronger motivation for SSI than displaying two charts alone**: if a method forced a single spatial map times one global spectral vector, it could not represent these two different signed spatial profiles with both global coefficients positive. SSI preserves the position-specific channel patterns before aggregation.
+
+**Important qualification:** the evaluation target was *defined using the GT burn region*. High attribution inside that region is therefore not independent evidence of localization accuracy: the chosen score already favors explaining that region. Use this case to demonstrate one actual model's **joint spectral–spatial evidence**, and use the paper's independent faithfulness/localization protocols when claiming method performance.
+
 Both SWIR channels are physically relevant to fire mapping. In the normalized original input, the burn region's mean SWIR2 is **0.752** versus **0.095** elsewhere, while SWIR1 is **0.506** versus **0.284**. These are observed differences in model-normalized values, not direct reflectance measurements; a negative band attribution does *not* imply the image's reflectance is negative.
 
 The paper's HLS spectral priors include **Red, SWIR1 and SWIR2** based on known burn-scar spectroscopy and NBR-related reasoning. That is a dataset-level *prior* for evaluation: it does not require Red to be positively attributed for every sample. **The Red result here is negative**, and should be preserved.
