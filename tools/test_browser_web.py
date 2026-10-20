@@ -179,6 +179,9 @@ def check(site):
         gallery.wait_for_function(
             "() => document.querySelectorAll('#datasetFilters button').length === 6"
         )
+        assert gallery.evaluate(
+            "() => state.grid === 8 && state.baseline === 'zero' && state.permutations === 3"
+        )
         assert gallery.locator("#computeView").is_hidden()
         assert gallery.locator("#atlasGallery .atlas-tile").count() == 10
         for dataset, expected in (("CUB_200",10),("HLS_BurnScars",10),
@@ -216,7 +219,13 @@ def check(site):
         gallery.evaluate("() => document.getElementById('stop').click()")
         gallery.wait_for_function("() => !state.running", timeout=180000)
         gallery.locator("#datasetSelect").select_option("HLS_BurnScars", timeout=120000)
-        gallery.locator("#sampleSelect").select_option("hls-bundled", timeout=120000)
+        # Switching datasets selects the bundled HLS input automatically.
+        # Do not select the same input again: that would start a second load.
+        gallery.wait_for_function(
+            "() => state.sample?.id === 'hls-bundled' && state.context !== null"
+            " && document.getElementById('pendingPanel').hidden",
+            timeout=120000,
+        )
         await_computation(gallery)
         assert gallery.locator("#run").is_enabled()
         assert gallery.locator("#pendingPanel").is_hidden()
