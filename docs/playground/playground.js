@@ -60,7 +60,7 @@ function restoreQuery() {
   const baseline = query.get("baseline");
   if (["mean", "zero"].includes(baseline)) state.baseline = baseline;
   const k = +query.get("k");
-  if ([1, 2, 3].includes(k)) state.permutations = k;
+  if ([1, 3, 5].includes(k)) state.permutations = k;
   const seed = +query.get("seed");
   if (query.has("seed") && Number.isInteger(seed) && seed >= 0 && seed <= 100000) state.seed = seed;
   const band = Number(query.get("band"));
@@ -77,7 +77,6 @@ function invalidate() {
   $("empty").classList.remove("hidden");
   $("bandGrid").replaceChildren();
   $("bars").replaceChildren();
-  $("stats").textContent = "";
   $("save").disabled = true;
   $("copy").disabled = true;
   $("spatialTitle").textContent = "(c) Spatial SSI";
@@ -314,8 +313,7 @@ async function compute(config, runId) {
       result.local_efficiency_error,
       Math.abs(cellTotal - (original[0] - scores.get(0)))
     );
-    progress("CELL " + (g + 1) + " / " + cells + " · " +
-             result.n_evaluations + " MODEL SCORES");
+    progress("COMPUTING " + Math.round(100 * (g + 1) / cells) + "%");
     if (g % 2 === 0) {
       setStatus("Computing real SSI · cell " + (g + 1) + " of " + cells);
       await waitFrame();
@@ -348,7 +346,7 @@ async function run() {
       state.result = explanation;
       renderResult();
       setStatus("Computed. Change a parameter to explore another explanation.");
-      progress(explanation.n_evaluations + " MODEL SCORES · REAL INFERENCE");
+      progress("");
     }
   } catch (error) {
     if (generation === state.generation) {
@@ -463,8 +461,6 @@ function renderResult() {
   paintSpatial();
   renderBands();
   renderBars();
-  $("stats").textContent = state.result.n_evaluations + " MODEL SCORES · " +
-    "LOCAL EFFICIENCY ERROR " + state.result.local_efficiency_error.toExponential(1);
   $("save").disabled = false;
   $("copy").disabled = false;
   queryState();
