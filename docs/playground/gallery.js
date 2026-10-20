@@ -125,6 +125,21 @@
     params.set("view", "atlas");
     history.replaceState(null, "", location.pathname + "?" + params);
   });
+  $("atlasUseSample").addEventListener("click", () => {
+    if (!catalog || !activeGroup || !activeImage) return;
+    const group = catalog.groups.find(g => g.id === activeGroup);
+    if (!group) return;
+    const file = activeImage.split("/").pop();
+    const id = group.id + "/" + file.replace(/\.png$/, "");
+    closeDialog();
+    setTab(false);
+    const params = new URLSearchParams(location.search);
+    params.delete("view");
+    params.set("dataset", group.id);
+    params.set("sample", id);
+    history.replaceState(null, "", location.pathname + "?" + params);
+    window.dispatchEvent(new CustomEvent("ssi-select-example", {detail: {id}}));
+  });
   $("atlasClose").addEventListener("click", closeDialog);
   $("atlasDialog").addEventListener("click", (event) => {
     if (event.target === $("atlasDialog")) closeDialog();
