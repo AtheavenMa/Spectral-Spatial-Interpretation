@@ -4,47 +4,11 @@
 
 <p align="center">
   <b>NeurIPS 2026</b> &nbsp;·&nbsp;
-  <a href="#-interactive-ssi-playground">🎛️ Playground</a> &nbsp;·&nbsp;
-  <a href="https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation">☁️ Launch on GitHub</a> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
-  <a href="examples/README.md">🖼️ Visual Atlas</a>
+  <a href="examples/README.md">🖼️ Visual Atlas</a> &nbsp;·&nbsp;
+  <a href="#-interactive-ssi-playground">🎛️ Playground</a> &nbsp;·&nbsp;
+  <a href="https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation">☁️ Launch</a>
 </p>
-
-## 🎛️ Interactive SSI Playground
-
-**Choose a model. Pick an image. Play with SSI.**
-
-Six real checkpoints and sample inputs: **CUB-200, EuroSAT, HLS Burn Scars, PaviaU, Salinas, WHU-Hi-LongKou**. Change the spatial grid, baseline, sampling method and permutations. Explore signed channel maps, click a spatial cell, compare channel contributions, and export the numerical result. Every Run recomputes SSI from the selected model and input.
-
-<p align="center">
-  <a href="https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation"><img src="https://github.com/codespaces/badge.svg" alt="Open the SSI Playground in GitHub Codespaces"></a>
-</p>
-
-**Run without local setup:** Open the Codespaces link, create or resume a codespace, then open the forwarded **SSI Playground · port 7860**. This is a GitHub-hosted development environment running the real CPU backend, not a public always-on demo. GitHub sign-in and Codespaces usage may be required.
-
-**Run locally:**
-
-```bash
-git clone https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git
-cd Spectral-Spatial-Interpretation
-python -m pip install -r requirements_lab.txt
-python -m uvicorn lab.app:app --host 127.0.0.1 --port 7860
-```
-
-Open **http://127.0.0.1:7860**. Docker is also supported:
-
-```bash
-docker build -t ssi-playground .
-docker run --rm -p 7860:7860 ssi-playground
-```
-
-[HTML source](lab/static/index.html) · [API](lab/app.py) · [Model adapters](lab/adapters/) · [Quickstart](docs/PLAYGROUND_QUICKSTART.md) · [Performance](docs/PLAYGROUND_PERFORMANCE.md) · [Validation](docs/PLAYGROUND_VALIDATION.md) · [Mobile preview](assets/playground/mobile.webp)
-
-<p align="center">
-  <a href="assets/playground/desktop.webp"><img src="assets/playground/desktop.webp" alt="Real SSI Playground browser screenshot with Pavia University input, target and prediction, selectable spectral band and signed spatial attribution" width="900"></a>
-</p>
-
----
 
 <p align="center">
   <img src="assets/figures/fig1.png" alt="Figure 1: spatially varying channel relevance in RGB and multispectral images" width="900">
@@ -163,6 +127,14 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 </p>
 
 *Qualitative comparisons from the paper. The quantitative evaluations are reported in the tables.*
+
+---
+
+## 🎛️ Interactive SSI Playground
+
+**Play with SSI on real model inputs.** Choose a dataset, change the grid or baseline, and explore smoothly interpolated channel attributions **overlaid on the original image**.
+
+[Launch in GitHub Codespaces](https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation) · [Run locally](docs/PLAYGROUND_QUICKSTART.md) · [Explore the API](deploy/README.md)
 
 ---
 
