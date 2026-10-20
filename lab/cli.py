@@ -44,6 +44,26 @@ def _parser() -> argparse.ArgumentParser:
     files.add_argument("--method", default="permutation", choices=("auto", "permutation", "exact"))
     files.add_argument("--permutations", type=int, default=1)
     files.add_argument("--seed", type=int, default=0)
+    atlas = sub.add_parser(
+        "atlas", help="Create a publication-style SSI Atlas PNG, numeric JSON and NPZ from a checkpoint + image"
+    )
+    atlas.add_argument("--family", required=True, choices=(
+        "hls-unet", "cub-200", "eurosat", "paviau", "salinas", "whu-hi-longkou",
+    ))
+    atlas.add_argument("--checkpoint", type=Path, required=True)
+    atlas.add_argument("--image", type=Path, required=True,
+                       help="NPZ with original model input; RGB files are accepted for CUB-200")
+    atlas.add_argument("--output", type=Path, required=True)
+    atlas.add_argument("--target-class", type=int)
+    atlas.add_argument("--target-mask", type=Path,
+                       help="Optional fixed segmentation ROI mask (PNG).")
+    atlas.add_argument("--grid", type=int, default=4)
+    atlas.add_argument("--baseline", choices=("mean", "zero"), default="mean")
+    atlas.add_argument("--method", choices=("auto", "exact", "permutation"), default="permutation")
+    atlas.add_argument("--permutations", type=int, default=1)
+    atlas.add_argument("--seed", type=int, default=0)
+    atlas.add_argument("--display-channels", type=int, default=10)
+
     return parser
 
 
@@ -106,6 +126,18 @@ def explain_files(family: str, checkpoint: Path, sample: Path, grid: int, baseli
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.cmd == "atlas":
+        from lab.atlas_api import explain_artifacts
+        payload = explain_artifacts(
+            args.checkpoint, args.image,
+            family=args.family, output=args.output,
+            grid=args.grid, baseline=args.baseline, method=args.method,
+            permutations=args.permutations, seed=args.seed,
+            target_class=args.target_class, target_mask=args.target_mask,
+            display_channels=args.display_channels,
+        )
+        print(json.dumps(payload, indent=2))
+        return 0
     if args.cmd == "explain":
         payload = run(
             args.model_id, args.sample_id, args.grid, args.baseline,
