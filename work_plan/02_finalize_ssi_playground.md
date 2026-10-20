@@ -209,7 +209,15 @@ These measurements concern one genuine input per dataset, **not convergence cert
 
 The CPU RSS wording in [PLAYGROUND_PERFORMANCE.md](../docs/PLAYGROUND_PERFORMANCE.md) now explicitly states that 811328 KB is the peak of the entire sequential model benchmark process, not per-model peaks.
 
-**Hugging Face remains undeployed.** Full CI verification of this final reliability closeout is required in addition to the earlier Work Plan 02 green test run.
+**Hugging Face remains undeployed.** The final reliability implementation at `3af6b03edcd2` passed both `tests` and `docker-smoke` in [GitHub Actions run 39360508208](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39360508208). The recorded hyperspectral sensitivity metrics were independently checked against the JSON artifact from run 39359117906. This update is documentation-only.
+
+### Reliability release acceptance
+
+- **Stale-result race**: settings edits and model changes invalidate outdated results; delayed POST and active-job cancellation paths are covered by Chromium regression tests.
+- **Unexpected model failures**: worker exceptions become terminal errors with server-side logging, verified by recovery and slot-release tests.
+- **Top-10 sampling sensitivity**: measured from the actual three hyperspectral checkpoints. At grid 4 and seed 0, K=1 vs K=3 shared 6/10 PaviaU, 8/10 Salinas, and 9/10 LongKou bands. This quantifies sensitivity; it does not establish Shapley convergence.
+- **Final code validation**: [39360508208](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39360508208) green on `3af6b03edcd2`, including Docker and browser tests.
+- **Deployment boundary**: no Hugging Face Space deployment.
 
 ### CI organization after reliability closeout
 
