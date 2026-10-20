@@ -210,3 +210,7 @@ These measurements concern one genuine input per dataset, **not convergence cert
 The CPU RSS wording in [PLAYGROUND_PERFORMANCE.md](../docs/PLAYGROUND_PERFORMANCE.md) now explicitly states that 811328 KB is the peak of the entire sequential model benchmark process, not per-model peaks.
 
 **Hugging Face remains undeployed.** Full CI verification of this final reliability closeout is required in addition to the earlier Work Plan 02 green test run.
+
+### CI organization after reliability closeout
+
+The always-on [tests.yml](../.github/workflows/tests.yml) continues to test CPU models, numerical references, worker-error/cancellation regressions, JavaScript syntax, Docker and the browser races on every push. The more expensive real-model K/seed sensitivity script is now a separate [spectral_stability.yml](../.github/workflows/spectral_stability.yml) workflow that runs when the SSI core, engine, model adapters, samples, or analysis script change, or when manually requested. This avoids re-running minutes of model inference for README/CSS-only commits. The actual K/seed artifact already ran successfully in [Actions run 39359117906](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39359117906).
