@@ -2,8 +2,8 @@
 
 It starts a local static HTTP server; there is no Python model/API backend.
 All SSI coalition scores are produced by the real exported HLS ONNX network
-inside the browser. The test checks the original full-target score, one actual
-attribution run, grid/baseline changes, alpha overlay and mobile layout.
+inside the browser. The test checks the original full-target score, grid/permutation
+changes, fixed mean baseline, alpha overlay and mobile layout.
 """
 from __future__ import annotations
 
@@ -58,10 +58,10 @@ def check(site):
           native:document.getElementById('input').naturalWidth
         })""")
         assert data["grid"] == 8, data
-        assert page.evaluate("() => state.baseline") == "zero"
-        assert page.evaluate("() => state.permutations") == 3
-        for selector in ('button[data-grid="8"]','button[data-baseline="zero"]',
-                         'button[data-k="3"]'):
+        assert page.evaluate("() => state.baseline") == "mean"
+        assert page.evaluate("() => state.permutations") == 1
+        assert page.locator("#baselineControls").count() == 0
+        for selector in ('button[data-grid="8"]', 'button[data-k="1"]'):
             assert page.locator(selector).get_attribute("aria-pressed") == "true"
         assert data["target"] > 0, data
         assert data["native"] == 128, data
@@ -157,15 +157,18 @@ def check(site):
         await_computation(page)
         grid8 = page.evaluate("() => ({g:state.result.grid,k:state.result.permutations,"
                               "baseline:state.result.baseline,err:state.result.local_efficiency_error})")
-        assert grid8["g"] == 8 and grid8["k"] == 3 and grid8["baseline"] == "zero", grid8
+        assert grid8["g"] == 8 and grid8["k"] == 3 and grid8["baseline"] == "mean", grid8
         assert grid8["err"] < 1e-3
 
-        page.locator("button[data-baseline='mean']").click()
+        page.locator("button[data-k='1']").click()
         page.locator("#run").click()
         await_computation(page)
-        changed = page.evaluate("() => ({baseline:state.result.baseline,full:state.result.full_value})")
-        assert changed["baseline"] == "mean"
+        changed = page.evaluate("() => ({baseline:state.result.baseline,k:state.result.permutations,"
+                                "full:state.result.full_value})")
+        assert changed["baseline"] == "mean" and changed["k"] == 1
         assert abs(changed["full"] - data["full"]) < 1e-3
+        # Legacy ?baseline=zero links are intentionally normalized to mean.
+        assert page.evaluate("() => !new URLSearchParams(location.search).has('baseline')")
 
         page.set_viewport_size({"width": 390, "height": 844})
         page.wait_for_timeout(250)
@@ -180,7 +183,7 @@ def check(site):
             "() => document.querySelectorAll('#datasetFilters button').length === 6"
         )
         assert gallery.evaluate(
-            "() => state.grid === 8 && state.baseline === 'zero' && state.permutations === 3"
+            "() => state.grid === 8 && state.baseline === 'mean' && state.permutations === 1"
         )
         assert gallery.locator("#computeView").is_hidden()
         assert gallery.locator("#atlasGallery .atlas-tile").count() == 10
@@ -236,7 +239,7 @@ def check(site):
         browser.close()
         print({"site": site, "full_score": data["full"],
                "region_pixels": data["target"], "first_evaluations": data["n"],
-               "grid8": grid8, "mean_baseline": changed})
+               "grid8": grid8, "fixed_mean_baseline": changed})
 
 
 def main():
