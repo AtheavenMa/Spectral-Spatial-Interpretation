@@ -71,6 +71,44 @@ def check(site):
         assert page.locator("#sampleSelect").input_value() == "hls-bundled"
         assert page.locator("#pendingPanel").is_hidden()
         assert page.evaluate("() => SSIComputeRuntime.buildPaths(270, 1, () => 0.4).unique.size") == 271
+        # Test the generic classifier adapter with a deterministic 13-channel
+        # linear score, independently of the HLS ONNX checkpoint.
+        simulated = page.evaluate("""async () => {
+          const C=13, H=4, W=4, plane=H*W;
+          const input=new Float32Array(C*plane);
+          for(let band=0;band<C;band++)
+            input.fill(band+1,band*plane,(band+1)*plane);
+          const session={
+            inputNames:['image'],outputNames:['logits'],
+            run:async feeds=>{
+              const tensor=feeds.image,B=tensor.dims[0];
+              const scores=new Float32Array(B*2);
+              for(let batch=0;batch<B;batch++){
+                let sum=0;
+                for(let i=0;i<C*plane;i++)
+                  sum+=tensor.data[batch*C*plane+i];
+                scores[batch*2+1]=sum/plane;
+              }
+              return {logits:{dims:[B,2],data:scores}};
+            },
+          };
+          const meta={width:W,height:H,channels:Array.from(
+            {length:C},(_,i)=>'Band '+(i+1)),target_class:1,
+            baseline_mean:Array(C).fill(0),baseline_zero:Array(C).fill(0)};
+          const fake={session,tensor:input,meta,model:{
+            id:'unit-test-13',kind:'classification',n_classes:2,
+            batch_size:8,input_name:'image',output_name:'logits'
+          },sample:{id:'unit-test-input'}};
+          const output=await SSIComputeRuntime.explain(fake,{
+            grid:2,permutations:3,baseline:'mean',seed:5});
+          return {spectral:output.spectral,error:output.local_efficiency_error,
+                  n:output.n_evaluations};
+        }""")
+        assert simulated["n"] > 0
+        assert simulated["error"] < 1e-4
+        for i, value in enumerate(simulated["spectral"]):
+            assert abs(value - (i + 1)) < 1e-4, (i, value)
+
         assert page.locator("#permutations").count() == 0
         assert page.locator("#kControls button").count() == 3
         assert page.locator(".site-bar").text_content().find("OpenSAE") < 0
