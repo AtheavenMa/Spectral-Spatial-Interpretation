@@ -1,0 +1,19 @@
+{
+  "name": "SSI Playground",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [
+    7860
+  ],
+  "portsAttributes": {
+    "7860": {
+      "label": "SSI Playground",
+      "onAutoForward": "openBrowserOnce"
+    }
+  },
+  "postStartCommand": "bash .devcontainer/start.sh",
+  "remoteUser": "root"
+}
