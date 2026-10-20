@@ -131,9 +131,9 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 ## 🎛️ Interactive SSI Playground
 
-[**Play SSI in your browser ↗**](https://atheavenma.github.io/ssi-playground/) · [Full Python Playground](docs/PLAYGROUND_QUICKSTART.md)
+[**Open the SSI Playground ↗**](https://atheavenma.github.io/ssi-playground/) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
 
-Explore the real HLS UNet checkpoint and input directly in HTML. Adjust grid size and baseline, then visualize newly computed SSI on the image. The Python API supports all six datasets.
+Browse all **57 Visual Atlas examples** in HTML, or recompute SSI with the original HLS checkpoint. The Python API supports all six model families and exports complete figures and numerical results.
 
 ---
 
@@ -209,6 +209,7 @@ The demo saves a visualization, NumPy attribution arrays, and a JSON summary. Se
 | [Visual Atlas](examples/README.md) | All 57 visualizations grouped by dataset |
 | [Complete paper results](docs/PAPER_RESULTS.md) | Tables, evaluation settings, and comparisons |
 | [HLS demo guide](docs/HLS_DEMO.md) | Runnable demo, configuration, inputs, and outputs |
+| [Atlas API](docs/ATLAS_API.md) | Generate Atlas PNG and JSON from a supported checkpoint and input |
 | [Core API](ssi.py) | Standalone NumPy implementation |
 | [Unit tests](tests/) | Mathematical and adapter regression checks |
 
