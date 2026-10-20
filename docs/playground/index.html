@@ -104,7 +104,7 @@
         <figure>
           <h2 id="spatialTitle">(c) Spatial SSI</h2>
           <div class="image map-holder">
-            <canvas id="spatial" width="768" height="768" tabindex="0" aria-label="Interpolated spectral spatial attribution overlaid on original image. Select a spatial cell for local spectral contributions."></canvas>
+            <canvas id="spatial" width="768" height="768" aria-label="Interpolated spatial SSI attribution overlaid on the original image."></canvas>
             <div class="empty" id="empty">Run SSI to reveal the explanation.</div>
           </div>
         </figure>
@@ -126,16 +126,11 @@
     </section>
 
     <section class="atlas-section contributions">
-      <div class="section-label"><span class="number">03</span> Spectral contributions <span id="scope" class="section-note">Whole image</span></div>
+      <div class="section-label"><span class="number">03</span> Spectral contributions</div>
       <div class="contribution-head">
         <h2>Channel contributions</h2>
-        <div class="switcher">
-          <button type="button" id="whole" class="selected">Whole image</button>
-          <button type="button" id="selected">Selected cell</button>
-        </div>
       </div>
       <div id="bars" class="bars"></div>
-      <p class="helper" id="cellInfo">Click the SSI image above to inspect a spatial cell.</p>
     </section>
 
     <section class="footer-actions">
