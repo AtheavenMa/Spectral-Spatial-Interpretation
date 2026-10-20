@@ -24,6 +24,16 @@ def _no_overflow(page):
     sizes = page.evaluate(
         "() => ({viewport: window.innerWidth, scroll: document.documentElement.scrollWidth})"
     )
+    if sizes["scroll"] > sizes["viewport"] + 2:
+        offenders = page.evaluate("""() => [...document.querySelectorAll('*')]
+            .map(el => ({tag:el.tagName.toLowerCase(),id:el.id,cl:el.className?.toString().slice(0,60),
+                         left:Math.round(el.getBoundingClientRect().left),
+                         right:Math.round(el.getBoundingClientRect().right),
+                         width:Math.round(el.getBoundingClientRect().width)}))
+            .filter(x => x.right > window.innerWidth + 2 || x.left < -2)
+            .sort((a,b) => b.right-a.right).slice(0,15)""")
+        print("Horizontal overflow:", sizes, offenders, flush=True)
+        page.screenshot(path=str(OUT / "ssi_playground_mobile.png"), full_page=True)
     assert sizes["scroll"] <= sizes["viewport"] + 2, sizes
 
 
