@@ -3,11 +3,44 @@
 **Which spectral channels matter, and where?** SSI explains a model score with signed attributions for each spatial cell and channel. It keeps the surrounding image fixed while allocating a cell's contribution among its channels using Shapley values.
 
 <p align="center">
-  <b>Accepted at NeurIPS 2026</b> &nbsp;·&nbsp;
+  <b>NeurIPS 2026</b> &nbsp;·&nbsp;
+  <a href="#-interactive-ssi-playground">🎛️ Playground</a> &nbsp;·&nbsp;
+  <a href="https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation">☁️ Launch on GitHub</a> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
-  <a href="examples/README.md">🖼️ Visual Atlas</a> &nbsp;·&nbsp;
-  <a href="#-quickstart">🚀 Quickstart</a>
+  <a href="examples/README.md">🖼️ Visual Atlas</a>
 </p>
+
+## 🎛️ Interactive SSI Playground
+
+**Choose a model. Pick an image. Play with SSI.**
+
+Six real checkpoints and sample inputs: **CUB-200, EuroSAT, HLS Burn Scars, PaviaU, Salinas, WHU-Hi-LongKou**. Change the spatial grid, baseline, sampling method and permutations. Explore signed channel maps, click a spatial cell, compare channel contributions, and export the numerical result. Every Run recomputes SSI from the selected model and input.
+
+<p align="center">
+  <a href="https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation"><img src="https://github.com/codespaces/badge.svg" alt="Open the SSI Playground in GitHub Codespaces"></a>
+</p>
+
+**Run without local setup:** Open the Codespaces link, create or resume a codespace, then open the forwarded **SSI Playground · port 7860**. This is a GitHub-hosted development environment running the real CPU backend, not a public always-on demo. GitHub sign-in and Codespaces usage may be required.
+
+**Run locally:**
+
+```bash
+git clone https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git
+cd Spectral-Spatial-Interpretation
+python -m pip install -r requirements_lab.txt
+python -m uvicorn lab.app:app --host 127.0.0.1 --port 7860
+```
+
+Open **http://127.0.0.1:7860**. Docker is also supported:
+
+```bash
+docker build -t ssi-playground .
+docker run --rm -p 7860:7860 ssi-playground
+```
+
+[HTML source](lab/static/index.html) · [API](lab/app.py) · [Supported model adapters](lab/adapters/) · [Quickstart](docs/PLAYGROUND_QUICKSTART.md) · [Performance](docs/PLAYGROUND_PERFORMANCE.md) · [Validation](docs/PLAYGROUND_VALIDATION.md) · [Browser test screenshots](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39361203272)
+
+---
 
 <p align="center">
   <img src="assets/figures/fig1.png" alt="Figure 1: spatially varying channel relevance in RGB and multispectral images" width="900">
@@ -46,19 +79,6 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 | [CUB-200](examples/CUB_200/) · 10 | [EuroSAT](examples/EuroSAT/) · 10 | [PaviaU](examples/PaviaU/) · 10 |
 | | [HLS Burn Scars](examples/HLS_BurnScars/) · 10 | [Salinas](examples/Salinas/) · 10 |
 | | | [WHU-Hi-LongKou](examples/WHU_Hi_LongKou/) · 7 |
-
----
-
-## 🎛️ Interactive SSI Playground
-
-Choose a real model and input, change the grid size or baseline, and explore the resulting spatial and spectral attributions. The catalog includes the bundled HLS UNet plus CUB-200, EuroSAT, Pavia University, Salinas and WHU-Hi-LongKou, all on CPU.
-
-```bash
-python -m pip install -r requirements_lab.txt
-uvicorn lab.app:app --host 127.0.0.1 --port 7860
-```
-
-Open **http://127.0.0.1:7860**. Setup, checks and timings are in the [quickstart](docs/PLAYGROUND_QUICKSTART.md).
 
 ---
 
@@ -203,14 +223,14 @@ python demo.py --method exact --output outputs/hls_exact
 
 The demo saves a visualization, NumPy attribution arrays, and a JSON summary. See the [HLS demo guide](docs/HLS_DEMO.md) for model and sample provenance, preprocessing, CLI options, expected output, and validation commands.
 
-**Important distinction:** the [Visual Atlas](examples/README.md) contains pre-rendered figures. The playground recomputes SSI from checkpoints and inputs: HLS from `assets/checkpoints` and `assets/examples`, and the other five datasets from `assets/lab`.
-
 ---
 
 ## 📖 Documentation
 
 | Resource | Description |
 |---|---|
+| [SSI Playground](lab/static/index.html) | Interactive HTML, real checkpoints and spatial/channel maps |
+| [Playground quickstart](docs/PLAYGROUND_QUICKSTART.md) | Local, Docker and API instructions |
 | [Visual Atlas](examples/README.md) | All 57 visualizations grouped by dataset |
 | [Complete paper results](docs/PAPER_RESULTS.md) | Tables, evaluation settings, and comparisons |
 | [HLS demo guide](docs/HLS_DEMO.md) | Runnable demo, configuration, inputs, and outputs |
