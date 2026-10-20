@@ -36,7 +36,11 @@ function updateControls() {
     button.classList.toggle("selected", selected);
     button.setAttribute("aria-pressed", String(selected));
   }
-  $("permutations").value = String(state.permutations);
+  $("kControls").querySelectorAll("button").forEach(button => {
+    const selected = +button.dataset.k === state.permutations;
+    button.classList.toggle("selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
   $("seed").value = String(state.seed);
 }
 
@@ -490,8 +494,12 @@ function setup() {
       updateControls();invalidate();
     });
   }
-  $("permutations").addEventListener("change", () => {
-    state.permutations = Number($("permutations").value);invalidate();
+  $("kControls").querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+      state.permutations = Number(button.dataset.k);
+      updateControls();
+      invalidate();
+    });
   });
   $("seed").addEventListener("input", () => {
     const value = Number($("seed").value);
@@ -552,4 +560,9 @@ function setup() {
   });
 }
 setup();
-window.addEventListener("load", initialize);
+window.addEventListener("load", () => {
+  if (new URLSearchParams(location.search).get("view") !== "atlas") initialize();
+});
+window.addEventListener("ssi-open-compute", () => {
+  if (!state.model && !state.meta) initialize();
+});
