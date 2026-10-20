@@ -70,4 +70,4 @@ Measured in headless Chromium with Playwright, `onnxruntime-web` 1.21.0, on the 
 | Salinas/sample_0000 | 204 | 65.855 | 3265 | 55.5 MB |
 | WHU_Hi_LongKou/sample_0000 | 270 | 94.713 | 4321 | 51.5 MB |
 
-The static page keeps grid 4 and 1 permutation as the initial choice because that is the setting measured above for every family. Permutations 3 and 5 stay selectable. They were not remeasured for Salinas or LongKou: those two already take about 66 s and 95 s at one permutation. The existing HLS browser smoke still checks an 8×8 run on the bundled sample.
+The static browser Playground now starts with **grid 8×8, zero baseline and 3 permutations for every dataset**, as requested for the public interactive presentation. Explicit URL parameters still override these defaults. The table above remains historical performance evidence for **grid 4×4 / mean baseline / 1 permutation**, not a latency measurement of the new defaults. In particular, 8×8 / 3 on 103–270-channel models can be substantially slower, and the Run/Stop controls remain available. The browser smoke tests now validate the new default and alternative settings.
