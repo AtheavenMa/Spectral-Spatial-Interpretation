@@ -352,6 +352,14 @@ def _seg_rgb(labels: np.ndarray) -> np.ndarray:
     return out
 
 
+def _target_region_rgb(labels: np.ndarray, target_class: int) -> np.ndarray:
+    """Match the Atlas target-region view: target red, other valid classes white."""
+    rgb = np.full(labels.shape + (3,), (247, 247, 245), dtype=np.uint8)
+    rgb[labels == 255] = (194, 199, 203)
+    rgb[labels == target_class] = (186, 63, 69)
+    return rgb
+
+
 def previews(model_id: str, sample_id: str) -> dict:
     if not known(model_id, sample_id):
         raise ValueError("Unknown model or input. Select an available pair from /api/catalog.")
@@ -364,6 +372,7 @@ def previews(model_id: str, sample_id: str) -> dict:
         return {
             "input": _png(rgb),
             "ground_truth": _png(_stamp(rgb, gt_name)),
+            "target_mask": None,
             "prediction": _png(_stamp(rgb, pred_name)),
             "height": side, "width": int(rgb.shape[1]),
             "summary": f"{spec['label'].split('·')[0].strip()} · {len(spec['channels'])} bands",
@@ -378,7 +387,10 @@ def previews(model_id: str, sample_id: str) -> dict:
     target_name = spec["class_names"][target_class]
     return {
         "input": _png(rgb),
-        "ground_truth": _png(_seg_rgb(label)),
+        "ground_truth": _png(_target_region_rgb(label, target_class)),
+        "target_mask": _png(np.repeat(
+            (np.asarray(label == target_class, dtype=np.uint8) * 255)[..., None], 3, axis=2
+        )),
         "prediction": _png(_seg_rgb(pred)),
         "height": side, "width": int(rgb.shape[1]),
         "summary": f"{spec['label'].split('·')[0].strip()} · {len(spec['channels'])} bands",
