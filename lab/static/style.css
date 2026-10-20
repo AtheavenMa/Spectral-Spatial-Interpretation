@@ -140,6 +140,9 @@ footer a{text-decoration:none}.footer-sep{color:var(--red);margin:0 7px}
   .intro-note{font-size:12px}
   .control-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .controls{padding:13px;margin-bottom:28px}
+  .advanced{flex:1 1 100%;max-width:100%;min-width:0}
+  .advanced-inner{max-width:100%}
+  .advanced-inner label{min-width:0;flex:1 1 125px}
   .control-input{grid-column:2}
   .segmented-field{min-width:0}
   .baseline-field{flex-direction:row}
