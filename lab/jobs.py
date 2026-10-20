@@ -1,10 +1,13 @@
 """One-at-a-time background runs so the page can poll and cancel."""
 from __future__ import annotations
 
+import logging
 from threading import Lock, Thread
 from uuid import uuid4
 
 from lab.runtime import HOOK, Cancelled, RunHook
+
+LOG = logging.getLogger(__name__)
 
 
 class Busy(RuntimeError):
@@ -29,7 +32,14 @@ class Jobs:
                 "id": job_id, "status": "running", "evaluations": 0,
                 "result": None, "error": None, "hook": hook,
             }
-        Thread(target=self._execute, args=(job_id, params, hook), daemon=True).start()
+        try:
+            Thread(target=self._execute, args=(job_id, params, hook), daemon=True).start()
+        except Exception:
+            with self._lock:
+                self._jobs[job_id].update(
+                    status="error", error="Could not start the compute worker.", result=None
+                )
+            raise
         return job_id
 
     def _execute(self, job_id: str, params: dict, hook: RunHook) -> None:
@@ -42,11 +52,16 @@ class Jobs:
             result, status, error = None, "cancelled", str(exc)
         except (ValueError, FileNotFoundError) as exc:
             result, status, error = None, "error", str(exc)
+        except Exception:
+            LOG.exception("Unexpected SSI job failure: %s", job_id)
+            result, status, error = None, "error", "Inference failed. Check the server logs."
         finally:
             HOOK.reset(token)
-        with self._lock:
-            job = self._jobs[job_id]
-            job.update(status=status, result=result, error=error, evaluations=hook.evaluations)
+            # Always transition to a terminal state, even if the model raises.
+            # Otherwise a crashed worker leaves the one-at-a-time queue locked.
+            with self._lock:
+                job = self._jobs[job_id]
+                job.update(status=status, result=result, error=error, evaluations=hook.evaluations)
 
     def get(self, job_id: str) -> dict:
         with self._lock:
