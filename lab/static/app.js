@@ -7,8 +7,6 @@ const state = {
   grid: 8,
   baseline: "mean",
   channel: -1,
-  cell: null,
-  scoreMode: "global",
   busy: false,
   ticket: 0,
   jobId: null,
@@ -67,7 +65,6 @@ function invalidateRun() {
 function markChanged() {
   invalidateRun();
   state.result = null;
-  state.cell = null;
   $("mapEmpty").classList.remove("hidden");
   $("runMeta").textContent = "AWAITING RUN";
   $("bars").replaceChildren();
@@ -243,13 +240,10 @@ function writeQuery() {
 
 function showResult(result) {
   state.result = result;
-  state.cell = null;
-  state.scoreMode = "global";
   state.showAllBands = false;
   if (state.pendingChannel === null) state.channel = -1;
   else state.channel = state.pendingChannel;
   state.pendingChannel = null;
-  setScoreMode("global");
   renderChannelButtons();
   renderMap();
   renderBars();
@@ -410,7 +404,7 @@ function renderMap() {
   const matrix = state.channel === -1 ? r.spatial : channelMatrix(r, state.channel);
   const max = scaleValues();
   SSIAtlas.paint($("map"), $("inputImage"), matrix, max,
-                 opacityLevel(), state.targetMask, state.cell);
+                 opacityLevel(), state.targetMask, null);
   $("resultTitle").textContent = state.channel === -1
     ? "(c) Spatial SSI" : "(c) " + r.channels[state.channel] + " SSI";
   $("resultSub").textContent = state.channel === -1
@@ -427,8 +421,7 @@ function renderGallery() {
   gallery.replaceChildren();
   if (!state.result || !$("inputImage").naturalWidth) return;
   const r = state.result;
-  const local = state.scoreMode === "cell" && state.cell;
-  const values = local ? r.attribution[state.cell.y][state.cell.x] : r.spectral;
+  const values = r.spectral;
   const many = r.channels.length > 6;
   const matching = ($("bandSearch").value || "").trim().toLowerCase();
   let ids = r.channels.map((_, i) => i);
@@ -485,8 +478,7 @@ function renderGallery() {
 function renderBars() {
   const r = state.result;
   if (!r) return;
-  const local = state.scoreMode === "cell" && state.cell;
-  const values = local ? r.attribution[state.cell.y][state.cell.x] : r.spectral;
+  const values = r.spectral;
   const many = r.channels.length > 8;
   $("bandTools").hidden = !many;
   $("bandMode").textContent = state.showAllBands ? "Top 10" : "All bands";
@@ -518,26 +510,7 @@ function renderBars() {
     line.append(label, track, number);
     container.append(line);
   });
-  const scope = local ?
-    "Cell (row " + (state.cell.y + 1) + ", col " + (state.cell.x + 1) + ")" :
-    "Sum over spatial cells";
-  const sampling = many && r.method === "permutation"
-    ? " · " + r.permutations + " sampled " + (r.permutations === 1 ? "order" : "orders")
-    : "";
-  $("scoreContext").textContent = scope + sampling;
-  $("cellHint").textContent = state.cell ?
-    "Selected cell: row " + (state.cell.y + 1) + ", column " + (state.cell.x + 1) :
-    "Click the SSI image to inspect a spatial cell.";
   renderGallery();
-}
-
-function setScoreMode(mode) {
-  state.scoreMode = mode;
-  $("globalBtn").classList.toggle("selected", mode === "global");
-  $("cellBtn").classList.toggle("selected", mode === "cell");
-  $("globalBtn").setAttribute("aria-pressed", String(mode === "global"));
-  $("cellBtn").setAttribute("aria-pressed", String(mode === "cell"));
-  renderBars();
 }
 
 function restoreQuery() {
@@ -649,32 +622,6 @@ function setupEvents() {
     status("Cancelled.");
   });
   $("run").addEventListener("click", runSSI);
-  $("globalBtn").addEventListener("click", () => setScoreMode("global"));
-  $("cellBtn").addEventListener("click", () => setScoreMode("cell"));
-  $("map").addEventListener("click", (event) => {
-    if (!state.result) return;
-    const bounds = $("map").getBoundingClientRect();
-    const x = Math.min(state.result.grid - 1, Math.max(0,
-      Math.floor((event.clientX - bounds.left) * state.result.grid / bounds.width)));
-    const y = Math.min(state.result.grid - 1, Math.max(0,
-      Math.floor((event.clientY - bounds.top) * state.result.grid / bounds.height)));
-    state.cell = {x, y};
-    setScoreMode("cell");
-    renderMap();
-    $("map").focus();
-  });
-  $("map").addEventListener("keydown", (event) => {
-    if (!state.result || !state.cell) return;
-    const step = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1]}[event.key];
-    if (!step) return;
-    event.preventDefault();
-    state.cell = {
-      x: Math.min(state.result.grid - 1, Math.max(0, state.cell.x + step[0])),
-      y: Math.min(state.result.grid - 1, Math.max(0, state.cell.y + step[1])),
-    };
-    setScoreMode("cell");
-    renderMap();
-  });
   $("download").addEventListener("click", () => {
     if (!state.result) return;
     const url = URL.createObjectURL(new Blob([JSON.stringify(state.result, null, 2)], {type:"application/json"}));
