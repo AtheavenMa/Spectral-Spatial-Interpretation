@@ -83,7 +83,7 @@
       image.src = url;
       image.alt = group.label + " SSI figure " + name.replace(/\.png$/, "");
       image.loading = index < 3 ? "eager" : "lazy";
-      image.decoding = "async";
+      image.decoding = index < 3 ? "sync" : "async";
       const line = document.createElement("span");
       line.className = "atlas-tile-info";
       const text = document.createElement("span");
