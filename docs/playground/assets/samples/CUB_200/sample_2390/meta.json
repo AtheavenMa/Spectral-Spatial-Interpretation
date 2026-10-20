@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_2390",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 84,
+  "target_name": "Horned Lark",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 8.802793502807617,
+  "original_sample_sha256": "7cc0c27be08bc22d9567e39334f49ac839787c79f7ab19138a1092acdb503920",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "85af47a26a4702d9d40355811ad442eeaca04304f95953174b1625973f76cbf4",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "e5aac8a80b26c285af3a6e17fcd573472585b8898d8125f1e2a04810fcdcdcd0",
+      "bytes": 59876
+    }
+  }
+}

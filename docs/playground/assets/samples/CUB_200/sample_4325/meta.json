@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_4325",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 149,
+  "target_name": "Sage Thrasher",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 3.354173421859741,
+  "original_sample_sha256": "56fea2a36d5451be659ebf48a4a3599ea89eae9ea43148523cacfb71b52f1880",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "28a182f69d297e46fcabcafe44164f07dae090388a2de6d973ce49ee0f36064c",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "b08aba0db0d9314a19650b6409f4542871b7cbfdc2f362c54f30b064759ba630",
+      "bytes": 58704
+    }
+  }
+}

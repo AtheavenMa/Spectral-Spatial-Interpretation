@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "sample_id": "HLS_BurnScars/sample_0187",
+  "model_id": "hls-unet",
+  "width": 128,
+  "height": 128,
+  "channels": [
+    "Blue",
+    "Green",
+    "Red",
+    "NIR",
+    "SWIR1",
+    "SWIR2"
+  ],
+  "target_class": 1,
+  "target_name": "Burn scar",
+  "target_kind": "fixed_region_mean_logit",
+  "region_pixels": 1170,
+  "baseline_mean": [
+    -0.39958634972572327,
+    -0.22098442912101746,
+    -0.1225990280508995,
+    -0.7998159527778625,
+    -0.12976273894309998,
+    -0.15640178322792053
+  ],
+  "baseline_zero": [
+    -1.288023591041565,
+    -1.633723497390747,
+    -1.5808861255645752,
+    -2.7884573936462402,
+    -2.362469434738159,
+    -2.182755708694458
+  ],
+  "reference_full_score": 2.1440508365631104,
+  "original_sample_sha256": "3bbfc1cdbe1d902fbead6c48a2d71889d735b916bd0dc2280d0ef7def2c5aefd",
+  "original_checkpoint_sha256": "8f33126da4d47d6dc1159a7e5dbd191aeb02ec08e9b3427de2565c2bba3b8109",
+  "files": {
+    "tensor": {
+      "sha256": "e3a6f8565624e450debd60ba0f1458c23e37e981645c6b50b9b45d7a051e72d5",
+      "bytes": 393216
+    },
+    "rgb": {
+      "sha256": "6846d0f4c0cffe51984813f5a0c508adc98ce4b2aec71509287a0b291f189ebd",
+      "bytes": 11884
+    },
+    "mask": {
+      "sha256": "556fa778c9c37c4c256dfb1d4d4713d393ff7fec13a9de2ca4e8749eef41b592",
+      "bytes": 16384
+    }
+  }
+}

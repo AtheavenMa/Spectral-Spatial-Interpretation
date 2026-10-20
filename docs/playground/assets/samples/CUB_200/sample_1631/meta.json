@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_1631",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 61,
+  "target_name": "Herring Gull",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 4.710880279541016,
+  "original_sample_sha256": "02cf866ad9ea273b6f429514cb7fb755297e2d9402e1b1711591910ce0d04567",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "f596209d5be1147eaf00a25eef26c4540bc63bdb8834bc9112d7605c4907db88",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "33b05b6c991d945d35f5bf3bba008d9147bcd52945fdc3b4bd40e2994966b333",
+      "bytes": 42848
+    }
+  }
+}

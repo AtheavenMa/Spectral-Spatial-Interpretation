@@ -1,9 +1,8 @@
 "use strict";
 
-/* Visual Atlas: real, unmodified rendered SSI examples.
- * All 57 gallery PNGs are indexed from the project examples/ directory.
- * Only the dedicated HLS tab runs SSI in this static browser. A gallery PNG
- * never substitutes for a new model inference result.
+/* Visual Atlas: the 57 rendered examples stay viewable as figures.
+ * Choosing one loads its registered original tensor. A gallery PNG is never
+ * the model input.
  */
 (() => {
   const $ = (id) => document.getElementById(id);

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_0158",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 6,
+  "target_name": "Parakeet Auklet",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 11.130589485168457,
+  "original_sample_sha256": "12189a4bf6f2a64cf98b49c60186c169a0e465e4ab9ceb45738b893eb12f3191",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "a4e36dbcc42eade75755770bdbc9dc1dc38662068bbba1f22fed2d7205e070d9",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "dd76f201b062d811a8d4066fb8c25a4b19aed054b4b51d52c8afd085151f5da0",
+      "bytes": 33820
+    }
+  }
+}

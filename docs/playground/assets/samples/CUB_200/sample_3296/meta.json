@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_3296",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 14,
+  "target_name": "Lazuli Bunting",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 7.891948223114014,
+  "original_sample_sha256": "3005b49e9a6245f63b82acca4a335a589d794cd72989b24a8e1fbc800e99d7f5",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "6cc7efd92ef4a94d34a93fbbceeefff64eef58561ec553b8ab1f0da6a1dc9ffc",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "ed9842f1810b2ed99fcd49edded54c3c81e7cfbc448f459deff5236e5003608b",
+      "bytes": 56754
+    }
+  }
+}

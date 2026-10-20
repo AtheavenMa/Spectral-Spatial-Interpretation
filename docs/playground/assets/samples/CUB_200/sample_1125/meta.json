@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_1125",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 41,
+  "target_name": "Vermilion Flycatcher",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 8.347848892211914,
+  "original_sample_sha256": "fc84e37b66182e51c58b8cef1886103243ba864652c1166ceebeb9a4b5b89be0",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "6ad38efb6fc58e5394993f789613c7138cde17159558a4d8574b1a6c801ccdec",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "6f84b8717299fa7f4699165932cbc522004823085ea7b83fd5f49a52f5020cde",
+      "bytes": 25366
+    }
+  }
+}

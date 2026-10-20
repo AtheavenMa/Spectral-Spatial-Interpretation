@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_4136",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 143,
+  "target_name": "Common Tern",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 4.298751354217529,
+  "original_sample_sha256": "a6509fe736fecef3471ca5f1e4e92df701dd49cb4c4973a91f43710d50841071",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "1386b08a19f4cf63ccc19ca624bda1c1e5e73ed659c44bb79c3cb2ed9082b6f2",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "e2e659a98d4292e923c5cc3dc0ea31f95e2b522591d45abd1c7968acb256b807",
+      "bytes": 16488
+    }
+  }
+}

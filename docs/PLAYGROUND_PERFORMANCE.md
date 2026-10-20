@@ -55,3 +55,19 @@ EuroSAT 16×16 / 1 was skipped inside the ramp because the previous EuroSAT sett
 | whu-hi-longkou | 4×4, 1 permutation | 4: 3, 8: 1 |
 
 Quick presets stay at 4×4 / 1 permutation. Switching models replaces the previous grid and permutation count with that model's default, so an HLS 8×8 / 10 setting is not left on a 270-band model.
+
+## Browser ONNX, static HTML
+
+Measured in headless Chromium with Playwright, `onnxruntime-web` 1.21.0, on the same machine. Each time is wall clock from navigation to a finished grid **4 × 4**, **1 permutation**, mean baseline, seed 0 run, so it includes fetching the ONNX model and the float32 input. Local efficiency was 0 and the unperturbed score matched the Python reference. `heap` is `performance.memory.usedJSHeapSize` after that run, not a peak.
+
+| Sample | Channels | Seconds | Evaluations | Heap after run |
+|---|---:|---:|---:|---:|
+| hls-bundled | 6 | 0.871 | 97 | 10.4 MB |
+| HLS_BurnScars/sample_0045 | 6 | 0.849 | 97 | 14.0 MB |
+| CUB_200/sample_0158 | 3 | 16.103 | 49 | 11.0 MB |
+| EuroSAT/sample_1294 | 13 | 20.814 | 209 | 10.4 MB |
+| PaviaU/sample_0008 | 103 | 29.276 | 1649 | 6.7 MB |
+| Salinas/sample_0000 | 204 | 65.855 | 3265 | 55.5 MB |
+| WHU_Hi_LongKou/sample_0000 | 270 | 94.713 | 4321 | 51.5 MB |
+
+The static page keeps grid 4 and 1 permutation as the initial choice because that is the setting measured above for every family. Permutations 3 and 5 stay selectable. They were not remeasured for Salinas or LongKou: those two already take about 66 s and 95 s at one permutation. The existing HLS browser smoke still checks an 8×8 run on the bundled sample.

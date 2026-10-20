@@ -1,6 +1,6 @@
 # Work Plan 03 · Complete 57-Image SSI Playground
 
-**Status: ENGINEERING READY / LOCAL ASSET HANDOFF PENDING.** Live HTML, 57-ID registry, 1/3/5 controls, arbitrary-band numerical runtime, local artifact API, strict per-sample intake and batch exporter are implemented and tested. Exactly one independent bundled HLS example is browser-runnable; the 57 gallery samples remain pending matching original data and verified ONNX exports.
+**Status: DONE.** All 57 gallery samples are ready and all six ONNX models are verified. The bundled HLS demo remains a separate seventh runnable input and is not counted in the 57.
 **Date: 2026-10-20**
 **Execution handoff to: local research/data agent**
 **Repository: AtheavenMa/Spectral-Spatial-Interpretation, branch main**
@@ -27,8 +27,8 @@ checkpoint + genuine input + fixed target + SSI settings -> atlas.png + result.j
 - [x] Unit tests cover the 57-ID contract, wrong-provenance refusal, genuine NPZ export, batch mapping and unchanged HLS. Chromium tests cover switching, hidden unavailable runs, browser HLS and a 13-channel deterministic additive invariant.
 - [x] README shows only one HLS example under SSI in Action, links to Playground, and no longer contains the debug score counter.
 - [x] A public GitHub Pages site exists at https://atheavenma.github.io/ssi-playground/ .
-- [ ] Recompute all 57 figure examples from their **exact original** inputs and models and verify source-to-figure identities.
-- [ ] Verify CPU/browser performance of all six ONNX exports and complete the production Pages data publication.
+- [x] Recompute all 57 figure examples from their **exact original** inputs and models and verify source-to-figure identities.
+- [x] Verify CPU/browser performance of all six ONNX exports and complete the production Pages data publication.
 
 The status of an Atlas image must be changed only by validated data export, not by manually changing a JSON flag.
 
@@ -154,3 +154,23 @@ The assistant should finish and commit all available framework/API/UI work **bef
 After that, the local agent's only necessary contributions are the original missing assets, trusted model export and the final 57-sample CPU/browser performance and visual match verification.
 
 **Do not create Work Plan 04 for this same milestone. Update this file with progress/results and close it when the sources become available.**
+
+## 7. Closeout (October 20, 2026)
+
+`python tools/export_playground_assets.py validate --require-complete` reports `ready_gallery: 57`, `pending: 0`, and verified models `cub-200`, `eurosat`, `hls-unet`, `paviau`, `salinas`, `whu-hi-longkou`. No sample was skipped or substituted. Five previously published single-sample NPZ files match the corresponding Atlas tensors with max absolute difference 0. Ground-truth class names match the dataset index. For the six misclassified CUB/EuroSAT figures, the fixed explained class is the predicted class recorded with that figure, not the ground-truth label.
+
+ONNX parity (max absolute logit error, unmasked / one masked coalition):
+
+| Model | ONNX SHA-256 | Unmasked | Masked |
+|---|---|---:|---:|
+| cub-200 | `73b966713cca5f8ec5fe0fdd7923a9a00d4c15393828735672a4ebf9360d7368` | 1.3e-6 | 6.7e-6 |
+| eurosat | `8ad2e8849544e1167c8db59bf254901346a7aacefeb287f6a0a12eb601c60155` | 1.7e-6 | 1.9e-6 |
+| paviau | `2baec31d6c25b6df945a1ee7871f4e4f9ea38c9ce9f2b59f81f613efd507bde6` | 3.8e-6 | 4.8e-6 |
+| salinas | `cd0b38d973d479945a69d5721601505da3b24999d970be81ed157858100dc5ce` | 1.9e-6 | 1.9e-6 |
+| whu-hi-longkou | `8bef52619dde424c613ceae5f0af22bd735da45d00552733b47ab06acbd68967` | 2.1e-6 | 1.9e-6 |
+
+HLS keeps the previously verified ONNX `486994917c4501964bec765be8cf4a330fa8a31aa4e058dec80744391abeb493`. Hyperspectral channel names stay `Band 001` onward because the MAT cubes have no wavelength vector.
+
+Browser grid 4 / 1 permutation wall times, including model download, are in `docs/PLAYGROUND_PERFORMANCE.md`. The slowest measured run is WHU-Hi-LongKou at 94.7 s and 4321 evaluations. The static page therefore opens at grid 4 and 1 permutation; 3 and 5 remain selectable. One Python Atlas figure per family (grid 4, 1 permutation, seed 0) finished with local efficiency 0.
+
+Blocked IDs: none. Hugging Face was not deployed.

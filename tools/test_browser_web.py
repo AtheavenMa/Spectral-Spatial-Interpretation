@@ -191,17 +191,19 @@ def check(site):
         gallery.locator("#atlasUseSample").click()
         assert not gallery.locator("#atlasDialog").evaluate("(x)=>x.open")
         gallery.wait_for_function(
-            "() => state.sample?.id === 'WHU_Hi_LongKou/sample_0000'"
+            """() => state.sample?.id === 'WHU_Hi_LongKou/sample_0000'
+              && state.context && state.x && state.x.length === 270*32*32
+              && state.meta.channels.length === 270""",
+            timeout=120000,
         )
-        assert gallery.locator("#pendingPanel").is_visible()
-        assert gallery.locator("#run").is_disabled()
-        assert gallery.evaluate("() => state.result === null")
-        assert gallery.locator("#pendingSource").get_attribute("href").endswith("sample_0000.png")
-        gallery.locator("#sampleSelect").select_option("WHU_Hi_LongKou/sample_0001")
-        gallery.wait_for_function("() => state.sample?.id === 'WHU_Hi_LongKou/sample_0001'")
-        assert gallery.locator("#run").is_disabled()
-        gallery.locator("#datasetSelect").select_option("HLS_BurnScars")
-        gallery.locator("#sampleSelect").select_option("hls-bundled")
+        assert gallery.locator("#pendingPanel").is_hidden()
+        assert gallery.locator("#sampleSelect option").count() == 7
+        # The 270-band run is real and is stopped here so the test can return
+        # to HLS without waiting for every cell.
+        gallery.evaluate("() => document.getElementById('stop').click()")
+        gallery.wait_for_function("() => !state.running", timeout=180000)
+        gallery.locator("#datasetSelect").select_option("HLS_BurnScars", timeout=120000)
+        gallery.locator("#sampleSelect").select_option("hls-bundled", timeout=120000)
         await_computation(gallery)
         assert gallery.locator("#run").is_enabled()
         assert gallery.locator("#pendingPanel").is_hidden()

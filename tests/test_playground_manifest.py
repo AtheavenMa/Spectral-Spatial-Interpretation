@@ -49,6 +49,8 @@ class PlaygroundManifestTests(unittest.TestCase):
         # The source file can have the right dimensions and still belong to
         # the wrong sample ID. Reject before creating any assets/ready entries.
         source = ROOT / "assets/lab/samples/paviau_0008.npz"
+        before = json.loads(MANIFEST.read_text())
+        previous = next(x for x in before["samples"] if x["id"] == "PaviaU/sample_0010")["status"]
         with tempfile.TemporaryDirectory() as tmp:
             candidate = Path(tmp) / "sample_0010.npz"
             candidate.write_bytes(source.read_bytes())
@@ -57,9 +59,9 @@ class PlaygroundManifestTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "atlas_id disagrees"):
                 sample_export("PaviaU/sample_0010", candidate)
-        before = json.loads(MANIFEST.read_text())
-        record = next(x for x in before["samples"] if x["id"] == "PaviaU/sample_0010")
-        self.assertEqual(record["status"], "awaiting_assets")
+        after = json.loads(MANIFEST.read_text())
+        record = next(x for x in after["samples"] if x["id"] == "PaviaU/sample_0010")
+        self.assertEqual(record["status"], previous)
 
     def test_original_pavia_npz_exports_real_browser_input_without_fake_readiness(self):
         import tools.export_playground_assets as exporter
@@ -69,7 +71,13 @@ class PlaygroundManifestTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
             manifest_path = workspace / "compute-manifest.json"
-            manifest_path.write_bytes(MANIFEST.read_bytes())
+            copied = json.loads(MANIFEST.read_text())
+            # This isolated workspace only has the bundled HLS files. Gallery
+            # rows that are ready in the real tree must not be required here.
+            for record in copied["samples"]:
+                if record.get("image_url"):
+                    record["status"] = "awaiting_assets"
+            manifest_path.write_text(json.dumps(copied))
             # The independent bundled HLS demo must remain a valid registered
             # ready item even in a temporary asset workspace.
             source_assets = ROOT / "docs/playground/assets"

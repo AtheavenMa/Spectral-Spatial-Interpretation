@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_0714",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 27,
+  "target_name": "Brown Creeper",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 1.4025212526321411,
+  "original_sample_sha256": "1a3083413bdca8de076025ef79a26f8546d140e08c93b40f7301604410ff1ba8",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "f3d4d8de1b6633b3e6d248d98a0079177bd32ca8b5fe85b5078b931823db96b6",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "f53c6f2cb15fb77c43f31de5809c725a89f30b93ec57cc90eb962795cbd920b5",
+      "bytes": 42482
+    }
+  }
+}

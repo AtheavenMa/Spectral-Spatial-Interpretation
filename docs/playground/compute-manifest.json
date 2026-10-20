@@ -10,7 +10,7 @@
       "n_channels": 3,
       "n_classes": 200,
       "onnx": "assets/models/cub-200/model.onnx",
-      "onnx_state": "pending_export",
+      "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
       "checkpoint_repo_path": "assets/lab/checkpoints/cub_resnet18.pt",
@@ -24,7 +24,20 @@
         3,
         5
       ],
-      "target_kind": "fixed_class_logit"
+      "target_kind": "fixed_class_logit",
+      "onnx_sha256": "73b966713cca5f8ec5fe0fdd7923a9a00d4c15393828735672a4ebf9360d7368",
+      "checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+      "onnx_reference": {
+        "model_input_shape": [
+          1,
+          3,
+          448,
+          448
+        ],
+        "unmasked_score": 11.130589485168457,
+        "max_logit_error": 1.3113021850585938e-06,
+        "masked_max_logit_error": 6.67572021484375e-06
+      }
     },
     {
       "id": "eurosat",
@@ -34,7 +47,7 @@
       "n_channels": 13,
       "n_classes": 10,
       "onnx": "assets/models/eurosat/model.onnx",
-      "onnx_state": "pending_export",
+      "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
       "checkpoint_repo_path": "assets/lab/checkpoints/eurosat_resnet18.pt",
@@ -48,7 +61,20 @@
         3,
         5
       ],
-      "target_kind": "fixed_class_logit"
+      "target_kind": "fixed_class_logit",
+      "onnx_sha256": "8ad2e8849544e1167c8db59bf254901346a7aacefeb287f6a0a12eb601c60155",
+      "checkpoint_sha256": "0c3418bc3880d5b4f8f06e2299e59a2b097f26a31acd978e7351a5920bbfd19a",
+      "onnx_reference": {
+        "model_input_shape": [
+          1,
+          13,
+          64,
+          64
+        ],
+        "unmasked_score": 16.20147705078125,
+        "max_logit_error": 1.6689300537109375e-06,
+        "masked_max_logit_error": 1.9073486328125e-06
+      }
     },
     {
       "id": "hls-unet",
@@ -77,8 +103,8 @@
       "onnx_sha256": "486994917c4501964bec765be8cf4a330fa8a31aa4e058dec80744391abeb493",
       "onnx_reference": {
         "unmasked_score": 2.3719680309295654,
-        "max_logit_error": 0.0000034570693969726562,
-        "masked_max_logit_error": 0.0000034570693969726562
+        "max_logit_error": 3.4570693969726562e-06,
+        "masked_max_logit_error": 3.4570693969726562e-06
       }
     },
     {
@@ -89,7 +115,7 @@
       "n_channels": 103,
       "n_classes": 10,
       "onnx": "assets/models/paviau/model.onnx",
-      "onnx_state": "pending_export",
+      "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
       "checkpoint_repo_path": "assets/lab/checkpoints/paviau_unet.pt",
@@ -102,7 +128,20 @@
         3,
         5
       ],
-      "target_kind": "fixed_region_mean_logit"
+      "target_kind": "fixed_region_mean_logit",
+      "onnx_sha256": "2baec31d6c25b6df945a1ee7871f4e4f9ea38c9ce9f2b59f81f613efd507bde6",
+      "checkpoint_sha256": "1a4726c4cabd79061d9d54d97d3b47375b5d54743eb0a794a25db3ce312751a7",
+      "onnx_reference": {
+        "model_input_shape": [
+          1,
+          103,
+          32,
+          32
+        ],
+        "unmasked_score": 2.750239849090576,
+        "max_logit_error": 3.814697265625e-06,
+        "masked_max_logit_error": 4.76837158203125e-06
+      }
     },
     {
       "id": "salinas",
@@ -112,7 +151,7 @@
       "n_channels": 204,
       "n_classes": 17,
       "onnx": "assets/models/salinas/model.onnx",
-      "onnx_state": "pending_export",
+      "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
       "checkpoint_repo_path": "assets/lab/checkpoints/salinas_unet.pt",
@@ -125,7 +164,20 @@
         3,
         5
       ],
-      "target_kind": "fixed_region_mean_logit"
+      "target_kind": "fixed_region_mean_logit",
+      "onnx_sha256": "cd0b38d973d479945a69d5721601505da3b24999d970be81ed157858100dc5ce",
+      "checkpoint_sha256": "d70867420f742e8f0fe5bf8d88742d84f4cd1f82312cf899d9a4107cedd5921c",
+      "onnx_reference": {
+        "model_input_shape": [
+          1,
+          204,
+          32,
+          32
+        ],
+        "unmasked_score": 3.264720916748047,
+        "max_logit_error": 1.9073486328125e-06,
+        "masked_max_logit_error": 1.9073486328125e-06
+      }
     },
     {
       "id": "whu-hi-longkou",
@@ -135,7 +187,7 @@
       "n_channels": 270,
       "n_classes": 10,
       "onnx": "assets/models/whu-hi-longkou/model.onnx",
-      "onnx_state": "pending_export",
+      "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
       "checkpoint_repo_path": "assets/lab/checkpoints/longkou_unet.pt",
@@ -148,7 +200,20 @@
         3,
         5
       ],
-      "target_kind": "fixed_region_mean_logit"
+      "target_kind": "fixed_region_mean_logit",
+      "onnx_sha256": "8bef52619dde424c613ceae5f0af22bd735da45d00552733b47ab06acbd68967",
+      "checkpoint_sha256": "9c6e25d6e49ae94da5309595a7c7948e3b91f0b296cf8332411f6c240e5e059a",
+      "onnx_reference": {
+        "model_input_shape": [
+          1,
+          270,
+          32,
+          32
+        ],
+        "unmasked_score": 1.1450413465499878,
+        "max_logit_error": 2.1457672119140625e-06,
+        "masked_max_logit_error": 1.9073486328125e-06
+      }
     }
   ],
   "samples": [
@@ -180,14 +245,22 @@
       "model_id": "cub-200",
       "label": "Sample 0158",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_0158.png",
-      "status": "awaiting_assets",
-      "python_source": "assets/lab/samples/cub_0158.npz",
+      "status": "ready",
+      "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_0158/meta.json",
         "tensor": "assets/samples/CUB_200/sample_0158/x.f32",
         "rgb": "assets/samples/CUB_200/sample_0158/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_0158/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_0158/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_0158/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "12189a4bf6f2a64cf98b49c60186c169a0e465e4ab9ceb45738b893eb12f3191",
+      "provenance_sha256": "9c143ca60f6b2001de97cebe11973f188230a278494fc158dbf3d89d821ac6c3"
     },
     {
       "id": "CUB_200/sample_0714",
@@ -195,14 +268,22 @@
       "model_id": "cub-200",
       "label": "Sample 0714",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_0714.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_0714/meta.json",
         "tensor": "assets/samples/CUB_200/sample_0714/x.f32",
         "rgb": "assets/samples/CUB_200/sample_0714/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_0714/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_0714/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_0714/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "1a3083413bdca8de076025ef79a26f8546d140e08c93b40f7301604410ff1ba8",
+      "provenance_sha256": "3d8c3a76cfd69955591d9feade61df96fed857a5119bb79145d0347de17ea2a3"
     },
     {
       "id": "CUB_200/sample_1125",
@@ -210,14 +291,22 @@
       "model_id": "cub-200",
       "label": "Sample 1125",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_1125.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_1125/meta.json",
         "tensor": "assets/samples/CUB_200/sample_1125/x.f32",
         "rgb": "assets/samples/CUB_200/sample_1125/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_1125/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_1125/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_1125/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "fc84e37b66182e51c58b8cef1886103243ba864652c1166ceebeb9a4b5b89be0",
+      "provenance_sha256": "c9f4ebd9a112c73b72fff866544f8b0971028f329a9b59803f02b555ae3090cb"
     },
     {
       "id": "CUB_200/sample_1631",
@@ -225,14 +314,22 @@
       "model_id": "cub-200",
       "label": "Sample 1631",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_1631.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_1631/meta.json",
         "tensor": "assets/samples/CUB_200/sample_1631/x.f32",
         "rgb": "assets/samples/CUB_200/sample_1631/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_1631/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_1631/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_1631/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "02cf866ad9ea273b6f429514cb7fb755297e2d9402e1b1711591910ce0d04567",
+      "provenance_sha256": "ff2347c79fee8c82277959a92033d2b3fd364381bfc84ff34550ee25346b1440"
     },
     {
       "id": "CUB_200/sample_2002",
@@ -240,14 +337,22 @@
       "model_id": "cub-200",
       "label": "Sample 2002",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_2002.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_2002/meta.json",
         "tensor": "assets/samples/CUB_200/sample_2002/x.f32",
         "rgb": "assets/samples/CUB_200/sample_2002/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_2002/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_2002/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_2002/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "f1e94d0d79ca92792a88623fedc13821f3b05a34da07203f662a6148fbce7e47",
+      "provenance_sha256": "12a6f94ae2b6011855ea6b8da7c23b7d1b458393bcf528ca1618af3d0619e15f"
     },
     {
       "id": "CUB_200/sample_2390",
@@ -255,14 +360,22 @@
       "model_id": "cub-200",
       "label": "Sample 2390",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_2390.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_2390/meta.json",
         "tensor": "assets/samples/CUB_200/sample_2390/x.f32",
         "rgb": "assets/samples/CUB_200/sample_2390/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_2390/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_2390/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_2390/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "7cc0c27be08bc22d9567e39334f49ac839787c79f7ab19138a1092acdb503920",
+      "provenance_sha256": "b5848641e190a5d00a63c957ebe43cb83a92751d5857e95c2a6f78293bb5b4ce"
     },
     {
       "id": "CUB_200/sample_3296",
@@ -270,14 +383,22 @@
       "model_id": "cub-200",
       "label": "Sample 3296",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_3296.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_3296/meta.json",
         "tensor": "assets/samples/CUB_200/sample_3296/x.f32",
         "rgb": "assets/samples/CUB_200/sample_3296/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_3296/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_3296/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_3296/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "3005b49e9a6245f63b82acca4a335a589d794cd72989b24a8e1fbc800e99d7f5",
+      "provenance_sha256": "1d7a118cf32a1a574d38c87bd8a7b5f8804aac2e4af234dcfe6b8e02466e8f14"
     },
     {
       "id": "CUB_200/sample_4020",
@@ -285,14 +406,22 @@
       "model_id": "cub-200",
       "label": "Sample 4020",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_4020.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_4020/meta.json",
         "tensor": "assets/samples/CUB_200/sample_4020/x.f32",
         "rgb": "assets/samples/CUB_200/sample_4020/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_4020/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_4020/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_4020/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "fbdb5ea810f375fdaee3512d22c265137d561d47aed20e46f50b0d641f5fd67a",
+      "provenance_sha256": "87c2bf27d6344873fb36fa73bec8e4e1006d0f7559308f918ba88ee0a0efa91e"
     },
     {
       "id": "CUB_200/sample_4136",
@@ -300,14 +429,22 @@
       "model_id": "cub-200",
       "label": "Sample 4136",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_4136.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_4136/meta.json",
         "tensor": "assets/samples/CUB_200/sample_4136/x.f32",
         "rgb": "assets/samples/CUB_200/sample_4136/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_4136/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_4136/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_4136/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "a6509fe736fecef3471ca5f1e4e92df701dd49cb4c4973a91f43710d50841071",
+      "provenance_sha256": "5592bc43919069671170a74bfd8423270c8815d5917f9dd6c43c88c372ec7cb4"
     },
     {
       "id": "CUB_200/sample_4325",
@@ -315,14 +452,22 @@
       "model_id": "cub-200",
       "label": "Sample 4325",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/sample_4325.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/CUB_200/sample_4325/meta.json",
         "tensor": "assets/samples/CUB_200/sample_4325/x.f32",
         "rgb": "assets/samples/CUB_200/sample_4325/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/CUB_200/sample_4325/meta.json",
+        "tensor": "assets/samples/CUB_200/sample_4325/x.f32",
+        "rgb": "assets/samples/CUB_200/sample_4325/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "56fea2a36d5451be659ebf48a4a3599ea89eae9ea43148523cacfb71b52f1880",
+      "provenance_sha256": "bfa9299f41eb9b05525655b213723d660b2f398fbf06c9bf8145e09d0894c736"
     },
     {
       "id": "EuroSAT/sample_1294",
@@ -330,14 +475,22 @@
       "model_id": "eurosat",
       "label": "Sample 1294",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_1294.png",
-      "status": "awaiting_assets",
-      "python_source": "assets/lab/samples/eurosat_1294.npz",
+      "status": "ready",
+      "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_1294/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_1294/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_1294/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_1294/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_1294/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_1294/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "f57559d0346ed8dea70eb0478c4c28f4ca7acdc16aa6a0822eb5c797f697fcc9",
+      "provenance_sha256": "1f7dd850e00a3704a3f400b68ca5c5d5a423a946d681a585fbd76411f8bd31f5"
     },
     {
       "id": "EuroSAT/sample_1972",
@@ -345,14 +498,22 @@
       "model_id": "eurosat",
       "label": "Sample 1972",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_1972.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_1972/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_1972/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_1972/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_1972/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_1972/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_1972/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "3c19811d0bb0723f00e026a26c0d311c9411c160c96c887f36e1ed0719d67fe1",
+      "provenance_sha256": "7a8d2b89a9d5daff7c28738e3a4e730ccf8e62332be5fe99c267b82efa0d6c23"
     },
     {
       "id": "EuroSAT/sample_2190",
@@ -360,14 +521,22 @@
       "model_id": "eurosat",
       "label": "Sample 2190",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_2190.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_2190/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_2190/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_2190/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_2190/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_2190/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_2190/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "60adc905af1792a13fbfb5cd0c00b9720aed619cbe6f571731ec3bc47d620c49",
+      "provenance_sha256": "465e2f02b1acc61f7f54cee418a584c842423eade88917e8586e31575128c910"
     },
     {
       "id": "EuroSAT/sample_2247",
@@ -375,14 +544,22 @@
       "model_id": "eurosat",
       "label": "Sample 2247",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_2247.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_2247/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_2247/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_2247/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_2247/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_2247/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_2247/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "d3bb37cb113dbd43a399689f567d5df2c84b1aba7533e660219ae776a74df929",
+      "provenance_sha256": "bb747c51851cc2166d22196e9d4cce269afe3efb4cf5f4ec7ef1fef69943e7b1"
     },
     {
       "id": "EuroSAT/sample_2390",
@@ -390,14 +567,22 @@
       "model_id": "eurosat",
       "label": "Sample 2390",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_2390.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_2390/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_2390/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_2390/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_2390/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_2390/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_2390/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "a6ff68d4355b2dc45cebfc5f5db2e2ade8bc5cbfc24995e625bdf76754b45475",
+      "provenance_sha256": "64ac607b0085125c651b978f09e0bce764242f8ba4a1dba55014f103f88f9de4"
     },
     {
       "id": "EuroSAT/sample_2995",
@@ -405,14 +590,22 @@
       "model_id": "eurosat",
       "label": "Sample 2995",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_2995.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_2995/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_2995/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_2995/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_2995/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_2995/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_2995/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "41291e4a07960cd2b0ccfdb8066c3e221f52b0820c5474874022cbccb397dc28",
+      "provenance_sha256": "a89f055e24333a152a617d384af14122828e7cdb80c2d5d10dbe0fb4bff8a09f"
     },
     {
       "id": "EuroSAT/sample_3042",
@@ -420,14 +613,22 @@
       "model_id": "eurosat",
       "label": "Sample 3042",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_3042.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_3042/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_3042/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_3042/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_3042/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_3042/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_3042/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "6767437d8f1694f471a3a226a81ab3efdb8366d9dfc3453d940f66eff04a8cef",
+      "provenance_sha256": "d26ac81546f42a49d8d1783d529ceeec092058d3c5b12fd0ad16026ade9b4368"
     },
     {
       "id": "EuroSAT/sample_3276",
@@ -435,14 +636,22 @@
       "model_id": "eurosat",
       "label": "Sample 3276",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_3276.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_3276/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_3276/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_3276/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_3276/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_3276/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_3276/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "2b72f29bdee20bad33143f25b9e6b84444895311c1655ddf49a2f9f7bad7b3cb",
+      "provenance_sha256": "c260aea7f7b97aa6a2d320f788ec65194b8e54d4b179bfb103de502a2975a6ae"
     },
     {
       "id": "EuroSAT/sample_4044",
@@ -450,14 +659,22 @@
       "model_id": "eurosat",
       "label": "Sample 4044",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_4044.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_4044/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_4044/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_4044/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_4044/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_4044/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_4044/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "f91d36d626b3a54155b97376569e671ee9edd726792da57d147533110c1ccdbd",
+      "provenance_sha256": "35dcda736384a483378baec81bde4060e30275f9db0b23b71b567be6d87e3879"
     },
     {
       "id": "EuroSAT/sample_4141",
@@ -465,14 +682,22 @@
       "model_id": "eurosat",
       "label": "Sample 4141",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/sample_4141.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/EuroSAT/sample_4141/meta.json",
         "tensor": "assets/samples/EuroSAT/sample_4141/x.f32",
         "rgb": "assets/samples/EuroSAT/sample_4141/rgb.webp",
         "mask": null
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/EuroSAT/sample_4141/meta.json",
+        "tensor": "assets/samples/EuroSAT/sample_4141/x.f32",
+        "rgb": "assets/samples/EuroSAT/sample_4141/rgb.webp",
+        "mask": null
+      },
+      "source_sha256": "34d73acdca648620cf0378d5dedd7198e1942568421689fd8d819a0801b2ea84",
+      "provenance_sha256": "dc89aded5ecf79dddde19a3516a3fe544a90ecc475eaaffb377bcc5bf353546f"
     },
     {
       "id": "HLS_BurnScars/sample_0045",
@@ -480,14 +705,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0045",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0045.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0045/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0045/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0045/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0045/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0045/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0045/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0045/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0045/mask.u8"
+      },
+      "source_sha256": "6cbf20a6998afe68869fedf1c38dec61d94100c4b423d5c3ea7b1ef85147b982",
+      "provenance_sha256": "a16acaa0d3da37c1ec8607f3486add68164e022ce8020167f52d4bce37ab7683"
     },
     {
       "id": "HLS_BurnScars/sample_0052",
@@ -495,14 +728,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0052",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0052.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0052/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0052/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0052/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0052/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0052/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0052/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0052/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0052/mask.u8"
+      },
+      "source_sha256": "af4e64960b5a5b8f5d7daf94b787ad2fc00c02a6f3ed2dc3c51b6e039ead77a6",
+      "provenance_sha256": "69472502c83c33fe80ad62529257ddf0c4133612b799c979a9aa710e735385a9"
     },
     {
       "id": "HLS_BurnScars/sample_0067",
@@ -510,14 +751,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0067",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0067.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0067/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0067/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0067/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0067/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0067/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0067/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0067/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0067/mask.u8"
+      },
+      "source_sha256": "a16047a93f66a18731bc1568438e5c3f35571e6759983e91ee6ab3e0e97eaa1f",
+      "provenance_sha256": "e9c79f816f9fe8f6fc058ec7849ebf44cdf51bf33baf919d67fc38be4faf30e1"
     },
     {
       "id": "HLS_BurnScars/sample_0076",
@@ -525,14 +774,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0076",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0076.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0076/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0076/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0076/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0076/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0076/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0076/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0076/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0076/mask.u8"
+      },
+      "source_sha256": "e98157b8237b5febda69a3f3b889a5dabcd707ab30b298112c3309397ebc9330",
+      "provenance_sha256": "97973545ccec7fd84bf4d0328e3b36bd45f00d0a8173133aff9a9c26f358cc2b"
     },
     {
       "id": "HLS_BurnScars/sample_0106",
@@ -540,14 +797,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0106",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0106.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0106/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0106/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0106/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0106/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0106/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0106/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0106/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0106/mask.u8"
+      },
+      "source_sha256": "6b54516794a91b927547bf6ea2c232985235024049619bc79cc6be23e73c8d03",
+      "provenance_sha256": "dc867079bc92bba1d46b4a51f7e89a6a92ef74c8f747c6eb46876368234761f2"
     },
     {
       "id": "HLS_BurnScars/sample_0120",
@@ -555,14 +820,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0120",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0120.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0120/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0120/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0120/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0120/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0120/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0120/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0120/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0120/mask.u8"
+      },
+      "source_sha256": "fa429d174360f6a7ac18641def6bbd16e1bbb8f40b688a760bcb86fcf3c8f526",
+      "provenance_sha256": "556a3f03fc3f85a93aa367e1d64d7cb8e5eb29ebc1c2f5393b89a4ec9d173dfc"
     },
     {
       "id": "HLS_BurnScars/sample_0127",
@@ -570,14 +843,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0127",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0127.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0127/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0127/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0127/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0127/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0127/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0127/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0127/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0127/mask.u8"
+      },
+      "source_sha256": "ffcdfaeaac69b3edbd734b1569ebb4778d224332398d2be054c5bfe475bceee1",
+      "provenance_sha256": "573dfe04241f6248fbab8de58cbd9a0cdcd6702d0093a71d020783608bb4b313"
     },
     {
       "id": "HLS_BurnScars/sample_0163",
@@ -585,14 +866,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0163",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0163.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0163/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0163/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0163/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0163/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0163/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0163/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0163/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0163/mask.u8"
+      },
+      "source_sha256": "34b20c7eaf57a8ad8e84bb7f9815c44205a67c80bbe75156876928308e37f32c",
+      "provenance_sha256": "0bac54a7a2ef85f2aa66e57c65168415f6efe02089b41d1465079e1c95768f9a"
     },
     {
       "id": "HLS_BurnScars/sample_0187",
@@ -600,14 +889,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0187",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0187.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0187/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0187/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0187/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0187/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0187/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0187/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0187/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0187/mask.u8"
+      },
+      "source_sha256": "3bbfc1cdbe1d902fbead6c48a2d71889d735b916bd0dc2280d0ef7def2c5aefd",
+      "provenance_sha256": "e63cebbcd95537f2af0717b6df8373e62639659d49c6f4c7dbb57d15efecdde5"
     },
     {
       "id": "HLS_BurnScars/sample_0222",
@@ -615,14 +912,22 @@
       "model_id": "hls-unet",
       "label": "Sample 0222",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/sample_0222.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/HLS_BurnScars/sample_0222/meta.json",
         "tensor": "assets/samples/HLS_BurnScars/sample_0222/x.f32",
         "rgb": "assets/samples/HLS_BurnScars/sample_0222/rgb.webp",
         "mask": "assets/samples/HLS_BurnScars/sample_0222/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/HLS_BurnScars/sample_0222/meta.json",
+        "tensor": "assets/samples/HLS_BurnScars/sample_0222/x.f32",
+        "rgb": "assets/samples/HLS_BurnScars/sample_0222/rgb.webp",
+        "mask": "assets/samples/HLS_BurnScars/sample_0222/mask.u8"
+      },
+      "source_sha256": "e265eb020a1e1af19e6234ab7ae7344a536ec5975716ca0bf4b019c50619b847",
+      "provenance_sha256": "d2c0d414a0809c4a56c5b3640c0f22d72f37fb641a735f6b648e473ef757508f"
     },
     {
       "id": "PaviaU/sample_0003",
@@ -630,14 +935,22 @@
       "model_id": "paviau",
       "label": "Sample 0003",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0003.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0003/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0003/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0003/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0003/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0003/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0003/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0003/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0003/mask.u8"
+      },
+      "source_sha256": "44f0288d09cd70f63a2b46f5f569ab2c7c0fcd1f68dcf92b08feb8a857ac4efe",
+      "provenance_sha256": "0481c1b096504fefd7f1d316038ab76a72aa2cd047797bd5074fbc544f6ea08a"
     },
     {
       "id": "PaviaU/sample_0006",
@@ -645,14 +958,22 @@
       "model_id": "paviau",
       "label": "Sample 0006",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0006.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0006/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0006/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0006/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0006/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0006/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0006/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0006/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0006/mask.u8"
+      },
+      "source_sha256": "b6e4fbd3becbb28581753332cb6fe24cd33759a7e0f95116bf9067e4738071f9",
+      "provenance_sha256": "6be789ab0e0ee609951588b168c018d9c80f312559d28ed1552b90df860749c5"
     },
     {
       "id": "PaviaU/sample_0008",
@@ -660,14 +981,22 @@
       "model_id": "paviau",
       "label": "Sample 0008",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0008.png",
-      "status": "awaiting_assets",
-      "python_source": "assets/lab/samples/paviau_0008.npz",
+      "status": "ready",
+      "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0008/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0008/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0008/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0008/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0008/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0008/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0008/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0008/mask.u8"
+      },
+      "source_sha256": "e3e273bb02eab2f3c64120672f786809cb60ba0f92b7b2d7efb56d250c0239b0",
+      "provenance_sha256": "3c7b05a62a27580c7dcd58eb0f8584874a36781021cf5bf9a50e0c7509f2ac56"
     },
     {
       "id": "PaviaU/sample_0010",
@@ -675,14 +1004,22 @@
       "model_id": "paviau",
       "label": "Sample 0010",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0010.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0010/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0010/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0010/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0010/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0010/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0010/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0010/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0010/mask.u8"
+      },
+      "source_sha256": "430f453f1379d99a038a1f4f2e646a47fe96e9d3a171fa8f5638c814ed33baef",
+      "provenance_sha256": "d784be6b0e85018bd670ce3478417062fd76f841e4398d68208672b25d4acee4"
     },
     {
       "id": "PaviaU/sample_0011",
@@ -690,14 +1027,22 @@
       "model_id": "paviau",
       "label": "Sample 0011",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0011.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0011/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0011/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0011/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0011/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0011/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0011/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0011/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0011/mask.u8"
+      },
+      "source_sha256": "9c7c52d71c0cd35756c71404ccde466da242b0ba33ba871da7e2db83f4563d22",
+      "provenance_sha256": "e5f6e7194dc70331da7d3978aa5410829ab76eded55796fffa31f851771a5638"
     },
     {
       "id": "PaviaU/sample_0012",
@@ -705,14 +1050,22 @@
       "model_id": "paviau",
       "label": "Sample 0012",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0012.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0012/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0012/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0012/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0012/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0012/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0012/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0012/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0012/mask.u8"
+      },
+      "source_sha256": "7b2b3c83af1526fd9a8835b9d47e5efcdd7b52feb97c8d8877da30421a0b64b2",
+      "provenance_sha256": "e2305e1a96f710aeb8a08de363c6ed3a0ee252c499b8fd5907543b6ecb498672"
     },
     {
       "id": "PaviaU/sample_0013",
@@ -720,14 +1073,22 @@
       "model_id": "paviau",
       "label": "Sample 0013",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0013.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0013/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0013/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0013/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0013/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0013/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0013/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0013/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0013/mask.u8"
+      },
+      "source_sha256": "2cb3b3f392c3d605bc485a7c7a1105b18109d44b4c721d45a7a03c827081a99a",
+      "provenance_sha256": "4bfecb189078dada34abae054e22ebc43691d9d0c62537ad8ac10d1b58f86c07"
     },
     {
       "id": "PaviaU/sample_0016",
@@ -735,14 +1096,22 @@
       "model_id": "paviau",
       "label": "Sample 0016",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0016.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0016/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0016/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0016/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0016/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0016/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0016/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0016/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0016/mask.u8"
+      },
+      "source_sha256": "f455c6c863afd07f8ce20fe88bef8724c702c245b1cad571c83d4191fdd86f62",
+      "provenance_sha256": "a8b56246aaa2d0833eadf0c22f4880084bf9219d89f68d5059b94bdd5b5625e6"
     },
     {
       "id": "PaviaU/sample_0017",
@@ -750,14 +1119,22 @@
       "model_id": "paviau",
       "label": "Sample 0017",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0017.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0017/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0017/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0017/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0017/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0017/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0017/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0017/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0017/mask.u8"
+      },
+      "source_sha256": "b1623cc16f467dc27856bf6ebe5903977f4213824c503565e38263d16b356b8b",
+      "provenance_sha256": "9fab0c5ce4f12679ae041f7a2a27e0ea0296768c8fd5835a365a529703a83e09"
     },
     {
       "id": "PaviaU/sample_0027",
@@ -765,14 +1142,22 @@
       "model_id": "paviau",
       "label": "Sample 0027",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/sample_0027.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/PaviaU/sample_0027/meta.json",
         "tensor": "assets/samples/PaviaU/sample_0027/x.f32",
         "rgb": "assets/samples/PaviaU/sample_0027/rgb.webp",
         "mask": "assets/samples/PaviaU/sample_0027/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/PaviaU/sample_0027/meta.json",
+        "tensor": "assets/samples/PaviaU/sample_0027/x.f32",
+        "rgb": "assets/samples/PaviaU/sample_0027/rgb.webp",
+        "mask": "assets/samples/PaviaU/sample_0027/mask.u8"
+      },
+      "source_sha256": "c5ca98952b523ffbe64f2bfb6a22d244c6cb530cead81b45cba27dde553e2d44",
+      "provenance_sha256": "2397f61f03661a06c5b61207a91f6cfb59abd69d94d2eaa089eb8d3b169e8f52"
     },
     {
       "id": "Salinas/sample_0000",
@@ -780,14 +1165,22 @@
       "model_id": "salinas",
       "label": "Sample 0000",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0000.png",
-      "status": "awaiting_assets",
-      "python_source": "assets/lab/samples/salinas_0000.npz",
+      "status": "ready",
+      "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0000/meta.json",
         "tensor": "assets/samples/Salinas/sample_0000/x.f32",
         "rgb": "assets/samples/Salinas/sample_0000/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0000/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0000/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0000/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0000/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0000/mask.u8"
+      },
+      "source_sha256": "5ba6b2f8d528db580bb446d46e59fb6f881ed5c69cf295ff472703eef9e979d2",
+      "provenance_sha256": "b9035bf034326b7c4e73c5ecac6780cd82154baca9254e3e70203fd3e6083634"
     },
     {
       "id": "Salinas/sample_0001",
@@ -795,14 +1188,22 @@
       "model_id": "salinas",
       "label": "Sample 0001",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0001.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0001/meta.json",
         "tensor": "assets/samples/Salinas/sample_0001/x.f32",
         "rgb": "assets/samples/Salinas/sample_0001/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0001/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0001/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0001/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0001/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0001/mask.u8"
+      },
+      "source_sha256": "e9b18137b6a0acba2c293cc8b9b95234eddc9357aeebf69c13df5b1238445365",
+      "provenance_sha256": "517d36f88c714d040688b4ce5859e98fbdba9082790774a95c88fdbda47cc658"
     },
     {
       "id": "Salinas/sample_0002",
@@ -810,14 +1211,22 @@
       "model_id": "salinas",
       "label": "Sample 0002",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0002.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0002/meta.json",
         "tensor": "assets/samples/Salinas/sample_0002/x.f32",
         "rgb": "assets/samples/Salinas/sample_0002/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0002/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0002/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0002/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0002/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0002/mask.u8"
+      },
+      "source_sha256": "c34937c6ef68b732ac1c3a92aec23a6ec409a584ac05741b910514b5fa42ad82",
+      "provenance_sha256": "289f1427e0fefd20190dad4f5cf531bbc7dfc9b54ab91e41ebd731f894292899"
     },
     {
       "id": "Salinas/sample_0004",
@@ -825,14 +1234,22 @@
       "model_id": "salinas",
       "label": "Sample 0004",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0004.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0004/meta.json",
         "tensor": "assets/samples/Salinas/sample_0004/x.f32",
         "rgb": "assets/samples/Salinas/sample_0004/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0004/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0004/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0004/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0004/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0004/mask.u8"
+      },
+      "source_sha256": "4f492c08c586ed71661b043089413083fb9f5b6ee464c063ad9df1aa650b77ec",
+      "provenance_sha256": "1ef7ec2b4a99adbb325673de542e534f758ca0d5cb3b3daed5de783ee4edf5ca"
     },
     {
       "id": "Salinas/sample_0005",
@@ -840,14 +1257,22 @@
       "model_id": "salinas",
       "label": "Sample 0005",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0005.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0005/meta.json",
         "tensor": "assets/samples/Salinas/sample_0005/x.f32",
         "rgb": "assets/samples/Salinas/sample_0005/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0005/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0005/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0005/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0005/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0005/mask.u8"
+      },
+      "source_sha256": "08ab966cf85e3323a21e8148b9d4d3d1306a59f656e96c95c4570381b4a87809",
+      "provenance_sha256": "71edeba7bf4cc549965602be4fa689041d352d3391b154ef5205d1995196dab5"
     },
     {
       "id": "Salinas/sample_0006",
@@ -855,14 +1280,22 @@
       "model_id": "salinas",
       "label": "Sample 0006",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0006.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0006/meta.json",
         "tensor": "assets/samples/Salinas/sample_0006/x.f32",
         "rgb": "assets/samples/Salinas/sample_0006/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0006/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0006/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0006/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0006/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0006/mask.u8"
+      },
+      "source_sha256": "d5b6ae60853d63484a1e85a10f97bba1d314164443e385dae2f101d264debc84",
+      "provenance_sha256": "5481485b679a0969346cb9670ca6523f4c4418347d2f57c00a4dcf44f1d8a898"
     },
     {
       "id": "Salinas/sample_0010",
@@ -870,14 +1303,22 @@
       "model_id": "salinas",
       "label": "Sample 0010",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0010.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0010/meta.json",
         "tensor": "assets/samples/Salinas/sample_0010/x.f32",
         "rgb": "assets/samples/Salinas/sample_0010/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0010/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0010/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0010/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0010/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0010/mask.u8"
+      },
+      "source_sha256": "41ddea697b39e1f80d8611a1dd8781450fa1871e42d57dc79e5ca2a3d5f8b406",
+      "provenance_sha256": "330ecf38103de8dc35901efee6a2e642506899f576175f8180c9a6b2062aac14"
     },
     {
       "id": "Salinas/sample_0011",
@@ -885,14 +1326,22 @@
       "model_id": "salinas",
       "label": "Sample 0011",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0011.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0011/meta.json",
         "tensor": "assets/samples/Salinas/sample_0011/x.f32",
         "rgb": "assets/samples/Salinas/sample_0011/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0011/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0011/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0011/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0011/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0011/mask.u8"
+      },
+      "source_sha256": "92075fe3e32cd7aeab40c5307f232406027554479d7b256bf7d6c3fdd959317e",
+      "provenance_sha256": "c02464663d03e52284c110f1b30182c327bebeb76cc381d13c39292a9c0b9b0b"
     },
     {
       "id": "Salinas/sample_0012",
@@ -900,14 +1349,22 @@
       "model_id": "salinas",
       "label": "Sample 0012",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0012.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0012/meta.json",
         "tensor": "assets/samples/Salinas/sample_0012/x.f32",
         "rgb": "assets/samples/Salinas/sample_0012/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0012/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0012/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0012/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0012/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0012/mask.u8"
+      },
+      "source_sha256": "c8c8569e3ded6e4b2ab5df15bf6bc2086e08791ac454f2927efc1bfba6426637",
+      "provenance_sha256": "f5ee1eb701bba8779e37313548480729213e3305f092d3649bfa8672e26a3ad1"
     },
     {
       "id": "Salinas/sample_0014",
@@ -915,14 +1372,22 @@
       "model_id": "salinas",
       "label": "Sample 0014",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/sample_0014.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/Salinas/sample_0014/meta.json",
         "tensor": "assets/samples/Salinas/sample_0014/x.f32",
         "rgb": "assets/samples/Salinas/sample_0014/rgb.webp",
         "mask": "assets/samples/Salinas/sample_0014/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/Salinas/sample_0014/meta.json",
+        "tensor": "assets/samples/Salinas/sample_0014/x.f32",
+        "rgb": "assets/samples/Salinas/sample_0014/rgb.webp",
+        "mask": "assets/samples/Salinas/sample_0014/mask.u8"
+      },
+      "source_sha256": "f2a7840fafe61d8c8ff143f0866508a49936915ad092db2c43eb532e60b78e3f",
+      "provenance_sha256": "c40ea539650b77d5103eef014b83492e4d7fa10ba2fcaec7ba6e6d81654f4516"
     },
     {
       "id": "WHU_Hi_LongKou/sample_0000",
@@ -930,14 +1395,22 @@
       "model_id": "whu-hi-longkou",
       "label": "Sample 0000",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/WHU_Hi_LongKou/sample_0000.png",
-      "status": "awaiting_assets",
-      "python_source": "assets/lab/samples/longkou_0000.npz",
+      "status": "ready",
+      "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/WHU_Hi_LongKou/sample_0000/meta.json",
         "tensor": "assets/samples/WHU_Hi_LongKou/sample_0000/x.f32",
         "rgb": "assets/samples/WHU_Hi_LongKou/sample_0000/rgb.webp",
         "mask": "assets/samples/WHU_Hi_LongKou/sample_0000/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/WHU_Hi_LongKou/sample_0000/meta.json",
+        "tensor": "assets/samples/WHU_Hi_LongKou/sample_0000/x.f32",
+        "rgb": "assets/samples/WHU_Hi_LongKou/sample_0000/rgb.webp",
+        "mask": "assets/samples/WHU_Hi_LongKou/sample_0000/mask.u8"
+      },
+      "source_sha256": "524aff6296401726ada6cd0910a305900c59f0c7d68ff472afa6fbffc345b2cc",
+      "provenance_sha256": "55f6fd2d166951e8ef4246e1f214c3ce770fa77e3efee7302fa616c8de477962"
     },
     {
       "id": "WHU_Hi_LongKou/sample_0001",
@@ -945,14 +1418,22 @@
       "model_id": "whu-hi-longkou",
       "label": "Sample 0001",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/WHU_Hi_LongKou/sample_0001.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/WHU_Hi_LongKou/sample_0001/meta.json",
         "tensor": "assets/samples/WHU_Hi_LongKou/sample_0001/x.f32",
         "rgb": "assets/samples/WHU_Hi_LongKou/sample_0001/rgb.webp",
         "mask": "assets/samples/WHU_Hi_LongKou/sample_0001/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/WHU_Hi_LongKou/sample_0001/meta.json",
+        "tensor": "assets/samples/WHU_Hi_LongKou/sample_0001/x.f32",
+        "rgb": "assets/samples/WHU_Hi_LongKou/sample_0001/rgb.webp",
+        "mask": "assets/samples/WHU_Hi_LongKou/sample_0001/mask.u8"
+      },
+      "source_sha256": "bb7f2de3b14ecd78d1bd7a927dee422d6da3a8e33f0f221c8be5f3328198cffa",
+      "provenance_sha256": "7b6439e45cbd5232006a85f99df7265daa09cc5c3a422b07d7531d182a11daf1"
     },
     {
       "id": "WHU_Hi_LongKou/sample_0002",
@@ -960,14 +1441,22 @@
       "model_id": "whu-hi-longkou",
       "label": "Sample 0002",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/WHU_Hi_LongKou/sample_0002.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/WHU_Hi_LongKou/sample_0002/meta.json",
         "tensor": "assets/samples/WHU_Hi_LongKou/sample_0002/x.f32",
         "rgb": "assets/samples/WHU_Hi_LongKou/sample_0002/rgb.webp",
         "mask": "assets/samples/WHU_Hi_LongKou/sample_0002/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/WHU_Hi_LongKou/sample_0002/meta.json",
+        "tensor": "assets/samples/WHU_Hi_LongKou/sample_0002/x.f32",
+        "rgb": "assets/samples/WHU_Hi_LongKou/sample_0002/rgb.webp",
+        "mask": "assets/samples/WHU_Hi_LongKou/sample_0002/mask.u8"
+      },
+      "source_sha256": "6e33aeca074fa4a6180a59761da7576dec269235c3fe8f649af6a738700f05fc",
+      "provenance_sha256": "06fcbb55409a58583098382d2b64e04f40f0a44daaf81c20470698db2e970806"
     },
     {
       "id": "WHU_Hi_LongKou/sample_0003",
@@ -975,14 +1464,22 @@
       "model_id": "whu-hi-longkou",
       "label": "Sample 0003",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/WHU_Hi_LongKou/sample_0003.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/WHU_Hi_LongKou/sample_0003/meta.json",
         "tensor": "assets/samples/WHU_Hi_LongKou/sample_0003/x.f32",
         "rgb": "assets/samples/WHU_Hi_LongKou/sample_0003/rgb.webp",
         "mask": "assets/samples/WHU_Hi_LongKou/sample_0003/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/WHU_Hi_LongKou/sample_0003/meta.json",
+        "tensor": "assets/samples/WHU_Hi_LongKou/sample_0003/x.f32",
+        "rgb": "assets/samples/WHU_Hi_LongKou/sample_0003/rgb.webp",
+        "mask": "assets/samples/WHU_Hi_LongKou/sample_0003/mask.u8"
+      },
+      "source_sha256": "575ad400c788ceb1b6e3625550c5d8a19f5269107e06eacd8be0bf9ef5853ea9",
+      "provenance_sha256": "64e0099234987e27a0896bbc580a39f02966cbf9ceb896dc1f1b9453cfa33fcf"
     },
     {
       "id": "WHU_Hi_LongKou/sample_0004",
@@ -990,14 +1487,22 @@
       "model_id": "whu-hi-longkou",
       "label": "Sample 0004",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/WHU_Hi_LongKou/sample_0004.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/WHU_Hi_LongKou/sample_0004/meta.json",
         "tensor": "assets/samples/WHU_Hi_LongKou/sample_0004/x.f32",
         "rgb": "assets/samples/WHU_Hi_LongKou/sample_0004/rgb.webp",
         "mask": "assets/samples/WHU_Hi_LongKou/sample_0004/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/WHU_Hi_LongKou/sample_0004/meta.json",
+        "tensor": "assets/samples/WHU_Hi_LongKou/sample_0004/x.f32",
+        "rgb": "assets/samples/WHU_Hi_LongKou/sample_0004/rgb.webp",
+        "mask": "assets/samples/WHU_Hi_LongKou/sample_0004/mask.u8"
+      },
+      "source_sha256": "c6b68530d9daa1987893120966ce45874d3b2daaac1f84b2cb76585c86e4e748",
+      "provenance_sha256": "dbe421e9c3e45b66d47642ed38554b6596e424c6df4287772886267365f5391d"
     },
     {
       "id": "WHU_Hi_LongKou/sample_0005",
@@ -1005,14 +1510,22 @@
       "model_id": "whu-hi-longkou",
       "label": "Sample 0005",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/WHU_Hi_LongKou/sample_0005.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/WHU_Hi_LongKou/sample_0005/meta.json",
         "tensor": "assets/samples/WHU_Hi_LongKou/sample_0005/x.f32",
         "rgb": "assets/samples/WHU_Hi_LongKou/sample_0005/rgb.webp",
         "mask": "assets/samples/WHU_Hi_LongKou/sample_0005/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/WHU_Hi_LongKou/sample_0005/meta.json",
+        "tensor": "assets/samples/WHU_Hi_LongKou/sample_0005/x.f32",
+        "rgb": "assets/samples/WHU_Hi_LongKou/sample_0005/rgb.webp",
+        "mask": "assets/samples/WHU_Hi_LongKou/sample_0005/mask.u8"
+      },
+      "source_sha256": "575340de7fe9c5a789230531a63f51b69e8ab4fd62755aa9fa0124ba83c0801e",
+      "provenance_sha256": "8b8683417ca2112001f24d6d2e18d9b80cedf734b1a8d47badb84c794c6d3c18"
     },
     {
       "id": "WHU_Hi_LongKou/sample_0006",
@@ -1020,14 +1533,22 @@
       "model_id": "whu-hi-longkou",
       "label": "Sample 0006",
       "image_url": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/WHU_Hi_LongKou/sample_0006.png",
-      "status": "awaiting_assets",
+      "status": "ready",
       "python_source": null,
       "required_assets": {
         "metadata": "assets/samples/WHU_Hi_LongKou/sample_0006/meta.json",
         "tensor": "assets/samples/WHU_Hi_LongKou/sample_0006/x.f32",
         "rgb": "assets/samples/WHU_Hi_LongKou/sample_0006/rgb.webp",
         "mask": "assets/samples/WHU_Hi_LongKou/sample_0006/mask.u8"
-      }
+      },
+      "files": {
+        "metadata": "assets/samples/WHU_Hi_LongKou/sample_0006/meta.json",
+        "tensor": "assets/samples/WHU_Hi_LongKou/sample_0006/x.f32",
+        "rgb": "assets/samples/WHU_Hi_LongKou/sample_0006/rgb.webp",
+        "mask": "assets/samples/WHU_Hi_LongKou/sample_0006/mask.u8"
+      },
+      "source_sha256": "33828e09537fc901cdb241ff8177749485f2855c4d5f9adc17935bafabf95a75",
+      "provenance_sha256": "e5b50db1db66bc8d9d21f52cbecf21d751bbc722ced05e496a314e72ea76314a"
     }
   ],
   "gallery_count": 57,

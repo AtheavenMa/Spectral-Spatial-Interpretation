@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_4020",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 139,
+  "target_name": "Summer Tanager",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 8.472098350524902,
+  "original_sample_sha256": "fbdb5ea810f375fdaee3512d22c265137d561d47aed20e46f50b0d641f5fd67a",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "e7d47a22cb1c7efa54957274618cd08a7461db6c9ede3dab7f8480ca87d575bd",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "b21bdbb382696ea5dfb39865334460397221973c4d575b7813a84d31d8c5887e",
+      "bytes": 48798
+    }
+  }
+}

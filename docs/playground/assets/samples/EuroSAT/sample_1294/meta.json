@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "sample_id": "EuroSAT/sample_1294",
+  "model_id": "eurosat",
+  "width": 64,
+  "height": 64,
+  "channels": [
+    "B01 443 nm",
+    "B02 490 nm",
+    "B03 560 nm",
+    "B04 665 nm",
+    "B05 705 nm",
+    "B06 740 nm",
+    "B07 783 nm",
+    "B08 842 nm",
+    "B8A 865 nm",
+    "B09 945 nm",
+    "B10 1375 nm",
+    "B11 1610 nm",
+    "B12 2190 nm"
+  ],
+  "target_class": 2,
+  "target_name": "HerbaceousVegetation",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -5.518896102905273,
+    -3.350527763366699,
+    -2.636202573776245,
+    -1.5922318696975708,
+    -2.114936113357544,
+    -2.326322317123413,
+    -2.1840622425079346,
+    -2.0577473640441895,
+    -1.813044786453247,
+    -2.5581395626068115,
+    -1.815996527671814,
+    -1.470116376876831,
+    -2.1107592582702637
+  ],
+  "reference_full_score": 16.20147705078125,
+  "original_sample_sha256": "f57559d0346ed8dea70eb0478c4c28f4ca7acdc16aa6a0822eb5c797f697fcc9",
+  "original_checkpoint_sha256": "0c3418bc3880d5b4f8f06e2299e59a2b097f26a31acd978e7351a5920bbfd19a",
+  "files": {
+    "tensor": {
+      "sha256": "f1a2dcc1835256e5cfc4703a926da51a44a33aab3d26df5db25db8c5766eda76",
+      "bytes": 212992
+    },
+    "rgb": {
+      "sha256": "218fc427073c20158d5150ea7f54d401b32cebb7501a2dcd46e0f51e6df6e67b",
+      "bytes": 2836
+    }
+  }
+}

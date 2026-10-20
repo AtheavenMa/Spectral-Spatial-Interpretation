@@ -113,6 +113,4 @@ python -m unittest tests.test_atlas_api -v
 
 Tests run the API on actual HLS/PaviaU weights and inputs and a CUB RGB PNG with an explicit class target. Tests inspect the PNG/JSON/NPZ and numerical aggregation identities.
 
-The [HTML Visual Atlas gallery](https://atheavenma.github.io/ssi-playground/?view=atlas) includes all 57 existing research figures. The browser currently reruns SSI on the bundled HLS checkpoint and sample; the Python API covers all six registered model families with matching checkpoints and original inputs.
-
-Recomputing a particular one of the 57 Atlas figures requires the corresponding full original input, exact preprocessing, fixed target annotation and compatible checkpoint. Only one complete model/input pair per dataset is bundled today. Selecting an Atlas PNG cannot reconstruct its missing spectral tensor.
+The [HTML Visual Atlas gallery](https://atheavenma.github.io/ssi-playground/?view=atlas) includes all 57 existing research figures. Each of those 57 samples now has its original tensor and a verified ONNX model, so the browser recomputes SSI from that tensor. The gallery PNG is only the stored figure. The Python API covers the same six families.

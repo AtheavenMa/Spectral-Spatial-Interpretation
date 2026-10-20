@@ -1,6 +1,6 @@
 # Complete Visual Atlas input handoff
 
-The HTML gallery now indexes all **57 PNG examples** from CUB-200, EuroSAT, HLS Burn Scars, Pavia University, Salinas and WHU-Hi-LongKou. The current static HTML compute mode uses a verified HLS checkpoint and one corresponding HLS sample. The six-model Python API can compute SSI and produce Atlas PNG + JSON for compatible checkpoint/input pairs.
+The HTML gallery indexes all **57 PNG examples**. As of the work-plan 03 closeout, each of those 57 samples has a verified original tensor and the matching ONNX model is exported. The notes below describe the contract that export had to satisfy. The separately bundled HLS demo is not one of the 57.
 
 To make **every one of the 57 exact gallery examples** recomputable (rather than merely browsable), export the following for each sample from the original experiment. No extra training or new ground-truth labels are requested.
 

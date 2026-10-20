@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "sample_id": "CUB_200/sample_2002",
+  "model_id": "cub-200",
+  "width": 448,
+  "height": 448,
+  "channels": [
+    "Red",
+    "Green",
+    "Blue"
+  ],
+  "target_class": 71,
+  "target_name": "Pomarine Jaeger",
+  "target_kind": "fixed_class_logit",
+  "region_pixels": null,
+  "baseline_mean": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_zero": [
+    -2.1179039478302,
+    -2.0357141494750977,
+    -1.804444432258606
+  ],
+  "reference_full_score": 3.8210983276367188,
+  "original_sample_sha256": "f1e94d0d79ca92792a88623fedc13821f3b05a34da07203f662a6148fbce7e47",
+  "original_checkpoint_sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
+  "files": {
+    "tensor": {
+      "sha256": "ea7126db2a38ff53966304ec723878326ba0350fa14a36cdf453e82911693ff8",
+      "bytes": 2408448
+    },
+    "rgb": {
+      "sha256": "83e3c69ec791d68bc6745b82948c42eaafe10106bcd34327a5efa73282d631c9",
+      "bytes": 19740
+    }
+  }
+}
