@@ -65,6 +65,9 @@ def check(site):
         assert data["err"] < 1e-3, data
         assert page.locator(".channel-card").count() == 6
         assert page.locator("#bars .bar").count() == 6
+        assert page.locator("#permutations").count() == 0
+        assert page.locator("#kControls button").count() == 3
+        assert page.locator(".site-bar").text_content().find("OpenSAE") < 0
 
         initial = page.locator("#spatial").evaluate("(c) => c.toDataURL()")
         page.locator("#opacity").evaluate(
@@ -80,6 +83,13 @@ def check(site):
         page.locator("#spatial").click(position={"x": 100, "y": 100})
         assert "ROW" in page.locator("#scope").text_content()
         page.screenshot(path=str(SCREENS / "ssi_web_desktop.png"), full_page=True)
+
+        # Permutations are direct buttons, not an awkward native OS select menu.
+        page.locator("button[data-k='2']").click()
+        assert page.evaluate("() => state.permutations") == 2
+        assert page.get_by_role("button", name="2", exact=True).get_attribute("aria-pressed") == "true"
+        page.locator("button[data-k='1']").click()
+        assert page.evaluate("() => state.permutations") == 1
 
         page.locator("button[data-grid='8']").click()
         assert page.evaluate("() => state.result === null")
@@ -101,6 +111,29 @@ def check(site):
         assert_no_overflow(page)
         page.screenshot(path=str(SCREENS / "ssi_web_mobile.png"), full_page=True)
         assert not errors, errors
+
+        # Browse the entire 57-figure research Atlas within the same HTML app.
+        gallery = browser.new_page(viewport={"width": 1320, "height": 860})
+        gallery.goto(site.split("?")[0] + "?view=atlas&dataset=EuroSAT", wait_until="domcontentloaded")
+        gallery.wait_for_function(
+            "() => document.querySelectorAll('#datasetFilters button').length === 6"
+        )
+        assert gallery.locator("#computeView").is_hidden()
+        assert gallery.locator("#atlasGallery .atlas-tile").count() == 10
+        for dataset, expected in (("CUB_200",10),("HLS_BurnScars",10),
+                                  ("PaviaU",10),("Salinas",10),("WHU_Hi_LongKou",7)):
+            gallery.locator("#datasetFilters button").filter(
+                has_text={"CUB_200":"CUB-200","HLS_BurnScars":"HLS Burn Scars",
+                          "PaviaU":"Pavia University","Salinas":"Salinas",
+                          "WHU_Hi_LongKou":"WHU-Hi-LongKou"}[dataset]
+            ).click()
+            assert gallery.locator("#atlasGallery .atlas-tile").count() == expected
+        gallery.locator("#atlasGallery .atlas-tile").first.click()
+        assert gallery.locator("#atlasDialog").evaluate("(x)=>x.open")
+        assert gallery.locator("#atlasFullLink").get_attribute("href").endswith(".png")
+        gallery.locator("#atlasClose").click()
+        assert not gallery.locator("#atlasDialog").evaluate("(x)=>x.open")
+        gallery.close()
         browser.close()
         print({"site": site, "full_score": data["full"],
                "region_pixels": data["target"], "first_evaluations": data["n"],
