@@ -2,11 +2,9 @@
 
 The repository includes a real CPU-compatible SSI Playground. It serves a minimal HTML interface and JSON API. The default model is the bundled HLS checkpoint and sample. CUB-200, EuroSAT, Pavia University, Salinas and WHU-Hi-LongKou are additional catalog entries under `assets/lab`.
 
-## GitHub Codespaces
+## Browser version
 
-[Launch the Codespaces workspace](https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation). The configuration lives at [`.devcontainer/devcontainer.json`](../.devcontainer/devcontainer.json). Codespaces installs the Python CPU dependencies on creation, then uses [`.devcontainer/start.sh`](../.devcontainer/start.sh) to launch the FastAPI app on forwarded port 7860 when the workspace starts.
-
-Open the **PORTS** tab and choose **SSI Playground** (7860) if the automatic browser prompt was dismissed. This is a per-user cloud development environment, not a permanently deployed public website. GitHub authentication, available Codespaces quota and initial dependency installation are required.
+[Open the standalone SSI HTML](https://atheavenma.github.io/ssi-playground/), which runs the original HLS example via browser-side ONNX inference. For the six-model or custom checkpoint API, run the Python service below.
 
 ## Local
 
