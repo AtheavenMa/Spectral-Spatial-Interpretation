@@ -37,4 +37,5 @@ jobs:
           path: |
             /tmp/ssi_web_desktop.png
             /tmp/ssi_web_mobile.png
+            /tmp/ssi_web_gallery.png
           if-no-files-found: ignore
