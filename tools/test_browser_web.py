@@ -132,6 +132,10 @@ def check(site):
             "() => document.querySelector('#atlasGallery img')?.naturalWidth > 0",
             timeout=60000,
         )
+        gallery.evaluate("""async () => {
+          const first = [...document.querySelectorAll('#atlasGallery img')].slice(0,3);
+          await Promise.all(first.map(img => img.decode()));
+        }""")
         gallery.screenshot(path=str(SCREENS / "ssi_web_gallery.png"), full_page=True)
         gallery.locator("#atlasGallery .atlas-tile").first.click()
         assert gallery.locator("#atlasDialog").evaluate("(x)=>x.open")
