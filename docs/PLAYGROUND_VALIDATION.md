@@ -60,3 +60,13 @@ These checks show the current implementation is repeatable and that one masked c
 python -m unittest discover -s tests -v
 python -m lab.cli explain --model-id paviau --sample-id paviau-0008 --grid 4 --permutations 1 --seed 0
 ```
+
+## Reliability closeout
+
+The numerical tests now include `tests/test_jobs.py`, which simulates an unexpected model RuntimeError and a cancelled worker. Both must leave the task in a terminal state and release the single-run slot. An unexpected model exception is logged server-side while the client receives an actionable, non-sensitive error message.
+
+`lab/browser_smoke.py` exercises actual browser races when SSI parameters change **both before POST /api/jobs has returned its job ID and after the job starts**. The frontend now invalidates every result-affecting control change, waits for cooperative cancellation before starting a replacement run, and refuses stale preview responses/errors. Old results cannot be displayed as though they correspond to the new parameters.
+
+The real HSI sampling check is in [PLAYGROUND_STABILITY.md](PLAYGROUND_STABILITY.md), computed from the bundled PaviaU, Salinas and LongKou checkpoints by `benchmarks/spectral_stability.py`. The **K=1 versus K=3 Top 10 overlap** was 6/10, 8/10 and 9/10, respectively, at grid 4, mean baseline, seed 0. At K=3, two seeds also produced different Top 10 sets. The UI keeps K=1 as an immediate preview, labels the sampled-order count, and permits more sampling within measured CPU limits. This is sensitivity evidence, not proof of convergence.
+
+The earlier CPU memory note has been made precise: the recorded peak RSS was for the **whole multi-model benchmark process**, not an independently measured maximum for each dataset.
