@@ -65,6 +65,12 @@ def check(site):
         assert data["err"] < 1e-3, data
         assert page.locator(".channel-card").count() == 6
         assert page.locator("#bars .bar").count() == 6
+        assert page.evaluate("() => state.registry.gallery_count") == 57
+        assert page.locator("#datasetSelect option").count() == 6
+        assert page.locator("#sampleSelect option").count() == 11
+        assert page.locator("#sampleSelect").input_value() == "hls-bundled"
+        assert page.locator("#pendingPanel").is_hidden()
+        assert page.evaluate("() => SSIComputeRuntime.buildPaths(270, 1, () => 0.4).unique.size") == 271
         assert page.locator("#permutations").count() == 0
         assert page.locator("#kControls button").count() == 3
         assert page.locator(".site-bar").text_content().find("OpenSAE") < 0
@@ -81,13 +87,15 @@ def check(site):
         page.locator(".channel-card[data-band='5']").click()
         assert "SWIR2 SSI" in page.locator("#spatialTitle").text_content()
         page.locator("#spatial").click(position={"x": 100, "y": 100})
-        assert "ROW" in page.locator("#scope").text_content()
+        assert "row" in page.locator("#scope").text_content().lower()
         page.screenshot(path=str(SCREENS / "ssi_web_desktop.png"), full_page=True)
 
         # Permutations are direct buttons, not an awkward native OS select menu.
-        page.locator("button[data-k='2']").click()
-        assert page.evaluate("() => state.permutations") == 2
-        assert page.get_by_role("button", name="2", exact=True).get_attribute("aria-pressed") == "true"
+        page.locator("button[data-k='3']").click()
+        assert page.evaluate("() => state.permutations") == 3
+        assert page.locator("button[data-k='3']").get_attribute("aria-pressed") == "true"
+        page.locator("button[data-k='5']").click()
+        assert page.evaluate("() => state.permutations") == 5
         page.locator("button[data-k='1']").click()
         assert page.evaluate("() => state.permutations") == 1
 
@@ -140,8 +148,23 @@ def check(site):
         gallery.locator("#atlasGallery .atlas-tile").first.click()
         assert gallery.locator("#atlasDialog").evaluate("(x)=>x.open")
         assert gallery.locator("#atlasFullLink").get_attribute("href").endswith(".png")
-        gallery.locator("#atlasClose").click()
+        gallery.locator("#atlasUseSample").click()
         assert not gallery.locator("#atlasDialog").evaluate("(x)=>x.open")
+        gallery.wait_for_function(
+            "() => state.sample?.id === 'WHU_Hi_LongKou/sample_0000'"
+        )
+        assert gallery.locator("#pendingPanel").is_visible()
+        assert gallery.locator("#run").is_disabled()
+        assert gallery.evaluate("() => state.result === null")
+        assert gallery.locator("#pendingSource").get_attribute("href").endswith("sample_0000.png")
+        gallery.locator("#sampleSelect").select_option("WHU_Hi_LongKou/sample_0001")
+        gallery.wait_for_function("() => state.sample?.id === 'WHU_Hi_LongKou/sample_0001'")
+        assert gallery.locator("#run").is_disabled()
+        gallery.locator("#datasetSelect").select_option("HLS_BurnScars")
+        gallery.locator("#sampleSelect").select_option("hls-bundled")
+        await_computation(gallery)
+        assert gallery.locator("#run").is_enabled()
+        assert gallery.locator("#pendingPanel").is_hidden()
         gallery.close()
         browser.close()
         print({"site": site, "full_score": data["full"],
