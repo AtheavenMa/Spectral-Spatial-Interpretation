@@ -17,6 +17,9 @@ const state = {
   pendingModel: null,
   pendingSample: null,
   pendingChannel: null,
+  previewTicket: 0,
+  pendingStart: null,
+  pendingCancel: Promise.resolve(),
 };
 
 function status(message, error = false) {
@@ -41,7 +44,27 @@ function activeChoice(container, attr, value) {
   });
 }
 
+// Invalidate immediately when any result-affecting control changes.
+// The cancellation chain also handles a POST that has not returned its job ID.
+function invalidateRun() {
+  state.ticket += 1;
+  const activeJob = state.jobId;
+  const pendingStart = state.pendingStart;
+  state.jobId = null;
+  state.busy = false;
+  $("run").disabled = false;
+  $("cancel").hidden = true;
+  $("run").textContent = "▶  Run SSI";
+
+  const cancellation = pendingStart
+    ? pendingStart.then((job) => stopJob(job.job_id), () => {})
+    : activeJob ? stopJob(activeJob) : Promise.resolve();
+  state.pendingCancel = Promise.all([state.pendingCancel, cancellation]).then(() => {});
+  return state.pendingCancel;
+}
+
 function markChanged() {
+  invalidateRun();
   state.result = null;
   state.cell = null;
   $("mapEmpty").classList.remove("hidden");
@@ -134,8 +157,12 @@ function syncControls() {
 }
 
 async function loadPreview() {
-  const q = new URLSearchParams({model_id: $("model").value, sample_id: $("sample").value});
+  const request = ++state.previewTicket;
+  const model = $("model").value;
+  const sample = $("sample").value;
+  const q = new URLSearchParams({model_id: model, sample_id: sample});
   const image = await api("/api/preview?" + q.toString());
+  if (request !== state.previewTicket || model !== $("model").value || sample !== $("sample").value) return;
   $("inputImage").src = image.input;
   $("gtImage").src = image.ground_truth;
   $("predImage").src = image.prediction;
@@ -221,12 +248,26 @@ async function runSSI() {
   $("run").textContent = "Computing SSI…";
   status("Running the real checkpoint on CPU…");
   try {
-    const started = await api("/api/jobs", {
+    // A new run never overtakes a prior cancelled run, even if the old POST
+    // had not returned a job ID when settings changed.
+    await state.pendingCancel;
+    if (mine !== state.ticket) return;
+    const starting = api("/api/jobs", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(params),
     });
-    if (mine !== state.ticket) return;
+    state.pendingStart = starting;
+    let started;
+    try {
+      started = await starting;
+    } finally {
+      if (state.pendingStart === starting) state.pendingStart = null;
+    }
+    if (mine !== state.ticket) {
+      await stopJob(started.job_id);
+      return;
+    }
     state.jobId = started.job_id;
     let job;
     for (;;) {
@@ -441,17 +482,22 @@ function restoreQuery() {
     state.pendingChannel = channel;
 }
 
-async function abandonRun() {
-  state.ticket += 1;
-  const jobId = state.jobId;
-  state.jobId = null;
-  state.busy = false;
-  $("run").disabled = false;
-  $("cancel").hidden = true;
-  $("run").textContent = "▶  Run SSI";
-  if (jobId) {
-    try { await api("/api/jobs/" + jobId, {method: "DELETE"}); } catch (_) { /* already finished */ }
+async function stopJob(jobId) {
+  try { await api("/api/jobs/" + jobId, {method: "DELETE"}); }
+  catch (_) { return; } // The worker may already have finished.
+  // Cancellation is cooperative: wait until the worker releases the slot.
+  for (let attempt = 0; attempt < 80; attempt++) {
+    try {
+      const job = await api("/api/jobs/" + jobId);
+      if (job.status !== "running") return;
+    } catch (_) { return; }
+    await new Promise((resolve) => setTimeout(resolve, 250));
   }
+  // Subsequent starts will report the genuine server-busy state.
+}
+
+async function abandonRun() {
+  return invalidateRun();
 }
 
 function setupEvents() {
@@ -475,7 +521,7 @@ function setupEvents() {
     markChanged();
   });
   $("model").addEventListener("change", async () => {
-    await abandonRun();
+    invalidateRun();
     state.hadQuery = false;
     state.channel = -1;
     const model = selected();
