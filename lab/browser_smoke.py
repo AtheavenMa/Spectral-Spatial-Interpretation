@@ -66,6 +66,7 @@ def main():
             return response;
           };
         }""")
+        page.locator(".advanced summary").click()
         page.locator("#seed").fill("874")
         page.locator("#run").click()
         page.wait_for_function("() => state.pendingStart !== null", timeout=30000)
