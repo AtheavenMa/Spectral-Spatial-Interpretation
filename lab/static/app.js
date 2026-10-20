@@ -161,8 +161,12 @@ async function loadPreview() {
   const model = $("model").value;
   const sample = $("sample").value;
   const q = new URLSearchParams({model_id: model, sample_id: sample});
-  const image = await api("/api/preview?" + q.toString());
-  if (request !== state.previewTicket || model !== $("model").value || sample !== $("sample").value) return;
+  const image = await api("/api/preview?" + q.toString()).catch((error) => {
+    // Ignore errors from a superseded preview as well as its returned pixels.
+    if (request !== state.previewTicket) return null;
+    throw error;
+  });
+  if (!image || request !== state.previewTicket || model !== $("model").value || sample !== $("sample").value) return;
   $("inputImage").src = image.input;
   $("gtImage").src = image.ground_truth;
   $("predImage").src = image.prediction;
