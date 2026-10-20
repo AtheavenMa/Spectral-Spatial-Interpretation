@@ -55,3 +55,7 @@ The complete numeric attribution result is still available in the JSON download.
 ## Scope
 
 This is **one input per dataset, fixed grid and baseline**, not a dataset-wide stability evaluation, not a statistical confidence interval, and not evidence of physical causality. It answers the concrete release question of whether fast Top 10 displays are sensitive to finite permutation sampling. They are, so the product exposes the estimator settings and makes additional sampling possible without changing SSI's meaning.
+
+## Repeat this analysis
+
+The dedicated GitHub Actions workflow is [spectral_stability.yml](../.github/workflows/spectral_stability.yml). It runs for changes to SSI model/core/input code and can be triggered manually. Routine README or frontend-only commits use the main fast [tests.yml](../.github/workflows/tests.yml) instead. The measured results above are preserved independently of the workflow trigger.
