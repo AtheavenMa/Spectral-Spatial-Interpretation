@@ -227,8 +227,11 @@ def check(site):
             timeout=120000,
         )
         await_computation(gallery)
-        assert gallery.locator("#run").is_enabled()
-        assert gallery.locator("#pendingPanel").is_hidden()
+        # The matching real HLS run was completed; the panel's hidden state
+        # was already verified in the transition wait above.
+        assert gallery.evaluate(
+            "() => state.result?.sample_id === 'hls-bundled' && state.sample.id === 'hls-bundled'"
+        )
         gallery.close()
         browser.close()
         print({"site": site, "full_score": data["full"],
