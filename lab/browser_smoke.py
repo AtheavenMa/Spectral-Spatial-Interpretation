@@ -80,6 +80,8 @@ def main():
         page.evaluate("() => { window.fetch = window.__realFetch; }")
 
         # Also interrupt a job that has already returned its ID and is running.
+        # Use a non-cached 8×8 HLS request so it remains active long enough.
+        page.locator('button[data-grid="8"]').click()
         page.locator("#seed").fill("875")
         page.locator('button[data-baseline="mean"]').click()
         page.locator("#run").click()
