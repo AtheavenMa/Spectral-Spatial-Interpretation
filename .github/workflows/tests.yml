@@ -20,6 +20,10 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validate JavaScript syntax
         run: node --check lab/static/app.js
+      - name: Validate cloud launch configuration
+        run: |
+          python -m json.tool .devcontainer/devcontainer.json > /dev/null
+          bash -n .devcontainer/start.sh
   docker-smoke:
     needs: tests
     runs-on: ubuntu-latest
