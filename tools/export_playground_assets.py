@@ -335,6 +335,58 @@ def validate_manifest(*, complete: bool=False) -> dict:
                 [m["id"] for m in manifest["models"] if m["onnx_state"]=="verified"]}
 
 
+
+def batch_export(mapping_path: Path) -> dict:
+    """Process a 57-sample handoff manifest without fabricating missing data.
+
+    Empty source paths remain pending. An error in one sample does not prevent
+    independent, verified model/sample pairs from being exported.
+    """
+    if not mapping_path.is_file():
+        raise FileNotFoundError(mapping_path)
+    batch=json.loads(mapping_path.read_text())
+    if not isinstance(batch,dict) or not isinstance(batch.get("models"),list) or \
+       not isinstance(batch.get("samples"),list):
+        raise ValueError("Batch JSON requires models and samples arrays.")
+    manifest=manifest_read()
+    model_ids={m["id"] for m in manifest["models"]}
+    sample_ids={s["id"] for s in manifest["samples"] if s.get("image_url")}
+    report={"models":[],"samples":[],"errors":[],"skipped_samples":[]}
+    for item in batch["models"]:
+        model_id=item.get("id")
+        if model_id not in model_ids:
+            report["errors"].append({"kind":"model","id":model_id,"error":"Unknown model ID"})
+            continue
+        if item.get("export") is False:
+            report["models"].append({"id":model_id,"status":"existing"})
+            continue
+        checkpoint=item.get("checkpoint")
+        sample=item.get("sample")
+        if not checkpoint or not sample:
+            report["models"].append({"id":model_id,"status":"pending_paths"})
+            continue
+        try:
+            output=model_export(model_id,Path(checkpoint),Path(sample))
+            report["models"].append(output)
+        except Exception as exc:
+            report["errors"].append({"kind":"model","id":model_id,"error":str(exc)})
+    for item in batch["samples"]:
+        sample_id=item.get("id")
+        if sample_id not in sample_ids:
+            report["errors"].append({"kind":"sample","id":sample_id,"error":"Unknown Atlas ID"})
+            continue
+        source=item.get("source")
+        if not source:
+            report["skipped_samples"].append(sample_id)
+            continue
+        try:
+            report["samples"].append(sample_export(sample_id,Path(source)))
+        except Exception as exc:
+            report["errors"].append({"kind":"sample","id":sample_id,"error":str(exc)})
+    report["summary"]=validate_manifest()
+    return report
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     sub=parser.add_subparsers(dest="cmd",required=True)
@@ -347,9 +399,17 @@ def main():
     m.add_argument("--sample",required=True,type=Path)
     v=sub.add_parser("validate",help="Audit registry without pretending unavailable models are ready")
     v.add_argument("--require-complete",action="store_true")
+    b=sub.add_parser("batch",help="Import a provenance-matched collection of model/sample source paths")
+    b.add_argument("--mapping",required=True,type=Path)
+    b.add_argument("--report",type=Path)
     args=parser.parse_args()
     if args.cmd=="sample":out=sample_export(args.id,args.source)
     elif args.cmd=="model":out=model_export(args.id,args.checkpoint,args.sample)
+    elif args.cmd=="batch":
+        out=batch_export(args.mapping)
+        if args.report:
+            args.report.parent.mkdir(parents=True,exist_ok=True)
+            args.report.write_text(json.dumps(out,indent=2)+"\n")
     else:out=validate_manifest(complete=args.require_complete)
     print(json.dumps(out,indent=2))
 
