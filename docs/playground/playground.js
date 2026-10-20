@@ -16,7 +16,7 @@ const state = {
   meta: null,
   image: $("input"),
   x: null, mask: null, roi: [], channels: [],
-  grid: 8, baseline: "zero", permutations: 3, seed: 0, band: -1,
+  grid: 8, baseline: "mean", permutations: 1, seed: 0, band: -1,
   selectedCell: null, scope: "whole", result: null, running: false,
   generation: 0, loadTicket: 0, pendingAutoRun: false, cache: new Map(), sessions: new Map(),
 };
@@ -48,10 +48,6 @@ function updateControls() {
     b.classList.toggle("selected",Number(b.dataset.grid)===state.grid);
     b.setAttribute("aria-pressed",String(Number(b.dataset.grid)===state.grid));
   });
-  $("baselineControls").querySelectorAll("button").forEach(b=>{
-    b.classList.toggle("selected",b.dataset.baseline===state.baseline);
-    b.setAttribute("aria-pressed",String(b.dataset.baseline===state.baseline));
-  });
   $("kControls").querySelectorAll("button").forEach(b=>{
     b.classList.toggle("selected",Number(b.dataset.k)===state.permutations);
     b.setAttribute("aria-pressed",String(Number(b.dataset.k)===state.permutations));
@@ -66,7 +62,7 @@ function urlState() {
     q.set("sample",state.sample.id);
   }
   q.set("grid",String(state.grid));
-  q.set("baseline",state.baseline);
+  q.delete("baseline");
   q.set("k",String(state.permutations));
   q.set("seed",String(state.seed));
   q.set("band",String(state.band));
@@ -76,8 +72,6 @@ function restoreParams() {
   const q=new URLSearchParams(location.search);
   const grid=Number(q.get("grid"));
   if(q.has("grid") && [4,8,16].includes(grid))state.grid=grid;
-  const baseline=q.get("baseline");
-  if(["mean","zero"].includes(baseline))state.baseline=baseline;
   const k=Number(q.get("k"));
   if([1,3,5].includes(k))state.permutations=k;
   const seed=Number(q.get("seed"));
@@ -569,10 +563,6 @@ function setup() {
     b.addEventListener("click",()=>{
       if(b.disabled)return;
       state.grid=Number(b.dataset.grid);updateControls();invalidate();
-    }));
-  $("baselineControls").querySelectorAll("button").forEach(b=>
-    b.addEventListener("click",()=>{
-      state.baseline=b.dataset.baseline;updateControls();invalidate();
     }));
   $("kControls").querySelectorAll("button").forEach(b=>
     b.addEventListener("click",()=>{
