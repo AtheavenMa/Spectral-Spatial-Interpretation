@@ -57,7 +57,7 @@
       "kind": "segmentation",
       "n_channels": 6,
       "n_classes": 2,
-      "onnx": "assets/models/hls-unet/model.onnx",
+      "onnx": "assets/hls_unet.onnx",
       "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
@@ -162,7 +162,9 @@
       "verified": {
         "original_checkpoint_sha256": "8f33126da4d47d6dc1159a7e5dbd191aeb02ec08e9b3427de2565c2bba3b8109",
         "original_sample_sha256": "c10a6dce62bc5889d6c3179fb3ced2f924057a16748d7b81c70b32b2914523fa"
-      }
+      },
+      "target_class": 1,
+      "python_source": "assets/examples/hls_sample.npz"
     },
     {
       "id": "CUB_200/sample_0158",
