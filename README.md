@@ -19,33 +19,11 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 
 ## 🖼️ SSI in Action
 
-**57 visualizations · 6 datasets · RGB, multispectral, and hyperspectral imagery.**
-
-### 🦜 RGB · CUB-200
-
 <p align="center">
-  <a href="examples/CUB_200/"><img src="examples/CUB_200/sample_0158.png" alt="CUB-200 SSI image interpretation example" width="900"></a>
+  <a href="https://atheavenma.github.io/ssi-playground/"><img src="examples/HLS_BurnScars/sample_0045.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="900"></a>
 </p>
 
-### 🔥 Multispectral · HLS Burn Scars
-
-<p align="center">
-  <a href="examples/HLS_BurnScars/"><img src="examples/HLS_BurnScars/sample_0045.png" alt="HLS Burn Scars spectral and spatial interpretation example" width="900"></a>
-</p>
-
-### 🌈 Hyperspectral · Pavia University
-
-<p align="center">
-  <a href="examples/PaviaU/"><img src="examples/PaviaU/sample_0003.png" alt="Pavia University hyperspectral SSI interpretation example" width="900"></a>
-</p>
-
-**Explore all 57 figures in the [SSI Visual Atlas](examples/README.md).**
-
-| RGB | Multispectral | Hyperspectral |
-|---|---|---|
-| [CUB-200](examples/CUB_200/) · 10 | [EuroSAT](examples/EuroSAT/) · 10 | [PaviaU](examples/PaviaU/) · 10 |
-| | [HLS Burn Scars](examples/HLS_BurnScars/) · 10 | [Salinas](examples/Salinas/) · 10 |
-| | | [WHU-Hi-LongKou](examples/WHU_Hi_LongKou/) · 7 |
+**[🎛️ Play with SSI ↗](https://atheavenma.github.io/ssi-playground/)** · [Visual Atlas — 57 examples](examples/README.md)
 
 ---
 
