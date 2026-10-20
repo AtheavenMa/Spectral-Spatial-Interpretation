@@ -92,3 +92,35 @@ body{font-size:16px;line-height:1.48}
   .segments{min-width:0}
 }
 
+/* Model and image switching for all 57 Atlas examples. */
+.sample-picker{display:grid;grid-template-columns:minmax(190px,1fr) minmax(190px,1.2fr) auto;gap:18px;align-items:end;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:20px}
+.sample-picker label{font:600 15px var(--sans);color:#3a4c59;display:flex;flex-direction:column;gap:8px;min-width:0}
+.sample-picker select,.band-picker select{width:100%;height:44px;border:1px solid #dce2e4;border-radius:5px;background:#fff;color:var(--ink);padding:8px 10px;font:15px var(--sans);text-overflow:ellipsis}
+.sample-state{font-size:15px;color:#687a86;align-self:center;padding-top:17px;text-align:right}
+#liveResults[hidden],#pendingPanel[hidden]{display:none!important}
+.pending-example{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:26px;align-items:center;border:1px solid var(--line);padding:20px;border-radius:7px;margin-top:25px}
+.pending-copy h2{font-size:32px;margin:0 0 14px}
+.pending-copy p{font-size:16px;line-height:1.6;color:#6c7985;max-width:440px}
+.pending-copy a{font-size:16px;text-decoration:none;color:var(--blue);font-weight:600}
+.pending-example img{display:block;width:100%;max-height:560px;object-fit:contain;background:#f5f6f4;border:1px solid #e7ebec}
+.band-picker{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.band-picker label{font-size:16px;color:#586b79;font-weight:600}
+.band-picker select{max-width:290px}
+.bars .bar{display:grid;grid-template-columns:94px minmax(0,1fr) 76px;gap:10px;min-width:0;
+  align-items:center;background:transparent;border:0;padding:0;color:var(--ink);text-align:left}
+.bars .bar:hover .bar-label{color:var(--red)}
+.bar-label{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:850px){
+  .sample-picker{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sample-state{grid-column:1 / -1;padding:0;text-align:left}
+}
+@media(max-width:540px){
+  .sample-picker{grid-template-columns:1fr;gap:14px}
+  .sample-state{grid-column:1}
+  .sample-picker select{height:43px}
+  .pending-example{grid-template-columns:1fr;gap:12px}
+  .pending-copy h2{font-size:27px}
+  .band-picker{flex-direction:column;align-items:flex-start}
+  .band-picker select{max-width:100%}
+  .bars .bar{grid-template-columns:93px minmax(0,1fr) 72px}
+}
