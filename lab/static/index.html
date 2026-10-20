@@ -90,7 +90,7 @@
         <figure class="visual-panel">
           <h2 id="resultTitle">(c) Spatial SSI</h2>
           <div class="image-window interactive-map">
-            <canvas id="map" width="768" height="768" tabindex="0" aria-label="SSI smoothly overlaid on the input image. Click a region, or use arrow keys, to inspect its channels."></canvas>
+            <canvas id="map" width="768" height="768" aria-label="Spatial SSI attribution smoothly overlaid on the input image."></canvas>
             <div class="map-empty" id="mapEmpty">Run SSI to explore this image</div>
           </div>
           <figcaption id="resultSub">Attribution on the original image</figcaption>
@@ -117,18 +117,12 @@
       <div class="contribution-section">
         <div class="contribution-title">
           <h2>(e) Spectral contributions</h2>
-          <div class="score-switch" aria-label="Score scope">
-            <button type="button" id="globalBtn" class="selected" aria-pressed="true">Whole image</button>
-            <button type="button" id="cellBtn" aria-pressed="false">Selected cell</button>
-          </div>
         </div>
-        <p id="scoreContext" class="score-context">Sum across spatial cells</p>
         <div class="band-tools" id="bandTools" hidden>
           <input type="search" id="bandSearch" placeholder="Find a band…" aria-label="Find a spectral band">
           <button type="button" id="bandMode">All bands</button>
         </div>
         <div id="bars" class="bars" aria-label="Signed spectral contributions"></div>
-        <p id="cellHint" class="quiet">Click the SSI image to inspect a spatial cell.</p>
       </div>
     </section>
 
