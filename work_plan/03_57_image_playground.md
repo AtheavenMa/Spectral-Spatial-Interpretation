@@ -63,6 +63,16 @@ Install project dependencies, ONNX and ONNX Runtime in an environment with the o
 python tools/export_playground_assets.py validate
 ~~~
 
+**Fastest handoff:** edit docs/playground/57_sources.template.json, filling the source path for each exact original sample ID; keep a missing source set to null, not a substitute image. Then import all known models and samples in one deterministic command:
+
+~~~bash
+python tools/export_playground_assets.py batch \
+  --mapping docs/playground/57_sources.template.json \
+  --report outputs/atlas_57_import_report.json
+~~~
+
+Each item reports success, pending input, or the exact failure reason. The importer continues on independently valid samples. Re-run validate after corrections. The following individual commands remain useful for isolated debugging.
+
 For each model, export a real, validated ONNX adapter. Example:
 
 ~~~bash
