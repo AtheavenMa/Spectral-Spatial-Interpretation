@@ -38,7 +38,11 @@ docker build -t ssi-playground .
 docker run --rm -p 7860:7860 ssi-playground
 ```
 
-[HTML source](lab/static/index.html) · [API](lab/app.py) · [Supported model adapters](lab/adapters/) · [Quickstart](docs/PLAYGROUND_QUICKSTART.md) · [Performance](docs/PLAYGROUND_PERFORMANCE.md) · [Validation](docs/PLAYGROUND_VALIDATION.md) · [Browser test screenshots](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39361203272)
+[HTML source](lab/static/index.html) · [API](lab/app.py) · [Model adapters](lab/adapters/) · [Quickstart](docs/PLAYGROUND_QUICKSTART.md) · [Performance](docs/PLAYGROUND_PERFORMANCE.md) · [Validation](docs/PLAYGROUND_VALIDATION.md) · [Mobile preview](assets/playground/mobile.webp)
+
+<p align="center">
+  <a href="assets/playground/desktop.webp"><img src="assets/playground/desktop.webp" alt="Real SSI Playground browser screenshot with Pavia University input, target and prediction, selectable spectral band and signed spatial attribution" width="900"></a>
+</p>
 
 ---
 
