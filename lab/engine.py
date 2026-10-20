@@ -119,6 +119,7 @@ def previews(model_id: str = MODEL_ID, sample_id: str = SAMPLE_ID) -> dict:
     return {
         "input": _png_data(np.rint(rgb * 255)),
         "ground_truth": _png_data(_mask_rgb(mask)),
+        "target_mask": _png_data(np.repeat(((mask == 1).astype(np.uint8) * 255)[..., None], 3, axis=2)),
         "prediction": _png_data(_mask_rgb(np.where(mask == 255, 255, prediction))),
         "height": int(mask.shape[0]),
         "width": int(mask.shape[1]),
