@@ -4,10 +4,10 @@
 
 <p align="center">
   <b>NeurIPS 2026</b> &nbsp;·&nbsp;
-  <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
-  <a href="examples/README.md">🖼️ Visual Atlas</a> &nbsp;·&nbsp;
   <a href="#-interactive-ssi-playground">🎛️ Playground</a> &nbsp;·&nbsp;
-  <a href="https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation">☁️ Launch</a>
+  <a href="https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation">☁️ Launch on GitHub</a> &nbsp;·&nbsp;
+  <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
+  <a href="examples/README.md">🖼️ Visual Atlas</a>
 </p>
 
 <p align="center">
