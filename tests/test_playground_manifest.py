@@ -90,6 +90,29 @@ class PlaygroundManifestTests(unittest.TestCase):
                 self.assertEqual(counts["ready_gallery"], 0)
                 self.assertEqual(counts["ready_samples"], 1)
 
+    def test_batch_template_covers_exactly_the_atlas_gallery(self):
+        from tools.export_playground_assets import batch_export
+        template = json.loads(
+            (ROOT / "docs/playground/57_sources.template.json").read_text()
+        )
+        manifest = manifest_read()
+        gallery_ids = {
+            x["id"] for x in manifest["samples"] if x.get("image_url")
+        }
+        self.assertEqual({s["id"] for s in template["samples"]}, gallery_ids)
+        self.assertEqual(len(template["samples"]), 57)
+        self.assertEqual(len(template["models"]), 6)
+        # Empty source entries remain pending; nothing is fabricated/exported.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            mapping = Path(temp_dir) / "only_missing.json"
+            mapping.write_text(json.dumps({
+                "models": [{"id": "hls-unet", "export": False}],
+                "samples": [{"id": "PaviaU/sample_0010", "source": None}],
+            }))
+            report = batch_export(mapping)
+            self.assertEqual(report["skipped_samples"], ["PaviaU/sample_0010"])
+            self.assertEqual(report["errors"], [])
+
     def test_hls_has_a_recorded_reference_hash(self):
         manifest = manifest_read()
         model = next(m for m in manifest["models"] if m["id"] == "hls-unet")
