@@ -54,6 +54,43 @@ def main():
         assert "model=hls-unet" in page.url
         page.screenshot(path=str(OUT / "ssi_playground_hls_desktop.png"), full_page=True)
 
+        # Emulate a delayed POST response: changing parameters before the job ID
+        # arrives must cancel that late job and never paint its old attribution.
+        page.evaluate("""() => {
+          window.__realFetch = window.fetch;
+          window.fetch = async (...args) => {
+            const response = await window.__realFetch(...args);
+            if (args[0] === '/api/jobs' && args[1]?.method === 'POST') {
+              await new Promise((resolve) => setTimeout(resolve, 900));
+            }
+            return response;
+          };
+        }""")
+        page.locator("#seed").fill("874")
+        page.locator("#run").click()
+        page.wait_for_function("() => state.pendingStart !== null", timeout=30000)
+        page.locator('button[data-baseline="zero"]').click()
+        assert "Run SSI" in page.locator("#status").text_content()
+        assert not page.locator("#resultTitle").text_content().startswith("Blue attribution")
+        page.locator("#run").click()
+        _computed(page)
+        assert page.evaluate("() => state.result.baseline") == "zero"
+        assert page.evaluate("() => state.result.seed") == 874
+        page.evaluate("() => { window.fetch = window.__realFetch; }")
+
+        # Also interrupt a job that has already returned its ID and is running.
+        page.locator("#seed").fill("875")
+        page.locator('button[data-baseline="mean"]').click()
+        page.locator("#run").click()
+        page.wait_for_function("() => state.jobId !== null", timeout=30000)
+        page.locator('button[data-baseline="zero"]').click()
+        page.wait_for_timeout(700)
+        assert page.evaluate("() => state.result === null")
+        page.locator("#run").click()
+        _computed(page)
+        assert page.evaluate("() => state.result.baseline") == "zero"
+        assert page.evaluate("() => state.result.seed") == 875
+
         page.locator("#model").select_option("cub-200")
         page.wait_for_function(
             "() => document.getElementById('inputImage').naturalWidth === 448",
