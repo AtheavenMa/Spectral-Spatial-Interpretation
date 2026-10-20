@@ -1,0 +1,32 @@
+name: Validate six ONNX model families
+
+on:
+  push:
+    paths:
+      - 'tools/test_browser_six_models.py'
+      - '.github/workflows/six-model-browser.yml'
+      - 'docs/playground/compute-runtime.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  six-real-models:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Chromium
+        run: |
+          python -m pip install 'playwright>=1.54,<2'
+          python -m playwright install --with-deps chromium
+      - name: Compute real one-cell SSI for every model locally
+        run: python tools/test_browser_six_models.py
+      - name: Compute real one-cell SSI on published Pages
+        env:
+          SSI_WEB_URL: https://atheavenma.github.io/ssi-playground/
+        run: python tools/test_browser_six_models.py
