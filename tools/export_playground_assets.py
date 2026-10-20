@@ -214,7 +214,14 @@ def sample_export(sample_id: str, source: Path) -> dict:
     entry["python_source"]=str(source.resolve().relative_to(ROOT)) if source.resolve().is_relative_to(ROOT) else None
     entry["source_sha256"]=digest(source)
     entry["provenance_sha256"]=digest(provenance)
-    entry["status"]="ready" if model["onnx_state"]=="verified" and (WEB/model["onnx"]).is_file() else "awaiting_assets"
+    onnx_file=WEB/model["onnx"]
+    verified_model=(
+        model["onnx_state"]=="verified"
+        and onnx_file.is_file()
+        and model.get("onnx_sha256")==digest(onnx_file)
+        and model.get("checkpoint_sha256")==metadata["original_checkpoint_sha256"]
+    )
+    entry["status"]="ready" if verified_model else "awaiting_assets"
     manifest_write(manifest)
     return {"sample":sample_id,"status":entry["status"],"reference_full_score":original_score,
             "metadata":str(meta_path),"bytes":tensor_path.stat().st_size}
@@ -270,7 +277,14 @@ def model_export(model_id: str, checkpoint: Path, sample: Path) -> dict:
         if entry["kind"]=="segmentation":
             has_inputs=has_inputs and bool(files.get("mask")) and (WEB/files["mask"]).is_file()
         if has_inputs:
-            rec["status"]="ready"
+            meta=json.loads((WEB/files["metadata"]).read_text())
+            has_inputs=(
+                meta.get("sample_id")==rec["id"]
+                and meta.get("model_id")==model_id
+                and meta.get("original_checkpoint_sha256")==entry["checkpoint_sha256"]
+                and meta.get("original_sample_sha256")==rec.get("source_sha256")
+            )
+        rec["status"]="ready" if has_inputs else "awaiting_assets"
     manifest_write(manifest)
     return {"model":model_id,"onnx":str(path),"bytes":path.stat().st_size,
             "sha256":entry["onnx_sha256"],"max_parity_error":err,"masked_error":masked_err}
@@ -293,6 +307,23 @@ def validate_manifest(*, complete: bool=False) -> dict:
             if model["kind"]=="segmentation" and (not rec["files"].get("mask") or
                     not (WEB/rec["files"]["mask"]).is_file()):
                 raise ValueError(f"{rec['id']} lacks its fixed target mask.")
+            onnx=WEB/model["onnx"]
+            if model.get("onnx_sha256")!=digest(onnx):
+                raise ValueError(f"{rec['id']} model export SHA-256 mismatch.")
+            metadata=json.loads((WEB/rec["files"]["metadata"]).read_text())
+            if rec.get("gallery_example") is not False:
+                if metadata.get("sample_id")!=rec["id"] or metadata.get("model_id")!=rec["model_id"]:
+                    raise ValueError(f"{rec['id']} source identity does not match metadata.")
+                if metadata.get("original_sample_sha256")!=rec.get("source_sha256") or \
+                        metadata.get("original_checkpoint_sha256")!=model.get("checkpoint_sha256"):
+                    raise ValueError(f"{rec['id']} source checkpoint/input digests disagree.")
+                count=int(metadata["width"])*int(metadata["height"])*len(metadata["channels"])
+                if (WEB/rec["files"]["tensor"]).stat().st_size!=count*4:
+                    raise ValueError(f"{rec['id']} model input float32 shape is invalid.")
+                for key,source in (("tensor","tensor"),("rgb","rgb"),("mask","mask")):
+                    relative=rec["files"].get(source)
+                    if relative and metadata["files"][key]["sha256"]!=digest(WEB/relative):
+                        raise ValueError(f"{rec['id']} {key} payload checksum mismatch.")
             ready+=1
         else:
             pending+=1
