@@ -196,3 +196,17 @@ Actions run [39336910580](https://github.com/AtheavenMa/Spectral-Spatial-Interpr
 ### Final handoff
 
 Deliver an explicit six-model support table, chosen default parameters, real CPU timing summary, test results, local run instructions, sample non-HLS reproduction command, screenshot previews, and the finished commit/CI link. Confirm explicitly that Hugging Face has **not** been deployed.
+
+## Reliability closeout after Work Plan 02
+
+This addendum closes the three issues found during the final audit, without starting a Work Plan 03 or using Hugging Face.
+
+1. **Stale results on settings edits.** The UI invalidates active jobs on every grid/baseline/seed/permutation/method/sample edit. It cooperatively cancels active jobs and handles a pending job-creation response that arrives after the user changes settings. Old model previews and preview errors are ignored after switching. A new run waits for a previous cancellation rather than racing the single compute slot. Playwright tests cover the pre-ID and active-job race.
+2. **Unexpected worker errors.** The job worker catches unexpected Python inference exceptions, logs them, returns a terminal error, and releases the one-at-a-time compute slot. A direct worker-recovery test and a cancellation-slot test are part of the Python suite.
+3. **Hyperspectral Top 10 sensitivity.** Real 4×4 / mean-baseline / seed-0 sampling at K=1 vs K=3 yielded Top 10 overlaps of **6/10 for PaviaU, 8/10 for Salinas, and 9/10 for LongKou**. At K=3, seed 0 vs seed 1 overlap was **6/10, 8/10, 7/10**, respectively. PaviaU K=3 vs K=5 overlap was 7/10. The page now displays the actual number of sampled orders for high-band results and preserves configurable higher-K options. See [PLAYGROUND_STABILITY.md](../docs/PLAYGROUND_STABILITY.md) and the GitHub Actions artifact attached to [run 39359117906](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39359117906).
+
+These measurements concern one genuine input per dataset, **not convergence certification**. K=1 remains the deliberately fast interactive preview. For a channel ranking to support more detailed conclusions, compare higher K and another seed. Finite-sample local efficiency is distinct from ranking stability.
+
+The CPU RSS wording in [PLAYGROUND_PERFORMANCE.md](../docs/PLAYGROUND_PERFORMANCE.md) now explicitly states that 811328 KB is the peak of the entire sequential model benchmark process, not per-model peaks.
+
+**Hugging Face remains undeployed.** Full CI verification of this final reliability closeout is required in addition to the earlier Work Plan 02 green test run.
