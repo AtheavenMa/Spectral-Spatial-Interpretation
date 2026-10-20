@@ -77,8 +77,12 @@ def main():
         )
         page.get_by_role("button", name="SWIR2", exact=True).click()
         assert "SWIR2 SSI" in page.locator("#resultTitle").text_content()
+        global_bars = page.locator("#bars .bar-line").all_text_contents()
         page.locator("#map").click(position={"x": 90, "y": 90})
-        assert "Cell (row " in page.locator("#scoreContext").text_content()
+        assert page.locator("#bars .bar-line").all_text_contents() == global_bars
+        assert page.locator("#globalBtn").count() == 0
+        assert page.locator("#cellBtn").count() == 0
+        assert page.locator("#scoreContext").count() == 0
         assert "model=hls-unet" in page.url
         page.screenshot(path=str(OUT / "ssi_playground_hls_desktop.png"), full_page=True)
 
@@ -159,8 +163,9 @@ def main():
         page.wait_for_function("() => document.querySelectorAll('#bars .bar-line').length === 1")
         page.locator("#channels select").select_option(label="Band 012")
         assert "Band 012 SSI" in page.locator("#resultTitle").text_content()
+        global_band_bars = page.locator("#bars .bar-line").all_text_contents()
         page.locator("#map").click(position={"x": 40, "y": 40})
-        assert "Cell (row " in page.locator("#scoreContext").text_content()
+        assert page.locator("#bars .bar-line").all_text_contents() == global_band_bars
         assert page.locator("#bars .bar-line").count() == 1
         assert "model=paviau" in page.url
         assert not errors, "Browser console errors: " + repr(errors)
