@@ -4,8 +4,7 @@
 
 <p align="center">
   <b>NeurIPS 2026</b> &nbsp;·&nbsp;
-  <a href="#-interactive-ssi-playground">🎛️ Playground</a> &nbsp;·&nbsp;
-  <a href="https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation">☁️ Launch on GitHub</a> &nbsp;·&nbsp;
+  <a href="https://atheavenma.github.io/ssi-playground/">🎛️ Playground</a> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
   <a href="examples/README.md">🖼️ Visual Atlas</a>
 </p>
@@ -132,9 +131,9 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 ## 🎛️ Interactive SSI Playground
 
-**Play with SSI on real model inputs.** Choose a dataset, change the grid or baseline, and explore smoothly interpolated channel attributions **overlaid on the original image**.
+[**Play SSI in your browser ↗**](https://atheavenma.github.io/ssi-playground/) · [Full Python Playground](docs/PLAYGROUND_QUICKSTART.md)
 
-[Launch in GitHub Codespaces](https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation) · [Run locally](docs/PLAYGROUND_QUICKSTART.md) · [Explore the API](deploy/README.md)
+Explore the real HLS UNet checkpoint and input directly in HTML. Adjust grid size and baseline, then visualize newly computed SSI on the image. The Python API supports all six datasets.
 
 ---
 
