@@ -1,5 +1,4 @@
 """Regression tests for unexpected worker exceptions and cancellation lifecycle."""
-from concurrent.futures import ThreadPoolExecutor
 from threading import Event
 import time
 import unittest
