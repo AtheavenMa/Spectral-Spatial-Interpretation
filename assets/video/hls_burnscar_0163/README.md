@@ -12,7 +12,7 @@ The input is a six-band HLS satellite image (128×128). The PyTorch checkpoint w
 
 The burn-scar GT occupies **16.69%** of this image's pixels. For this input and seed, **83.82% of positive spatial SSI mass**, proportionally weighted by the GT fraction within each grid cell, falls in the burn-scar region. All 16 spatial cells with largest absolute SSI scores overlap the GT region by more than 50%, and 15 of those 16 cells have positive attribution.
 
-This is a **single-example localization observation**, not a guarantee that heatmap intensity equals burn probability, or that every pixel outside the region has no effect.
+This is a **single-example descriptive observation**, not an independent localization test: the explained scalar target was defined over the GT region itself. Heatmap intensity is not burn probability, and pixels outside the region can matter through model context.
 
 ### 2. Which channels? Spectral interpretation
 
@@ -28,6 +28,8 @@ Total signed channel contribution, obtained by summing $\Phi(g,c)$ across all 25
 | Red | −0.192078 | Negative total |
 
 The displayed ranking by **absolute** size is SWIR2, SWIR1, Red, Green, NIR, Blue. The signed sum of all bands over all cells is **+0.874582**.
+
+**Why joint SSI matters even in this one example:** SWIR2 and SWIR1 both have positive global totals, but their signed 256-cell attribution maps have **Pearson correlation −0.532**. A fraction-of-GT-weighted spatial breakdown gives SWIR2 **+0.936 inside versus −0.185 outside** the burn region, compared with SWIR1 **+0.0215 inside versus +0.545 outside**. This is a descriptive grid-cell weighting, not pixel-level Shapley values. It shows why one global channel vector cannot replace channel-resolved maps. See [EXPLANATION_LOGIC.md](EXPLANATION_LOGIC.md) for the full scientific argument.
 
 In the **normalized original model input**, target pixels have a higher SWIR2 average (0.752 versus 0.095 elsewhere) and SWIR1 average (0.506 versus 0.284), and a slightly lower NIR average (−0.928 versus −0.813). This is broadly consistent with burn-related SWIR increases and NIR decreases discussed in the paper's physical band priors. However, the model's attribution sign is determined by its conditional prediction contrast, not by whether a reflectance value itself increases or decreases.
 
