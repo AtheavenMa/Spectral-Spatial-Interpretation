@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "dataset": "HLS Burn Scars",
+  "model": "Original HLS UNet, 6 input bands, 2 output classes",
+  "width": 128,
+  "height": 128,
+  "channels": [
+    "Blue",
+    "Green",
+    "Red",
+    "NIR",
+    "SWIR1",
+    "SWIR2"
+  ],
+  "grid_options": [
+    4,
+    8,
+    16
+  ],
+  "baseline_mean": [
+    -0.39958634972572327,
+    -0.22098442912101746,
+    -0.1225990280508995,
+    -0.7998159527778625,
+    -0.12976273894309998,
+    -0.15640178322792053
+  ],
+  "baseline_zero": [
+    -1.288023591041565,
+    -1.633723497390747,
+    -1.5808861255645752,
+    -2.7884573936462402,
+    -2.362469434738159,
+    -2.182755708694458
+  ],
+  "region_pixels": 369,
+  "target": "Mean burn-class logit over the fixed ground-truth burn region",
+  "reference_full_score": 2.3719675540924072,
+  "onnx_full_score": 2.3719680309295654,
+  "onnx_max_logit_diff": 3.4570693969726562e-06,
+  "masked_onnx_max_logit_diff": 3.4570693969726562e-06,
+  "original_checkpoint_sha256": "8f33126da4d47d6dc1159a7e5dbd191aeb02ec08e9b3427de2565c2bba3b8109",
+  "original_sample_sha256": "c10a6dce62bc5889d6c3179fb3ced2f924057a16748d7b81c70b32b2914523fa",
+  "files": {
+    "hls_unet.onnx": {
+      "sha256": "486994917c4501964bec765be8cf4a330fa8a31aa4e058dec80744391abeb493",
+      "bytes": 30237
+    },
+    "hls_input.f32": {
+      "sha256": "bea16141ed277297400a9d9dd9a6efab9bed4f0347f9d6b01644f4e257a51aae",
+      "bytes": 393216
+    },
+    "hls_mask.u8": {
+      "sha256": "808b11b4c5a009f31c1db8bc4832f1e0c56790c3d453624b111bd61553a13574",
+      "bytes": 16384
+    },
+    "hls_rgb.webp": {
+      "sha256": "b3fef3af2ad404a001ca2cdf3c56dc1948f5bb42b340a1064d5bee7e583c4830",
+      "bytes": 12800
+    }
+  }
+}
