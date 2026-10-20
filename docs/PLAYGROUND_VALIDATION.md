@@ -70,3 +70,19 @@ The numerical tests now include `tests/test_jobs.py`, which simulates an unexpec
 The real HSI sampling check is in [PLAYGROUND_STABILITY.md](PLAYGROUND_STABILITY.md), computed from the bundled PaviaU, Salinas and LongKou checkpoints by `benchmarks/spectral_stability.py`. The **K=1 versus K=3 Top 10 overlap** was 6/10, 8/10 and 9/10, respectively, at grid 4, mean baseline, seed 0. At K=3, two seeds also produced different Top 10 sets. The UI keeps K=1 as an immediate preview, labels the sampled-order count, and permits more sampling within measured CPU limits. This is sensitivity evidence, not proof of convergence.
 
 The earlier CPU memory note has been made precise: the recorded peak RSS was for the **whole multi-model benchmark process**, not an independently measured maximum for each dataset.
+
+## Visual Atlas presentation in the Playground
+
+The browser uses the same visual grammar as the [57-example Visual Atlas](../examples/README.md), now with real, newly calculated SSI values:
+
+- **(a) Image**: display-only RGB rendition of the registered input. The original normalized model tensor is used for every coalition; display resizing does not alter inference.
+- **(b) Ground Truth**: genuine selected class label for classification, or a three-tone fixed target-region map for segmentation (target red, other labeled pixels neutral, invalid pixels gray). The target mask is returned by `/api/preview`.
+- **(c) Spatial SSI**: signed sum over channels, smoothly interpolated and alpha-blended over the actual input image; a gold outline traces the actual GT target region for segmentation.
+- **(d) Spectral SSI**: up to six spectral channel overlays rendered with the same signed palette and a common within-run channel scale. With many bands, channel thumbnails default to the largest absolute contributions.
+- **(e) Spectral contributions**: signed numeric scores, including whole-image and individual-cell views.
+
+`lab/static/atlas-render.js` performs **bicubic Catmull–Rom interpolation for display only**. It changes neither the cell-wise SSI attribution values nor the numbers stored in the JSON download. It never replaces real inference with a pre-rendered figure. No grid-line rendering is used on the interpolated maps; selecting a cell can draw a thin selection outline for interaction.
+
+Rendered canvases are larger than their CSS display sizes, improving texturing and edge sharpness. However, interpolation cannot restore details absent from a native low-resolution input (for example the 32×32 HSI patches). The CUB-200 bundled NPZ has class labels but **no bounding-box field**; the Ground Truth view therefore displays its actual class rather than inventing the Atlas-style yellow bounding box. To replicate that specific annotation, an original CUB bounding-box record matching test index 158 must be provided by the data-processing agent and validated against the exact sample crop.
+
+Run the maintained browser smoke test to verify three primary panels, interpolated heatmaps, target masks, band changes, transparency control, CPU inference, and responsive layout. Screenshots are CI artifacts for visual inspection only, not part of the public README.
