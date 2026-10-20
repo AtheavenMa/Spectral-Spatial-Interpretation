@@ -111,7 +111,7 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 [**Open the SSI Playground ↗**](https://atheavenma.github.io/ssi-playground/) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
 
-Browse all **57 Visual Atlas examples** in HTML, or recompute SSI with the original HLS checkpoint. The Python API supports all six model families and exports complete figures and numerical results.
+**All 57 Atlas examples are playable in HTML** with verified model checkpoints and original inputs. Change the grid, baseline and permutations to recompute SSI. The Python API also exports Atlas PNG, JSON and NPZ.
 
 ---
 
