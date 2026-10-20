@@ -65,6 +65,8 @@ def check(site):
         assert data["err"] < 1e-3, data
         assert page.locator(".channel-card").count() == 6
         assert page.locator("#bars .bar").count() == 6
+        assert page.locator("#bandPicker").is_hidden()
+        assert page.locator("#pendingPanel").is_hidden()
         assert page.evaluate("() => state.registry.gallery_count") == 57
         assert page.locator("#datasetSelect option").count() == 6
         assert page.locator("#sampleSelect option").count() == 11
