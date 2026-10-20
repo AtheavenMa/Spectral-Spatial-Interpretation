@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "count": 57,
+  "groups": [
+    {
+      "id": "CUB_200",
+      "label": "CUB-200",
+      "modality": "RGB · Classification",
+      "model_id": "cub-200",
+      "files": [
+        "sample_0158.png",
+        "sample_0714.png",
+        "sample_1125.png",
+        "sample_1631.png",
+        "sample_2002.png",
+        "sample_2390.png",
+        "sample_3296.png",
+        "sample_4020.png",
+        "sample_4136.png",
+        "sample_4325.png"
+      ],
+      "raw_prefix": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/CUB_200/"
+    },
+    {
+      "id": "EuroSAT",
+      "label": "EuroSAT",
+      "modality": "Multispectral · Classification",
+      "model_id": "eurosat",
+      "files": [
+        "sample_1294.png",
+        "sample_1972.png",
+        "sample_2190.png",
+        "sample_2247.png",
+        "sample_2390.png",
+        "sample_2995.png",
+        "sample_3042.png",
+        "sample_3276.png",
+        "sample_4044.png",
+        "sample_4141.png"
+      ],
+      "raw_prefix": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/EuroSAT/"
+    },
+    {
+      "id": "HLS_BurnScars",
+      "label": "HLS Burn Scars",
+      "modality": "Multispectral · Segmentation",
+      "model_id": "hls-unet",
+      "files": [
+        "sample_0045.png",
+        "sample_0052.png",
+        "sample_0067.png",
+        "sample_0076.png",
+        "sample_0106.png",
+        "sample_0120.png",
+        "sample_0127.png",
+        "sample_0163.png",
+        "sample_0187.png",
+        "sample_0222.png"
+      ],
+      "raw_prefix": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/HLS_BurnScars/"
+    },
+    {
+      "id": "PaviaU",
+      "label": "Pavia University",
+      "modality": "Hyperspectral · Segmentation",
+      "model_id": "paviau",
+      "files": [
+        "sample_0003.png",
+        "sample_0006.png",
+        "sample_0008.png",
+        "sample_0010.png",
+        "sample_0011.png",
+        "sample_0012.png",
+        "sample_0013.png",
+        "sample_0016.png",
+        "sample_0017.png",
+        "sample_0027.png"
+      ],
+      "raw_prefix": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/PaviaU/"
+    },
+    {
+      "id": "Salinas",
+      "label": "Salinas",
+      "modality": "Hyperspectral · Segmentation",
+      "model_id": "salinas",
+      "files": [
+        "sample_0000.png",
+        "sample_0001.png",
+        "sample_0002.png",
+        "sample_0004.png",
+        "sample_0005.png",
+        "sample_0006.png",
+        "sample_0010.png",
+        "sample_0011.png",
+        "sample_0012.png",
+        "sample_0014.png"
+      ],
+      "raw_prefix": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/Salinas/"
+    },
+    {
+      "id": "WHU_Hi_LongKou",
+      "label": "WHU-Hi-LongKou",
+      "modality": "Hyperspectral · Segmentation",
+      "model_id": "whu-hi-longkou",
+      "files": [
+        "sample_0000.png",
+        "sample_0001.png",
+        "sample_0002.png",
+        "sample_0003.png",
+        "sample_0004.png",
+        "sample_0005.png",
+        "sample_0006.png"
+      ],
+      "raw_prefix": "https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/examples/WHU_Hi_LongKou/"
+    }
+  ]
+}
