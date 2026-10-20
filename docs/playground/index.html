@@ -91,7 +91,7 @@
     <section id="pendingPanel" class="pending-example" hidden aria-live="polite">
       <div class="pending-copy">
         <h2 id="pendingTitle">Atlas sample</h2>
-        <p id="pendingText">The full original input and model export are required before SSI can be recomputed for this image.</p>
+        <p id="pendingText">The original model input and verified model export are needed to recompute SSI for this image.</p>
         <a id="pendingSource" href="#" target="_blank" rel="noopener">View original Atlas PNG ↗</a>
       </div>
       <img id="pendingImage" alt="Original published Visual Atlas result; not a newly computed explanation">
@@ -105,7 +105,7 @@
           <div class="image"><img id="input" alt="Original six-band satellite image shown with red, green and blue reflectance bands"></div>
         </figure>
         <figure>
-          <h2>(b) Ground Truth</h2>
+          <h2 id="groundTitle">(b) Ground Truth</h2>
           <div class="image"><canvas id="groundTruth" width="512" height="512" aria-label="Ground truth burn region in red"></canvas></div>
         </figure>
         <figure>
