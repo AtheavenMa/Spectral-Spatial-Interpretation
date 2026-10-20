@@ -87,6 +87,19 @@ class HLSVideoEvidenceTests(unittest.TestCase):
             atol=1e-9,
         )
 
+    def test_swir_bands_have_distinct_spatial_profiles(self):
+        # A key benefit of the full position/channel matrix is that bands
+        # with positive *global* scores can still have opposed *local* maps.
+        swir1 = self.grid[:, :, 4].ravel()
+        swir2 = self.grid[:, :, 5].ravel()
+        corr = float(np.corrcoef(swir1, swir2)[0, 1])
+        cosine = float(np.dot(swir1, swir2) / (
+            np.linalg.norm(swir1) * np.linalg.norm(swir2)))
+        self.assertAlmostEqual(corr, -0.5317708614788536, places=6)
+        self.assertAlmostEqual(cosine, -0.4561709730306368, places=6)
+        self.assertGreater(swir1.sum(), 0)
+        self.assertGreater(swir2.sum(), 0)
+
     def test_all_shipped_pngs_and_hashes_are_real(self):
         required = ["input.png", "ground_truth.png", "spatial_ssi.png",
                     "spectral_contributions.png", "ssi_explanation_overview.png",
