@@ -17,7 +17,7 @@ const state = {
   image: $("input"),
   x: null, mask: null, roi: [], channels: [],
   grid: 8, baseline: "mean", permutations: 1, seed: 0, band: -1,
-  selectedCell: null, scope: "whole", result: null, running: false,
+  result: null, running: false,
   generation: 0, loadTicket: 0, pendingAutoRun: false, cache: new Map(), sessions: new Map(),
 };
 function setStatus(s, error=false) {
@@ -83,8 +83,6 @@ function restoreParams() {
 function invalidate(alsoStatus=true) {
   state.generation++;
   state.result=null;
-  state.selectedCell=null;
-  state.scope="whole";
   $("empty").classList.remove("hidden");
   $("bandGrid").replaceChildren();
   $("bars").replaceChildren();
@@ -92,7 +90,6 @@ function invalidate(alsoStatus=true) {
   $("copy").disabled=true;
   $("spatialTitle").textContent="(c) Spatial SSI";
   $("scale").textContent="";
-  $("scope").textContent="Whole image";
   if(alsoStatus && state.context)
     setStatus(state.running?"Finishing the previous model batch…":"Ready. Run SSI to explore this image.");
   urlState();
@@ -427,15 +424,13 @@ function paintSpatial() {
   if(state.band>=state.channels.length)state.band=-1;
   const max=limit(state.band);
   SSIAtlas.paint($("spatial"),state.image,matrix(state.band),
-                 max,opacity(),targetRegionObject(),state.selectedCell);
+                 max,opacity(),targetRegionObject(),null);
   $("spatialTitle").textContent=state.band===-1?"(c) Spatial SSI":
     "(c) "+state.channels[state.band]+" SSI";
   $("scale").textContent="±"+max.toPrecision(3);
 }
 function chosenScores() {
-  return (state.scope==="cell"&&state.selectedCell)?
-    state.result.attribution[state.selectedCell.y][state.selectedCell.x]:
-    state.result.spectral;
+  return state.result.spectral;
 }
 
 function renderBands() {
@@ -517,13 +512,6 @@ function renderBars() {
       state.band=i;paintSpatial();renderBands();urlState();
     });
   });
-  const local=state.scope==="cell"&&state.selectedCell;
-  $("scope").textContent=local?"Row "+(state.selectedCell.y+1)+", col "+(state.selectedCell.x+1):
-    c>10?"Top 10 · whole image":"Whole image";
-  $("cellInfo").textContent=local?"Local channel contributions in the selected cell.":
-    "Click the SSI image above to inspect a spatial cell.";
-  $("whole").classList.toggle("selected",!local);
-  $("selected").classList.toggle("selected",!!local);
 }
 function renderResult() {
   if(!state.result)return;
@@ -532,16 +520,7 @@ function renderResult() {
   $("save").disabled=false;$("copy").disabled=false;
   urlState();
 }
-function pickCell(event) {
-  if(!state.result)return;
-  const rect=$("spatial").getBoundingClientRect();
-  const grid=state.result.grid;
-  state.selectedCell={
-    x:Math.max(0,Math.min(grid-1,Math.floor((event.clientX-rect.left)*grid/rect.width))),
-    y:Math.max(0,Math.min(grid-1,Math.floor((event.clientY-rect.top)*grid/rect.height)))
-  };
-  state.scope="cell";paintSpatial();renderBars();renderBands();
-}
+
 function reproduceCommand() {
   const r=state.result,rec=state.sample,model=state.modelInfo;
   const ckpt=model.checkpoint_repo_path||"/path/to/checkpoint.pt";
@@ -581,25 +560,6 @@ function setup() {
   $("run").addEventListener("click",run);
   $("stop").addEventListener("click",()=>{
     invalidate(false);setStatus("Stopping after the current model batch…");
-  });
-  $("spatial").addEventListener("click",pickCell);
-  $("spatial").addEventListener("keydown",event=>{
-    if(!state.result)return;
-    const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
-    const delta=moves[event.key];
-    if(!delta)return;
-    event.preventDefault();
-    if(!state.selectedCell)state.selectedCell={x:0,y:0};
-    state.selectedCell={
-      x:Math.min(state.grid-1,Math.max(0,state.selectedCell.x+delta[0])),
-      y:Math.min(state.grid-1,Math.max(0,state.selectedCell.y+delta[1]))
-    };
-    state.scope="cell";paintSpatial();renderBars();renderBands();
-  });
-  $("whole").addEventListener("click",()=>{state.scope="whole";renderBars();renderBands();});
-  $("selected").addEventListener("click",()=>{
-    if(!state.selectedCell)state.selectedCell={x:0,y:0};
-    state.scope="cell";paintSpatial();renderBars();renderBands();
   });
   $("save").addEventListener("click",()=>{
     if(!state.result)return;
