@@ -1,6 +1,6 @@
 # Work Plan 03 · Complete 57-Image SSI Playground
 
-**Status: interface and validation infrastructure implemented; remaining task is verified original data and model exports.**
+**Status: ENGINEERING READY / LOCAL ASSET HANDOFF PENDING.** Live HTML, 57-ID registry, 1/3/5 controls, arbitrary-band numerical runtime, local artifact API, strict per-sample intake and batch exporter are implemented and tested. Exactly one independent bundled HLS example is browser-runnable; the 57 gallery samples remain pending matching original data and verified ONNX exports.
 **Date: 2026-10-20**
 **Execution handoff to: local research/data agent**
 **Repository: AtheavenMa/Spectral-Spatial-Interpretation, branch main**
@@ -24,13 +24,27 @@ checkpoint + genuine input + fixed target + SSI settings -> atlas.png + result.j
 - [x] docs/playground/compute-runtime.js computes observed-context permutation SSI for an arbitrary number of spectral channels using an ONNX scoring adapter; no six-band-only mask assumption.
 - [x] tools/export_playground_assets.py has model, sample and validate subcommands, requiring provenance. The model exporter checks unmasked and masked PyTorch/ONNX parity.
 - [x] lab/atlas_api.py and lab/atlas_plot.py generate a true Atlas-style PNG, JSON and NPZ for the six supported checkpoint architectures and original inputs.
-- [x] Unit tests cover the 57-ID contract and invalid provenance; Chromium tests cover switching, hidden unavailable runs, browser HLS and a 13-channel synthetic additive invariant.
+- [x] Unit tests cover the 57-ID contract, wrong-provenance refusal, genuine NPZ export, batch mapping and unchanged HLS. Chromium tests cover switching, hidden unavailable runs, browser HLS and a 13-channel deterministic additive invariant.
 - [x] README shows only one HLS example under SSI in Action, links to Playground, and no longer contains the debug score counter.
 - [x] A public GitHub Pages site exists at https://atheavenma.github.io/ssi-playground/ .
 - [ ] Recompute all 57 figure examples from their **exact original** inputs and models and verify source-to-figure identities.
 - [ ] Verify CPU/browser performance of all six ONNX exports and complete the production Pages data publication.
 
 The status of an Atlas image must be changed only by validated data export, not by manually changing a JSON flag.
+
+## 1A. Verified engineering closeout (October 20, 2026)
+
+- **Source main:** [e61da51291c1](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/commit/e61da51291c1) successfully passed both [Python / numerical / Docker CI 39463374805](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39463374805) and [browser / live Pages CI 39463374881](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/actions/runs/39463374881).
+- **Production HTML:** [https://atheavenma.github.io/ssi-playground/](https://atheavenma.github.io/ssi-playground/). GitHub Pages code mirrors `docs/playground/index.html`, `playground.js`, `compute-runtime.js` and `compute-manifest.json` at matching Git blob SHAs. Deploy workflows succeeded for the last mirrored site commit.
+- **Real compute availability:** 1 verified bundled HLS example; **0 of the 57 numbered gallery examples** have been validated for interactive rerun. Do not count the bundled HLS input as one of the 57.
+- **Source asset registry:** 57 exact IDs, including 10 CUB, 10 EuroSAT, 10 HLS, 10 PaviaU, 10 Salinas and 7 LongKou; 6 model adapters are declared. Existing checkpoints plus five NPZ samples may help, but must be associated with the exact gallery source before enabling any Run action.
+- **Batch handoff:** fill [57_sources.template.json](../docs/playground/57_sources.template.json), then run `python tools/export_playground_assets.py batch --mapping docs/playground/57_sources.template.json --report outputs/atlas_57_import_report.json`; follow with `validate` and finally `validate --require-complete` when all 57 have authentic source data.
+- **What is left:** no frontend structural redesign is requested. Local agent must supply authentic 57 inputs, source sidecars, match crops/targets, verify 5 non-HLS ONNX exports and measure browser speed on real high-band inputs. Do not substitute PNGs for tensors or claim 57 runnable before the verification count is 57.
+- **User-facing style:** README has a single HLS visual in `SSI in Action`; the web HTML has 1/3/5 permutation choices, readable typography and no model-score debug line or unrelated lab branding.
+
+### Immediate local-agent acceptance
+
+Return a validated `outputs/atlas_57_import_report.json`, exact ready/pending ID lists, per-model ONNX parity/checksums, and actual remaining blocked entries. **A partial truthful release is acceptable:** any validated sample may be published individually, with other examples remaining view-only. One missing sample must not block all other models.
 
 ## 2. Original inputs the local agent must provide
 
