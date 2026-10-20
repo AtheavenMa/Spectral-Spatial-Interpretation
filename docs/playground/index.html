@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./style.css">
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.21.0/dist/ort.min.js" defer></script>
   <script src="./atlas-render.js" defer></script>
+  <script src="./compute-runtime.js" defer></script>
   <script src="./playground.js" defer></script>
   <script src="./gallery.js" defer></script>
 </head>
@@ -39,9 +40,14 @@
     </div>
     <div id="computeView" role="tabpanel" aria-labelledby="computeTab">
     <section class="experiment" aria-label="SSI computation parameters">
-      <div class="sample-label">
-        <span class="sample-title">HLS Burn Scars</span>
-
+      <div class="sample-picker" aria-label="Choose real Atlas input">
+        <label for="datasetSelect">Dataset
+          <select id="datasetSelect" aria-label="Select dataset"></select>
+        </label>
+        <label for="sampleSelect">Image
+          <select id="sampleSelect" aria-label="Select image or original sample"></select>
+        </label>
+        <span class="sample-state" id="sampleState">Loading samples…</span>
       </div>
       <div class="controls">
         <fieldset class="control">
@@ -82,6 +88,15 @@
       </div>
     </section>
 
+    <section id="pendingPanel" class="pending-example" hidden aria-live="polite">
+      <div class="pending-copy">
+        <h2 id="pendingTitle">Atlas sample</h2>
+        <p id="pendingText">The full original input and model export are required before SSI can be recomputed for this image.</p>
+        <a id="pendingSource" href="#" target="_blank" rel="noopener">View original Atlas PNG ↗</a>
+      </div>
+      <img id="pendingImage" alt="Original published Visual Atlas result; not a newly computed explanation">
+    </section>
+    <div id="liveResults">
     <section class="atlas-section">
       <div class="section-label"><span class="number">01</span> Image &amp; explanation</div>
       <div class="triad">
@@ -110,7 +125,11 @@
 
     <section class="atlas-section channels-section">
       <div class="section-label"><span class="number">02</span> Spectral SSI</div>
-      <div class="spectral-grid" id="bandGrid" aria-label="Six spectral channel attribution images on the original image"></div>
+      <div class="band-picker" id="bandPicker" hidden>
+        <label for="bandSelect">Explore all channels</label>
+        <select id="bandSelect" aria-label="Choose any spectral channel"></select>
+      </div>
+      <div class="spectral-grid" id="bandGrid" aria-label="Spectral channel attribution images on the original image"></div>
     </section>
 
     <section class="atlas-section contributions">
@@ -135,6 +154,7 @@
       <p>The browser loads the <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/blob/main/assets/checkpoints/hls_unet.pt">original UNet checkpoint</a> exported to ONNX and the same original input tensor and target mask used by the Python adapter. Each selected configuration is recomputed on your device. Other cells stay observed while SSI allocates each cell's contrast among its spectral channels. Only the heatmap display is interpolated.</p>
       <p>For all six registered models, custom checkpoints, or larger workloads, use the <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/tree/main/lab">full Python API</a>. This browser example uses the included HLS sample only.</p>
     </details>
+    </div>
     </div>
     <section id="atlasView" role="tabpanel" aria-labelledby="atlasTab" hidden>
       <div class="atlas-header">
