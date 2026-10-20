@@ -131,8 +131,17 @@ def check(site):
         )
         page.locator(".channel-card[data-band='5']").click()
         assert "SWIR2 SSI" in page.locator("#spatialTitle").text_content()
+        # Channel contributions are always a single global ranking.
+        assert page.locator("#whole").count() == 0
+        assert page.locator("#selected").count() == 0
+        assert page.locator("#scope").count() == 0
+        assert page.locator("#cellInfo").count() == 0
+        original_spectral = page.evaluate("() => state.result.spectral.slice()")
         page.locator("#spatial").click(position={"x": 100, "y": 100})
-        assert "row" in page.locator("#scope").text_content().lower()
+        assert page.evaluate("() => JSON.stringify(state.result.spectral)") == __import__("json").dumps(
+            original_spectral, separators=(",", ":")
+        )
+        assert page.locator("#bars .bar").count() == 6
         page.screenshot(path=str(SCREENS / "ssi_web_desktop.png"), full_page=True)
 
         # Permutations are direct buttons, not an awkward native OS select menu.
