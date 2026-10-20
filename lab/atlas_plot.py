@@ -90,7 +90,7 @@ def draw_atlas(
         "savefig.facecolor": "white",
     })
     fig = plt.figure(figsize=(17.5, 11.5), layout="constrained", facecolor="white")
-    outer = fig.add_gridspec(3, 1, height_ratios=[3.2, 2.3, 1.5], hspace=.04)
+    outer = fig.add_gridspec(4, 1, height_ratios=[3.2, .36, 2.05, 1.5], hspace=.11)
     upper = outer[0].subgridspec(1, 3, wspace=.06)
 
     names = ("(a) Image", "(b) Ground Truth", "(c) Spatial SSI")
@@ -116,7 +116,18 @@ def draw_atlas(
         for spine in ax.spines.values():
             spine.set_visible(False)
 
-    thumbs = outer[1].subgridspec(1, count, wspace=.06)
+    # Dedicated row label avoids overlaying it on image content.
+    spectral_heading = fig.add_subplot(outer[1])
+    spectral_heading.axis("off")
+    spectral_heading.text(
+        .01, .45, "(d) Spectral SSI", ha="left", va="center",
+        fontsize=17, color="#1b2937", transform=spectral_heading.transAxes
+    )
+    spectral_heading.text(
+        .99, .45, "Shared signed channel scale", ha="right", va="center",
+        fontsize=11, color="#637481", transform=spectral_heading.transAxes
+    )
+    thumbs = outer[2].subgridspec(1, count, wspace=.06)
     for position, c in enumerate(selected):
         ax = fig.add_subplot(thumbs[0, position])
         ax.imshow(sample.image)
@@ -128,7 +139,7 @@ def draw_atlas(
         for spine in ax.spines.values():
             spine.set_visible(False)
 
-    ax = fig.add_subplot(outer[2])
+    ax = fig.add_subplot(outer[3])
     values = spectral[selected]
     indices = np.arange(count)
     bars = ax.bar(indices, values,
@@ -151,15 +162,8 @@ def draw_atlas(
     ax.legend(
         handles=[Patch(facecolor=BLUE, label="Negative"),
                  Patch(facecolor=RED, label="Positive")],
-        loc="upper right", ncol=2, frameon=False, fontsize=11,
+        loc="upper right", bbox_to_anchor=(1.0, 1.23), ncol=2, frameon=False, fontsize=11,
     )
-    fig.suptitle(
-        f"SSI   /   {sample.family}   /   {sample.target_name}",
-        x=.04, y=1.015, ha="left", fontsize=20, color="#1b2937",
-    )
-    # A compact legend explains that all thumbnails use a shared signed scale.
-    fig.text(.51, .32, "(d) Spectral SSI  ·  shared channel scale",
-             ha="center", fontsize=12, color="#637481")
     fig.savefig(output, dpi=175, bbox_inches="tight", pad_inches=.2, facecolor="white")
     plt.close(fig)
     return {"indices": [int(i) for i in selected], "channel_limit": max_channel,
