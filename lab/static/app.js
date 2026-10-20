@@ -447,9 +447,13 @@ function renderBars() {
     line.append(label, track, number);
     container.append(line);
   });
-  $("scoreContext").textContent = local ?
+  const scope = local ?
     "Cell (row " + (state.cell.y + 1) + ", col " + (state.cell.x + 1) + ")" :
     "Sum over spatial cells";
+  const sampling = many && r.method === "permutation"
+    ? " · " + r.permutations + " sampled " + (r.permutations === 1 ? "order" : "orders")
+    : "";
+  $("scoreContext").textContent = scope + sampling;
   $("cellHint").textContent = state.cell ?
     "Selected cell: row " + (state.cell.y + 1) + ", column " + (state.cell.x + 1) :
     "Click any cell on the map to inspect its " + r.channels.length + " channels.";
