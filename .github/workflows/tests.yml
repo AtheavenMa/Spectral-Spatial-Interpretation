@@ -18,14 +18,6 @@ jobs:
         run: python -m pip install -r requirements_lab_test.txt
       - name: Unit and real-checkpoint integration tests
         run: python -m unittest discover -s tests -v
-      - name: Measure hyperspectral Top-10 sampling sensitivity
-        run: python benchmarks/spectral_stability.py --second-seed --output /tmp/ssi_spectral_stability.json
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ssi-spectral-stability
-          path: /tmp/ssi_spectral_stability.json
-          if-no-files-found: ignore
       - name: Validate JavaScript syntax
         run: node --check lab/static/app.js
   docker-smoke:
