@@ -14,7 +14,11 @@ PY
 then
   echo "SSI Playground already listening on port 7860."
 else
-  nohup python -m uvicorn lab.app:app --host 0.0.0.0 --port 7860     > /tmp/ssi-playground.log 2>&1 < /dev/null &
+  PYTHON_BIN="python"
+  if [[ -x ".venv/bin/python" ]]; then
+    PYTHON_BIN=".venv/bin/python"
+  fi
+  nohup "$PYTHON_BIN" -m uvicorn lab.app:app --host 0.0.0.0 --port 7860 > /tmp/ssi-playground.log 2>&1 < /dev/null &
   echo "Starting SSI Playground on port 7860."
 fi
 
