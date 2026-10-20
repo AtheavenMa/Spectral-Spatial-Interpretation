@@ -20,6 +20,7 @@ const state = {
   previewTicket: 0,
   pendingStart: null,
   pendingCancel: Promise.resolve(),
+  targetMask: null,
 };
 
 function status(message, error = false) {
@@ -70,6 +71,10 @@ function markChanged() {
   $("mapEmpty").classList.remove("hidden");
   $("runMeta").textContent = "AWAITING RUN";
   $("bars").replaceChildren();
+  $("spectralGrid").replaceChildren();
+  $("resultTitle").textContent = "(c) Spatial SSI";
+  $("resultSub").textContent = "Attribution on the original image";
+  $("scaleNote").textContent = "";
   $("stats").textContent = "";
   $("download").disabled = true;
   $("copyCommand").disabled = true;
@@ -161,20 +166,38 @@ async function loadPreview() {
   const model = $("model").value;
   const sample = $("sample").value;
   const q = new URLSearchParams({model_id: model, sample_id: sample});
-  const image = await api("/api/preview?" + q.toString()).catch((error) => {
-    // Ignore errors from a superseded preview as well as its returned pixels.
+  const preview = await api("/api/preview?" + q.toString()).catch((error) => {
     if (request !== state.previewTicket) return null;
     throw error;
   });
-  if (!image || request !== state.previewTicket || model !== $("model").value || sample !== $("sample").value) return;
-  $("inputImage").src = image.input;
-  $("gtImage").src = image.ground_truth;
-  $("predImage").src = image.prediction;
-  if (image.summary) $("previewMeta").textContent = image.summary;
-  const captions = image.captions || {};
+  if (!preview || request !== state.previewTicket ||
+      model !== $("model").value || sample !== $("sample").value) return;
+  $("inputImage").src = preview.input;
+  $("gtImage").src = preview.ground_truth;
+  if (preview.summary) $("previewMeta").textContent = preview.summary;
+  const captions = preview.captions || {};
   if (captions.input) $("inputCaption").textContent = captions.input;
   if (captions.ground_truth) $("gtCaption").textContent = captions.ground_truth;
-  if (captions.prediction) $("predCaption").textContent = captions.prediction;
+
+  // The source image is drawn onto the high-resolution SSI canvas, not
+  // downloaded as a second pre-rendered attribution image.
+  let outline = null;
+  if (preview.target_mask) {
+    const img = new Image();
+    img.src = preview.target_mask;
+    try {
+      await img.decode();
+      outline = SSIAtlas.extractMask(img);
+    } catch (error) {
+      // Missing overlay metadata does not invalidate numerical inference.
+      outline = null;
+    }
+  }
+  try { await $("inputImage").decode(); } catch (_) { /* image can already be decoded */ }
+  if (request !== state.previewTicket ||
+      model !== $("model").value || sample !== $("sample").value) return;
+  state.targetMask = outline;
+  if (state.result) { renderMap(); renderGallery(); }
 }
 
 function parameters() {
@@ -314,6 +337,7 @@ function renderChannelButtons() {
       state.channel = -1;
       renderChannelButtons();
       renderMap();
+      renderGallery();
       writeQuery();
     });
     const select = document.createElement("select");
@@ -335,6 +359,7 @@ function renderChannelButtons() {
       state.channel = select.value === "" ? -1 : Number(select.value);
       renderChannelButtons();
       renderMap();
+      renderGallery();
       writeQuery();
     });
     target.append(spatial, select);
@@ -353,6 +378,7 @@ function renderChannelButtons() {
       state.channel = choice.index;
       renderChannelButtons();
       renderMap();
+      renderGallery();
       writeQuery();
     });
     target.append(button);
@@ -362,53 +388,98 @@ function renderChannelButtons() {
 function scaleValues() {
   const r = state.result;
   if (state.channel === -1)
-    return Math.max(1e-12, ...r.spatial.flat().map((n) => Math.abs(n)));
-  return Math.max(1e-12, ...r.attribution.flat(2).map((n) => Math.abs(n)));
+    return SSIAtlas.signedLimit(r.spatial);
+  let max = 1e-12;
+  for (const row of r.attribution) {
+    for (const cell of row) for (const v of cell) max = Math.max(max, Math.abs(v));
+  }
+  return max;
 }
 
-function ramp(value, max) {
-  const t = Math.min(1, Math.abs(value) / max);
-  const mid = [235, 233, 228];
-  const end = value >= 0 ? [184, 78, 56] : [68, 126, 156];
-  const c = mid.map((m, i) => Math.round(m + t * (end[i] - m)));
-  return "rgb(" + c.join(",") + ")";
+function opacityLevel() {
+  return Number($("overlayOpacity").value) / 100;
+}
+
+function channelMatrix(r, channel) {
+  return r.attribution.map((row) => row.map((cell) => cell[channel]));
 }
 
 function renderMap() {
   if (!state.result) return;
   const r = state.result;
-  const canvas = $("map");
-  const ctx = canvas.getContext("2d");
-  const grid = r.grid;
-  const size = canvas.width / grid;
+  const matrix = state.channel === -1 ? r.spatial : channelMatrix(r, state.channel);
   const max = scaleValues();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let y = 0; y < grid; y++) {
-    for (let x = 0; x < grid; x++) {
-      const v = state.channel === -1 ? r.spatial[y][x] : r.attribution[y][x][state.channel];
-      ctx.fillStyle = ramp(v, max);
-      ctx.fillRect(Math.round(x * size), Math.round(y * size),
-                   Math.ceil((x + 1) * size) - Math.round(x * size),
-                   Math.ceil((y + 1) * size) - Math.round(y * size));
-    }
-  }
-  ctx.strokeStyle = "rgba(255,255,255,.24)";
-  ctx.lineWidth = 1;
-  for (let n = 1; n < grid; n++) {
-    const p = Math.round(n * size) + 0.5;
-    ctx.beginPath(); ctx.moveTo(p, 0); ctx.lineTo(p, 512); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, p); ctx.lineTo(512, p); ctx.stroke();
-  }
-  if (state.cell) {
-    ctx.strokeStyle = "#1c2644"; ctx.lineWidth = Math.max(2, 9 / grid);
-    ctx.strokeRect(state.cell.x * size + 1, state.cell.y * size + 1, size - 2, size - 2);
-  }
-  $("resultTitle").textContent = state.channel === -1 ? "Spatial attribution" : r.channels[state.channel] + " attribution";
-  $("resultSub").textContent = state.channel === -1 ? "Sum across spectral channels" : "Signed contribution per spatial cell";
-  const range = "−" + max.toFixed(3) + " to +" + max.toFixed(3);
+  SSIAtlas.paint($("map"), $("inputImage"), matrix, max,
+                 opacityLevel(), state.targetMask, state.cell);
+  $("resultTitle").textContent = state.channel === -1
+    ? "(c) Spatial SSI" : "(c) " + r.channels[state.channel] + " SSI";
+  $("resultSub").textContent = state.channel === -1
+    ? "Sum across spectral channels · overlaid on image"
+    : "Signed spectral attribution · overlaid on image";
+  const range = "±" + max.toPrecision(3);
   $("scaleNote").textContent = state.channel === -1
     ? "Spatial sum · " + range
-    : "Channels share one scale · " + range;
+    : "Shared channel scale · " + range;
+}
+
+function renderGallery() {
+  const gallery = $("spectralGrid");
+  gallery.replaceChildren();
+  if (!state.result || !$("inputImage").naturalWidth) return;
+  const r = state.result;
+  const local = state.scoreMode === "cell" && state.cell;
+  const values = local ? r.attribution[state.cell.y][state.cell.x] : r.spectral;
+  const many = r.channels.length > 6;
+  const matching = ($("bandSearch").value || "").trim().toLowerCase();
+  let ids = r.channels.map((_, i) => i);
+  if (matching) ids = ids.filter((i) => r.channels[i].toLowerCase().includes(matching));
+  if (many) ids.sort((a, b) => Math.abs(values[b]) - Math.abs(values[a]) || a - b);
+  ids = ids.slice(0, 6);
+  if (state.channel >= 0 && !ids.includes(state.channel) &&
+      (!matching || r.channels[state.channel].toLowerCase().includes(matching))) {
+    if (ids.length === 6) ids[5] = state.channel;
+    else ids.push(state.channel);
+  }
+  let sharedMax = 1e-12;
+  for (const row of r.attribution) {
+    for (const cell of row) {
+      for (const value of cell) sharedMax = Math.max(sharedMax, Math.abs(value));
+    }
+  }
+  for (const i of ids) {
+    const card = document.createElement("button");
+    card.className = "channel-card" + (state.channel === i ? " selected" : "");
+    card.type = "button";
+    card.dataset.band = String(i);
+    card.setAttribute("aria-label", "View " + r.channels[i] + " attribution on original image");
+    const label = document.createElement("span");
+    label.className = "channel-name";
+    label.textContent = r.channels[i];
+    const frame = document.createElement("span");
+    frame.className = "channel-image";
+    const canvas = document.createElement("canvas");
+    canvas.width = 420;
+    canvas.height = 420;
+    frame.append(canvas);
+    const magnitude = document.createElement("span");
+    const value = values[i];
+    magnitude.className = "channel-magnitude " + (value >= 0 ? "positive" : "negative");
+    magnitude.textContent = (value >= 0 ? "+" : "") + value.toPrecision(3);
+    card.append(label, frame, magnitude);
+    card.addEventListener("click", () => {
+      state.channel = i;
+      renderChannelButtons();
+      renderMap();
+      renderGallery();
+      writeQuery();
+    });
+    gallery.append(card);
+    SSIAtlas.paint(canvas, $("inputImage"), channelMatrix(r, i),
+                   sharedMax, opacityLevel(), state.targetMask);
+  }
+  $("spectralHelp").textContent = many
+    ? "Strongest channels by |contribution| · choose another band above."
+    : "Each channel is overlaid on the original image.";
 }
 
 function renderBars() {
@@ -456,7 +527,8 @@ function renderBars() {
   $("scoreContext").textContent = scope + sampling;
   $("cellHint").textContent = state.cell ?
     "Selected cell: row " + (state.cell.y + 1) + ", column " + (state.cell.x + 1) :
-    "Click any cell on the map to inspect its " + r.channels.length + " channels.";
+    "Click the SSI image to inspect a spatial cell.";
+  renderGallery();
 }
 
 function setScoreMode(mode) {
@@ -533,6 +605,8 @@ function setupEvents() {
   });
   $("model").addEventListener("change", async () => {
     invalidateRun();
+    $("bandSearch").value = "";
+    state.targetMask = null;
     state.hadQuery = false;
     state.channel = -1;
     const model = selected();
@@ -560,6 +634,11 @@ function setupEvents() {
   $("bandSearch").addEventListener("input", () => {
     renderBars();
     renderChannelButtons();
+  });
+  $("overlayOpacity").addEventListener("input", () => {
+    if (!state.result) return;
+    renderMap();
+    renderGallery();
   });
   $("bandMode").addEventListener("click", () => {
     state.showAllBands = !state.showAllBands;
