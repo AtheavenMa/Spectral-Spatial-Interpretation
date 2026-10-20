@@ -73,12 +73,13 @@ def check(url):
     with sync_playwright() as p:
         browser=p.chromium.launch(headless=True,args=["--no-sandbox"])
         page=browser.new_page(viewport={"width": 1280, "height": 900})
+        page.set_default_timeout(300000)
         errors=[]
         page.on("pageerror", lambda exc:errors.append(str(exc)))
         page.goto(url.split("?")[0]+"?view=atlas",wait_until="domcontentloaded")
         page.wait_for_function("() => state.registry?.gallery_count === 57",timeout=30000)
         for model_id in EXPECTED:
-            item=page.evaluate(MODEL_EVAL,{"modelId":model_id},timeout=300000)
+            item=page.evaluate(MODEL_EVAL,{"modelId":model_id})
             assert abs(item["full_score"]-item["reference"])<max(
                 0.025,abs(item["reference"])*0.002
             ),item
