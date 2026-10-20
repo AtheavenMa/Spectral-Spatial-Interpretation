@@ -113,6 +113,7 @@
 
   $("computeTab").addEventListener("click", () => {
     setTab(false);
+    window.dispatchEvent(new Event("ssi-open-compute"));
     const params = new URLSearchParams(location.search);
     params.delete("view");
     params.delete("dataset");
