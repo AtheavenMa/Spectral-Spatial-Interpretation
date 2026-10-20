@@ -33,6 +33,14 @@ class SSILabTests(unittest.TestCase):
         self.assertEqual(page.status_code, 200)
         self.assertIn("SSI Playground", page.text)
         self.assertIn('id="run"', page.text)
+        self.assertIn('id="spectralGrid"', page.text)
+        self.assertIn('id="overlayOpacity"', page.text)
+        self.assertNotIn('id="predImage"', page.text)
+        self.assertEqual(page.text.count("class=\"visual-panel\""), 3)
+        atlas = self.client.get("/static/atlas-render.js")
+        self.assertEqual(atlas.status_code, 200)
+        self.assertIn("sampleSmooth", atlas.text)
+        self.assertIn("overlayPixels", atlas.text)
         js = self.client.get("/static/app.js")
         self.assertEqual(js.status_code, 200)
         self.assertIn("/api/jobs", js.text)
@@ -43,11 +51,15 @@ class SSILabTests(unittest.TestCase):
         result = response.json()
         self.assertEqual(result["width"], 128)
         self.assertEqual(result["height"], 128)
-        for name in ("input", "ground_truth", "prediction"):
+        for name in ("input", "ground_truth", "prediction", "target_mask"):
             prefix, data = result[name].split(",", 1)
             self.assertEqual(prefix, "data:image/png;base64")
             im = Image.open(BytesIO(base64.b64decode(data)))
             self.assertEqual(im.size, (128, 128))
+            if name == "target_mask":
+                values = np.asarray(im.convert("L"))
+                self.assertTrue(np.any(values > 128))
+                self.assertTrue(np.any(values < 128))
 
     def test_cpu_attribution_matches_core(self):
         settings = dict(
@@ -133,6 +145,14 @@ class SSILabTests(unittest.TestCase):
             self.assertEqual(preview.status_code, 200, preview.text)
             image = Image.open(BytesIO(base64.b64decode(preview.json()["input"].split(",", 1)[1])))
             self.assertEqual(image.size[0], image.size[1])
+            if model["id"] in ("paviau", "salinas", "whu-hi-longkou"):
+                target = preview.json()["target_mask"]
+                self.assertTrue(target.startswith("data:image/png;base64,"))
+                mask = np.asarray(Image.open(BytesIO(base64.b64decode(target.split(",", 1)[1]))).convert("L"))
+                self.assertTrue(np.any(mask == 255))
+                self.assertTrue(np.any(mask == 0))
+            else:
+                self.assertIsNone(preview.json()["target_mask"])
 
 
 if __name__ == "__main__":
