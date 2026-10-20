@@ -51,6 +51,16 @@ From a clean checkout, install the project, ONNX and ONNX Runtime libraries. Fir
 python tools/export_playground_assets.py validate
 ~~~~
 
+**Batch import:** fill the 57 `source` paths in `docs/playground/57_sources.template.json` with exact original NPZ files. Do not overwrite missing paths with other samples. Run:
+
+~~~~bash
+python tools/export_playground_assets.py batch \
+  --mapping docs/playground/57_sources.template.json \
+  --report outputs/atlas_57_import_report.json
+~~~~
+
+The batch report lists successes, skipped missing sample paths and per-item errors. It does not promote an unverified sample. Individual commands below are useful for diagnosing a specific source.
+
 For every model family with a real checkpoint and a matching real NPZ, export and verify:
 
 ~~~~bash
