@@ -1,10 +1,10 @@
 # Playground quickstart
 
-## Cloud workspace (no local Python environment)
+## Play directly in HTML
 
-Open [SSI Playground in GitHub Codespaces](https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation) and create or resume a codespace. The dev container is configured to install the CPU Python dependencies, start the FastAPI app, and forward **port 7860**. Open the forwarded **SSI Playground** port to interact with the real bundled models.
+[**Open the browser SSI Playground ↗**](https://atheavenma.github.io/ssi-playground/)
 
-This uses your own GitHub Codespaces environment and may consume Codespaces quota. The project does **not** have a publicly hosted, always-on web endpoint. No Hugging Face deployment is involved.
+The static page uses the genuine bundled HLS checkpoint exported to ONNX, the real input tensor, and browser CPU inference. It recomputes SSI when the grid, baseline or sampling settings change. The full six-model Python Playground is below.
 
 ## Local Python
 
