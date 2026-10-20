@@ -158,6 +158,23 @@ def sample_export(sample_id: str, source: Path) -> dict:
         raise ValueError("The bundled HLS example is already exported and verified.")
     model=model_entry(manifest,entry["model_id"])
     if not source.is_file():raise FileNotFoundError(source)
+    # A convenient filename is not sufficient to prove which Atlas figure an
+    # NPZ belongs to. Require provenance with a matching ID or sample index.
+    provenance=source.with_suffix(".json")
+    if not provenance.is_file():
+        raise ValueError(
+            f"Missing sample provenance {provenance}: provide atlas_id or original sample index."
+        )
+    identity=json.loads(provenance.read_text())
+    digits=entry["id"].rsplit("sample_",1)[-1]
+    if "atlas_id" in identity:
+        if identity["atlas_id"]!=entry["id"]:
+            raise ValueError("Source atlas_id disagrees with selected Atlas PNG.")
+    elif "index" in identity:
+        if not digits.isdigit() or int(identity["index"])!=int(digits):
+            raise ValueError("Original dataset index disagrees with selected Atlas PNG.")
+    else:
+        raise ValueError("Sample provenance must include atlas_id or numeric index.")
     obj=load_npz(model["id"],source)
     paths=entry["required_assets"]
     rgb_path=WEB/paths["rgb"]
@@ -194,8 +211,9 @@ def sample_export(sample_id: str, source: Path) -> dict:
     meta_path.write_text(json.dumps(metadata,indent=2)+"\n")
     entry["files"]={"metadata":paths["metadata"],"tensor":paths["tensor"],
                     "rgb":paths["rgb"],"mask":paths["mask"]}
-    entry["python_source"]=str(source.resolve().relative_to(ROOT)) if source.resolve().is_relative_to(ROOT) else str(source)
+    entry["python_source"]=str(source.resolve().relative_to(ROOT)) if source.resolve().is_relative_to(ROOT) else None
     entry["source_sha256"]=digest(source)
+    entry["provenance_sha256"]=digest(provenance)
     entry["status"]="ready" if model["onnx_state"]=="verified" and (WEB/model["onnx"]).is_file() else "awaiting_assets"
     manifest_write(manifest)
     return {"sample":sample_id,"status":entry["status"],"reference_full_score":original_score,
