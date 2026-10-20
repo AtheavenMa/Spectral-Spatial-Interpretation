@@ -1,0 +1,56 @@
+name: Check SSI Atlas Figure Export
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "lab/atlas_api.py"
+      - "lab/atlas_plot.py"
+      - ".github/workflows/atlas-figure.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU PyTorch
+        run: python -m pip install "torch==2.6.0" --index-url https://download.pytorch.org/whl/cpu
+      - name: Install SSI and image dependencies
+        run: python -m pip install -r requirements_lab_test.txt
+      - name: Generate actual HLS and PaviaU Atlas PNG + JSON
+        run: |
+          python -m lab.cli atlas \
+            --family hls-unet \
+            --checkpoint assets/checkpoints/hls_unet.pt \
+            --image assets/examples/hls_sample.npz \
+            --grid 4 --permutations 1 \
+            --output /tmp/atlas-showcase/hls
+          python -m lab.cli atlas \
+            --family paviau \
+            --checkpoint assets/lab/checkpoints/paviau_unet.pt \
+            --image assets/lab/samples/paviau_0008.npz \
+            --grid 4 --permutations 1 \
+            --output /tmp/atlas-showcase/paviau
+          python - <<'PY'
+          import json
+          from PIL import Image
+          from pathlib import Path
+          for sub in ('hls','paviau'):
+              folder=Path('/tmp/atlas-showcase')/sub
+              r=json.loads((folder/'result.json').read_text())
+              p=Image.open(folder/'atlas.png')
+              print(sub,p.size,'bands:',len(r['channels']),
+                    'local error:',r['local_efficiency_error'])
+              assert p.width >= 2400 and p.height >= 1000
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ssi-atlas-api-examples
+          path: /tmp/atlas-showcase/
+          if-no-files-found: error
