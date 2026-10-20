@@ -57,7 +57,12 @@ def check(site):
           target:state.roi.length,
           native:document.getElementById('input').naturalWidth
         })""")
-        assert data["grid"] == 4, data
+        assert data["grid"] == 8, data
+        assert page.evaluate("() => state.baseline") == "zero"
+        assert page.evaluate("() => state.permutations") == 3
+        for selector in ('button[data-grid="8"]','button[data-baseline="zero"]',
+                         'button[data-k="3"]'):
+            assert page.locator(selector).get_attribute("aria-pressed") == "true"
         assert data["target"] > 0, data
         assert data["native"] == 128, data
         assert data["n"] >= 97, data
@@ -139,19 +144,27 @@ def check(site):
         page.locator("button[data-k='1']").click()
         assert page.evaluate("() => state.permutations") == 1
 
-        page.locator("button[data-grid='8']").click()
+        page.locator("button[data-grid='4']").click()
         assert page.evaluate("() => state.result === null")
         page.locator("#run").click()
         await_computation(page)
-        grid8 = page.evaluate("() => ({g:state.result.grid,err:state.result.local_efficiency_error})")
-        assert grid8["g"] == 8 and grid8["err"] < 1e-3, grid8
+        grid4 = page.evaluate("() => ({g:state.result.grid,err:state.result.local_efficiency_error})")
+        assert grid4["g"] == 4 and grid4["err"] < 1e-3, grid4
 
-        page.locator("button[data-grid='4']").click()
-        page.locator("button[data-baseline='zero']").click()
+        page.locator("button[data-grid='8']").click()
+        page.locator("button[data-k='3']").click()
+        page.locator("#run").click()
+        await_computation(page)
+        grid8 = page.evaluate("() => ({g:state.result.grid,k:state.result.permutations,"
+                              "baseline:state.result.baseline,err:state.result.local_efficiency_error})")
+        assert grid8["g"] == 8 and grid8["k"] == 3 and grid8["baseline"] == "zero", grid8
+        assert grid8["err"] < 1e-3
+
+        page.locator("button[data-baseline='mean']").click()
         page.locator("#run").click()
         await_computation(page)
         changed = page.evaluate("() => ({baseline:state.result.baseline,full:state.result.full_value})")
-        assert changed["baseline"] == "zero"
+        assert changed["baseline"] == "mean"
         assert abs(changed["full"] - data["full"]) < 1e-3
 
         page.set_viewport_size({"width": 390, "height": 844})
@@ -211,7 +224,7 @@ def check(site):
         browser.close()
         print({"site": site, "full_score": data["full"],
                "region_pixels": data["target"], "first_evaluations": data["n"],
-               "grid8": grid8, "zero_baseline": changed})
+               "grid8": grid8, "mean_baseline": changed})
 
 
 def main():
