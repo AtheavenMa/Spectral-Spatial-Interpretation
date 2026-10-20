@@ -13,6 +13,10 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import sys
+
+# The script is executed directly by GitHub Actions from the repository root.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import numpy as np
 from PIL import Image
