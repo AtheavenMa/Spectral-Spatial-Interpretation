@@ -523,7 +523,10 @@ function setupEvents() {
       markChanged();
     });
   });
-  ["method", "seed"].forEach((name) => $(name).addEventListener("change", markChanged));
+  $("method").addEventListener("change", markChanged);
+  // A typed seed immediately invalidates the previous attribution; don't
+  // defer cancellation until the input loses focus.
+  $("seed").addEventListener("input", markChanged);
   $("permutations").addEventListener("input", () => {
     $("permLabel").textContent = $("permutations").value;
     markChanged();
