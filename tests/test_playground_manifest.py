@@ -60,6 +60,36 @@ class PlaygroundManifestTests(unittest.TestCase):
         record = next(x for x in before["samples"] if x["id"] == "PaviaU/sample_0010")
         self.assertEqual(record["status"], "awaiting_assets")
 
+    def test_original_pavia_npz_exports_real_browser_input_without_fake_readiness(self):
+        import tools.export_playground_assets as exporter
+        from unittest.mock import patch
+
+        original = ROOT / "assets/lab/samples/paviau_0008.npz"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            manifest_path = workspace / "compute-manifest.json"
+            manifest_path.write_bytes(MANIFEST.read_bytes())
+            with patch.object(exporter, "WEB", workspace), patch.object(
+                exporter, "MANIFEST", manifest_path
+            ):
+                info = exporter.sample_export("PaviaU/sample_0008", original)
+                self.assertEqual(info["status"], "awaiting_assets")
+                data = json.loads(
+                    (workspace / "assets/samples/PaviaU/sample_0008/meta.json").read_text()
+                )
+                self.assertEqual(data["sample_id"], "PaviaU/sample_0008")
+                self.assertEqual(data["model_id"], "paviau")
+                self.assertEqual(len(data["channels"]), 103)
+                shape = data["width"] * data["height"] * len(data["channels"]) * 4
+                self.assertEqual(
+                    (workspace / "assets/samples/PaviaU/sample_0008/x.f32").stat().st_size,
+                    shape,
+                )
+                self.assertGreater(data["region_pixels"], 0)
+                counts = exporter.validate_manifest()
+                self.assertEqual(counts["ready_gallery"], 0)
+                self.assertEqual(counts["ready_samples"], 1)
+
     def test_hls_has_a_recorded_reference_hash(self):
         manifest = manifest_read()
         model = next(m for m in manifest["models"] if m["id"] == "hls-unet")
