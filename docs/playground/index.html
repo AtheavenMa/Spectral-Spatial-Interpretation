@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <meta name="description" content="Explore real Spectral–Spatial Interpretation in your browser using an original HLS UNet checkpoint and satellite input.">
-  <title>SSI Playground — OpenSAE</title>
+  <title>SSI Playground — Spectral-Spatial Interpretation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,10 +13,11 @@
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.21.0/dist/ort.min.js" defer></script>
   <script src="./atlas-render.js" defer></script>
   <script src="./playground.js" defer></script>
+  <script src="./gallery.js" defer></script>
 </head>
 <body>
   <header class="site-bar">
-    <a class="wordmark" href="https://github.com/OpenSAE" target="_blank" rel="noopener">OpenSAE <span>/ Research Lab</span></a>
+    <a class="wordmark" href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation" target="_blank" rel="noopener">SSI <span>/ Spectral-Spatial Interpretation</span></a>
     <div class="site-links">
       <a href="https://arxiv.org/abs/2610.21114" target="_blank" rel="noopener">Paper ↗</a>
       <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation" target="_blank" rel="noopener">Code ↗</a>
@@ -27,16 +28,20 @@
   <main class="layout">
     <section class="intro">
       <div>
-        <p class="eyebrow">SPECTRAL–SPATIAL INTERPRETATION &nbsp;·&nbsp; PLAYGROUND</p>
         <h1>Which channels matter, <em>and where?</em></h1>
       </div>
-      <p class="subcopy">Change the grid. Play with the bands.<br>See SSI on the original image.</p>
+
     </section>
 
+    <div class="mode-tabs" role="tablist" aria-label="Playground modes">
+      <button type="button" id="computeTab" role="tab" aria-controls="computeView" aria-selected="true" class="selected">Play with SSI</button>
+      <button type="button" id="atlasTab" role="tab" aria-controls="atlasView" aria-selected="false">Visual Atlas <span>57 examples</span></button>
+    </div>
+    <div id="computeView" role="tabpanel" aria-labelledby="computeTab">
     <section class="experiment" aria-label="SSI computation parameters">
       <div class="sample-label">
         <span class="sample-title">HLS Burn Scars</span>
-        <span class="sample-meta">REAL UNET CHECKPOINT · ORIGINAL 6-BAND INPUT</span>
+
       </div>
       <div class="controls">
         <fieldset class="control">
@@ -54,13 +59,14 @@
             <button type="button" data-baseline="zero">Zero</button>
           </div>
         </fieldset>
-        <label class="control input-control" for="permutations">Permutations
-          <select id="permutations">
-            <option value="1">1 · Quick</option>
-            <option value="2">2</option>
-            <option value="3">3 · Detailed</option>
-          </select>
-        </label>
+        <fieldset class="control">
+          <legend>Permutations</legend>
+          <div class="segments" id="kControls" aria-label="Number of sampled channel orders">
+            <button type="button" data-k="1" class="selected" aria-pressed="true">1</button>
+            <button type="button" data-k="2" aria-pressed="false">2</button>
+            <button type="button" data-k="3" aria-pressed="false">3</button>
+          </div>
+        </fieldset>
         <details class="seed-details">
           <summary>Advanced</summary>
           <label for="seed">Seed <input type="number" min="0" max="100000" step="1" id="seed" value="0"></label>
@@ -72,12 +78,12 @@
       </div>
       <div class="progress-line" aria-live="polite">
         <span id="status">Preparing original model and input…</span>
-        <span id="progress">BROWSER CPU · NO SERVER</span>
+        <span id="progress"></span>
       </div>
     </section>
 
     <section class="atlas-section">
-      <div class="section-label"><span class="number">01</span> IMAGE & EXPLANATION <span class="section-note">HLS · 128 × 128</span></div>
+      <div class="section-label"><span class="number">01</span> Image &amp; explanation</div>
       <div class="triad">
         <figure>
           <h2>(a) Image</h2>
@@ -103,14 +109,14 @@
     </section>
 
     <section class="atlas-section channels-section">
-      <div class="section-label"><span class="number">02</span> SPECTRAL SSI <span class="section-note">SELECT ANY BAND</span></div>
+      <div class="section-label"><span class="number">02</span> Spectral SSI</div>
       <div class="spectral-grid" id="bandGrid" aria-label="Six spectral channel attribution images on the original image"></div>
     </section>
 
     <section class="atlas-section contributions">
-      <div class="section-label"><span class="number">03</span> SPECTRAL CONTRIBUTIONS <span id="scope" class="section-note">WHOLE IMAGE</span></div>
+      <div class="section-label"><span class="number">03</span> Spectral contributions <span id="scope" class="section-note">Whole image</span></div>
       <div class="contribution-head">
-        <h2>From spatial cells to spectral influence.</h2>
+        <h2>Channel contributions</h2>
         <div class="switcher">
           <button type="button" id="whole" class="selected">Whole image</button>
           <button type="button" id="selected">Selected cell</button>
@@ -130,7 +136,25 @@
       <p>The browser loads the <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/blob/main/assets/checkpoints/hls_unet.pt">original UNet checkpoint</a> exported to ONNX and the same original input tensor and target mask used by the Python adapter. Each selected configuration is recomputed on your device. Other cells stay observed while SSI allocates each cell's contrast among its spectral channels. Only the heatmap display is interpolated.</p>
       <p>For all six registered models, custom checkpoints, or larger workloads, use the <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/tree/main/lab">full Python API</a>. This browser example uses the included HLS sample only.</p>
     </details>
-    <footer><span>OpenSAE · Spectral-Spatial Interpretation</span><span>Real weights. Real input. Real computation.</span></footer>
+    </div>
+    <section id="atlasView" role="tabpanel" aria-labelledby="atlasTab" hidden>
+      <div class="atlas-header">
+        <div>
+          <h2>Visual Atlas</h2>
+          <p>57 visualizations across six datasets.</p>
+        </div>
+        <a class="atlas-doc" href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/tree/main/examples" target="_blank" rel="noopener">View source ↗</a>
+      </div>
+      <div id="datasetFilters" class="dataset-filters" aria-label="Select dataset"></div>
+      <div id="atlasGallery" class="gallery-grid" aria-live="polite"></div>
+      <dialog id="atlasDialog" class="atlas-dialog" aria-label="Visual Atlas example">
+        <div class="dialog-header"><span id="atlasDialogTitle"></span><button type="button" id="atlasClose" aria-label="Close image">×</button></div>
+        <img id="atlasDialogImage" alt="Full-resolution Visual Atlas example">
+        <div class="dialog-actions"><a id="atlasFullLink" target="_blank" rel="noopener">View full-resolution PNG ↗</a><span id="atlasNumber"></span></div>
+      </dialog>
+      <p class="atlas-note">For custom models or input images, generate the same figure and numeric results with the <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/tree/main/lab">Python API</a>.</p>
+    </section>
+    <footer><span>Spectral-Spatial Interpretation · NeurIPS 2026</span></footer>
   </main>
 </body>
 </html>
