@@ -16,7 +16,7 @@ const state = {
   meta: null,
   image: $("input"),
   x: null, mask: null, roi: [], channels: [],
-  grid: 4, baseline: "mean", permutations: 1, seed: 0, band: -1,
+  grid: 8, baseline: "zero", permutations: 3, seed: 0, band: -1,
   selectedCell: null, scope: "whole", result: null, running: false,
   generation: 0, loadTicket: 0, pendingAutoRun: false, cache: new Map(), sessions: new Map(),
 };
