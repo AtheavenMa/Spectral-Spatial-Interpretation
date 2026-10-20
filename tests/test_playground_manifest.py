@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 
@@ -69,6 +70,14 @@ class PlaygroundManifestTests(unittest.TestCase):
             workspace = Path(temp_dir)
             manifest_path = workspace / "compute-manifest.json"
             manifest_path.write_bytes(MANIFEST.read_bytes())
+            # The independent bundled HLS demo must remain a valid registered
+            # ready item even in a temporary asset workspace.
+            source_assets = ROOT / "docs/playground/assets"
+            dest_assets = workspace / "assets"
+            dest_assets.mkdir(parents=True, exist_ok=True)
+            for name in ("hls_unet.onnx", "hls_input.f32", "hls_mask.u8",
+                         "hls_rgb.webp", "hls_meta.json"):
+                shutil.copy2(source_assets / name, dest_assets / name)
             with patch.object(exporter, "WEB", workspace), patch.object(
                 exporter, "MANIFEST", manifest_path
             ):
