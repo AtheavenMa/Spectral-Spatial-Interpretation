@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "models": [
+    {
+      "id": "cub-200",
+      "export": true,
+      "checkpoint": "assets/lab/checkpoints/cub_resnet18.pt",
+      "sample": "assets/lab/samples/cub_0158.npz"
+    },
+    {
+      "id": "eurosat",
+      "export": true,
+      "checkpoint": "assets/lab/checkpoints/eurosat_resnet18.pt",
+      "sample": "assets/lab/samples/eurosat_1294.npz"
+    },
+    {
+      "id": "hls-unet",
+      "export": false,
+      "checkpoint": "assets/checkpoints/hls_unet.pt",
+      "sample": "assets/examples/hls_sample.npz"
+    },
+    {
+      "id": "paviau",
+      "export": true,
+      "checkpoint": "assets/lab/checkpoints/paviau_unet.pt",
+      "sample": "assets/lab/samples/paviau_0008.npz"
+    },
+    {
+      "id": "salinas",
+      "export": true,
+      "checkpoint": "assets/lab/checkpoints/salinas_unet.pt",
+      "sample": "assets/lab/samples/salinas_0000.npz"
+    },
+    {
+      "id": "whu-hi-longkou",
+      "export": true,
+      "checkpoint": "assets/lab/checkpoints/longkou_unet.pt",
+      "sample": "assets/lab/samples/longkou_0000.npz"
+    }
+  ],
+  "samples": [
+    {
+      "id": "CUB_200/sample_0158",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_0714",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_1125",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_1631",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_2002",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_2390",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_3296",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_4020",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_4136",
+      "source": null
+    },
+    {
+      "id": "CUB_200/sample_4325",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_1294",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_1972",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_2190",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_2247",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_2390",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_2995",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_3042",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_3276",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_4044",
+      "source": null
+    },
+    {
+      "id": "EuroSAT/sample_4141",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0045",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0052",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0067",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0076",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0106",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0120",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0127",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0163",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0187",
+      "source": null
+    },
+    {
+      "id": "HLS_BurnScars/sample_0222",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0003",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0006",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0008",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0010",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0011",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0012",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0013",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0016",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0017",
+      "source": null
+    },
+    {
+      "id": "PaviaU/sample_0027",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0000",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0001",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0002",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0004",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0005",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0006",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0010",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0011",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0012",
+      "source": null
+    },
+    {
+      "id": "Salinas/sample_0014",
+      "source": null
+    },
+    {
+      "id": "WHU_Hi_LongKou/sample_0000",
+      "source": null
+    },
+    {
+      "id": "WHU_Hi_LongKou/sample_0001",
+      "source": null
+    },
+    {
+      "id": "WHU_Hi_LongKou/sample_0002",
+      "source": null
+    },
+    {
+      "id": "WHU_Hi_LongKou/sample_0003",
+      "source": null
+    },
+    {
+      "id": "WHU_Hi_LongKou/sample_0004",
+      "source": null
+    },
+    {
+      "id": "WHU_Hi_LongKou/sample_0005",
+      "source": null
+    },
+    {
+      "id": "WHU_Hi_LongKou/sample_0006",
+      "source": null
+    }
+  ]
+}
