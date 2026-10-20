@@ -1,5 +1,13 @@
 # Playground quickstart
 
+## Cloud workspace (no local Python environment)
+
+Open [SSI Playground in GitHub Codespaces](https://codespaces.new/AtheavenMa/Spectral-Spatial-Interpretation) and create or resume a codespace. The dev container is configured to install the CPU Python dependencies, start the FastAPI app, and forward **port 7860**. Open the forwarded **SSI Playground** port to interact with the real bundled models.
+
+This uses your own GitHub Codespaces environment and may consume Codespaces quota. The project does **not** have a publicly hosted, always-on web endpoint. No Hugging Face deployment is involved.
+
+## Local Python
+
 From the repository root, with a CPU PyTorch install:
 
 ```bash
