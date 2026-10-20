@@ -1,10 +1,9 @@
 {
   "name": "SSI Playground",
-  "build": {
-    "dockerfile": "../Dockerfile",
-    "context": ".."
-  },
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bookworm",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postCreateCommand": "python -m pip install --no-cache-dir torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu && python -m pip install -r requirements_lab.txt",
+  "postStartCommand": "bash .devcontainer/start.sh",
   "forwardPorts": [
     7860
   ],
@@ -14,6 +13,5 @@
       "onAutoForward": "openBrowserOnce"
     }
   },
-  "postStartCommand": "bash .devcontainer/start.sh",
-  "remoteUser": "root"
+  "remoteUser": "vscode"
 }
