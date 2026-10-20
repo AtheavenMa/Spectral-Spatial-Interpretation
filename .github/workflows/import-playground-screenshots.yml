@@ -1,0 +1,55 @@
+name: Import verified Playground screenshots
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-playground-screenshots.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  import-screenshots:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download browser screenshots from successful SSI CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/ssi-preview
+          gh run download 39361203272 --repo ${{ github.repository }} --name ssi-playground-browser --dir /tmp/ssi-preview
+          test -s /tmp/ssi-preview/ssi_playground_desktop.png
+          test -s /tmp/ssi-preview/ssi_playground_mobile.png
+      - name: Make lightweight real screenshots for README
+        run: |
+          python -m pip install Pillow
+          mkdir -p assets/playground
+          python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          for kind, max_width in [('desktop', 1000), ('mobile', 420)]:
+              source = Path('/tmp/ssi-preview') / f'ssi_playground_{kind}.png'
+              dest = Path('assets/playground') / f'{kind}.webp'
+              img = Image.open(source).convert('RGB')
+              if img.width > max_width:
+                  new_h = round(img.height * max_width / img.width)
+                  img = img.resize((max_width, new_h), Image.Resampling.LANCZOS)
+              img.save(dest, 'WEBP', quality=72, method=6)
+              print(dest, dest.stat().st_size)
+          PY
+      - name: Commit the verified screenshots to main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/playground/desktop.webp assets/playground/mobile.webp
+          if git diff --cached --quiet; then
+            echo 'Preview images already up to date'
+            exit 0
+          fi
+          git commit -m 'docs: publish real SSI Playground UI screenshots'
+          git push origin HEAD:main
