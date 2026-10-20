@@ -18,7 +18,7 @@ const state = {
   x: null, mask: null, roi: [], channels: [],
   grid: 4, baseline: "mean", permutations: 1, seed: 0, band: -1,
   selectedCell: null, scope: "whole", result: null, running: false,
-  generation: 0, loadTicket: 0, cache: new Map(), sessions: new Map(),
+  generation: 0, loadTicket: 0, pendingAutoRun: false, cache: new Map(), sessions: new Map(),
 };
 function setStatus(s, error=false) {
   $("status").textContent = s;
@@ -177,6 +177,7 @@ function targetRegionObject() {
 }
 
 function showPending(record,model) {
+  state.pendingAutoRun=false;
   setReady(false);
   $("run").disabled=true;
   $("sampleState").textContent=record.python_source?
@@ -213,13 +214,27 @@ async function loadReadySample(record,model,ticket) {
   const files=record.files;
   if(!files || !files.metadata || !files.tensor || !files.rgb)
     throw new Error("The original input assets are incomplete.");
-  const metadataResponse=await fetch("./"+files.metadata);
+  const metadataResponse=await fetch("./"+files.metadata,{cache:"force-cache"});
   if(!metadataResponse.ok)throw new Error("The input metadata is missing.");
   const rawMeta=await metadataResponse.json();
-  const meta={...rawMeta,
+  const meta={
+    ...rawMeta,
     target_class:rawMeta.target_class??record.target_class,
     target_name:rawMeta.target_name||record.label,
   };
+  if(meta.version!==1)
+    throw new Error("Unknown input schema version.");
+  if(meta.sample_id && meta.sample_id!==record.id)
+    throw new Error("The input metadata belongs to a different Atlas sample.");
+  if(meta.model_id && meta.model_id!==model.id)
+    throw new Error("The input metadata does not match this model.");
+  if(model.checkpoint_sha256 && meta.original_checkpoint_sha256 &&
+     model.checkpoint_sha256!==meta.original_checkpoint_sha256)
+    throw new Error("Input model checkpoint hash does not match the validated export.");
+  if(record.source_sha256 && meta.original_sample_sha256 &&
+     record.source_sha256!==meta.original_sample_sha256)
+    throw new Error("The registered original input hash does not match the metadata.");
+
   const [tensorBuffer,maskBuffer]=await Promise.all([
     bytes(files.tensor),files.mask?bytes(files.mask):Promise.resolve(null)
   ]);
@@ -227,31 +242,54 @@ async function loadReadySample(record,model,ticket) {
   const tensor=new Float32Array(tensorBuffer);
   const channels=meta.channels;
   const plane=meta.width*meta.height;
-  if(!Array.isArray(channels)||channels.length!==model.n_channels||
+  if(!Number.isInteger(meta.width)||!Number.isInteger(meta.height)||
+     meta.width<4||meta.height<4||
+     !Array.isArray(channels)||channels.length!==model.n_channels||
      tensor.length!==plane*model.n_channels || !tensor.every(Number.isFinite))
-     throw new Error("Input tensor and channel order are inconsistent.");
+    throw new Error("Input tensor and channel order are inconsistent.");
+  if(!["segmentation","classification"].includes(model.kind)||
+     !Number.isInteger(meta.target_class)||meta.target_class<0||
+     meta.target_class>=model.n_classes)
+    throw new Error("The fixed target class is invalid.");
+  for(const key of ["baseline_mean","baseline_zero"]) {
+    if(!Array.isArray(meta[key])||meta[key].length!==model.n_channels||
+       meta[key].some(v=>!Number.isFinite(v)))
+      throw new Error("The per-channel baseline metadata is invalid.");
+  }
   const mask=maskBuffer?new Uint8Array(maskBuffer):null;
   if(model.kind==="segmentation" && (!mask||mask.length!==plane))
-     throw new Error("The fixed segmentation target is missing.");
-  if(!Number.isInteger(meta.target_class))throw new Error("The fixed target class is missing.");
+    throw new Error("The fixed segmentation target is missing.");
+  if(model.kind==="classification" && mask)
+    throw new Error("Classification inputs must not provide a segmentation ROI.");
   const roi=mask?Array.from(mask.keys()).filter(i=>mask[i]===meta.target_class):[];
   if(model.kind==="segmentation" && !roi.length)
     throw new Error("The fixed target region is empty.");
+  if(model.kind==="segmentation" && meta.region_pixels!=null &&
+     meta.region_pixels!==roi.length)
+    throw new Error("The fixed ROI pixel count differs from the verified input.");
 
-  state.meta=meta;state.x=tensor;state.mask=mask;state.roi=roi;
+  // Decode the sample in a detached image before modifying any visible state.
+  const preview=new Image();
+  preview.src=files.rgb.startsWith("http")?files.rgb:"./"+files.rgb.replace(/^\.\//,"");
+  const modelPromise=loadModel(model);
+  await Promise.all([preview.decode(),modelPromise]);
+  if(ticket!==state.loadTicket)return;
+  if(preview.naturalWidth!==meta.width||preview.naturalHeight!==meta.height)
+    throw new Error("RGB preview does not align with the model input.");
+
+  const session=await modelPromise;
+  if(ticket!==state.loadTicket)return;
+  state.meta=meta;
+  state.x=tensor;
+  state.mask=mask;
+  state.roi=roi;
   state.channels=channels.slice();
-  await decodeImage(files.rgb);
+  state.model=session;
+  state.context={session,model,sample:record,meta,tensor,roi};
+  state.image.src=preview.src;
+  await state.image.decode();
   if(ticket!==state.loadTicket)return;
-  if(state.image.naturalWidth!==meta.width ||
-     state.image.naturalHeight!==meta.height)
-     throw new Error("RGB preview does not align with the model input.");
 
-  state.model=await loadModel(model);
-  if(ticket!==state.loadTicket)return;
-  state.context={
-    session:state.model,model,
-    sample:record,meta,tensor,roi,
-  };
   setReady(true);
   $("sampleState").textContent="Ready to run";
   $("pendingPanel").hidden=true;
@@ -260,7 +298,8 @@ async function loadReadySample(record,model,ticket) {
   $("run").disabled=false;
   setStatus("Ready. Compute SSI on "+record.label+".");
   progress("");
-  await run();
+  if(state.running) state.pendingAutoRun=true;
+  else await run();
 }
 
 async function chooseSample(sampleId,automaticRun=true) {
@@ -273,6 +312,7 @@ async function chooseSample(sampleId,automaticRun=true) {
   state.modelInfo=model;
   state.sample=record;
   state.context=null;
+  state.pendingAutoRun=false;
   state.band=-1;
   invalidate(false);
   $("datasetSelect").value=record.dataset;
@@ -366,6 +406,12 @@ async function run() {
     state.running=false;
     $("stop").hidden=true;
     $("run").disabled=!state.context;
+    // A model can finish loading while another model's run is still
+    // unwinding. Begin the new, verified sample only after the old run ends.
+    if(state.pendingAutoRun && state.context && state.sample?.status==="ready") {
+      state.pendingAutoRun=false;
+      queueMicrotask(()=>{ if(!state.running && state.context) void run(); });
+    }
   }
 }
 
