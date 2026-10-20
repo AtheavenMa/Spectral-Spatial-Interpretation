@@ -128,6 +128,11 @@ def check(site):
                           "WHU_Hi_LongKou":"WHU-Hi-LongKou"}[dataset]
             ).click()
             assert gallery.locator("#atlasGallery .atlas-tile").count() == expected
+        gallery.wait_for_function(
+            "() => document.querySelector('#atlasGallery img')?.naturalWidth > 0",
+            timeout=60000,
+        )
+        gallery.screenshot(path=str(SCREENS / "ssi_web_gallery.png"), full_page=True)
         gallery.locator("#atlasGallery .atlas-tile").first.click()
         assert gallery.locator("#atlasDialog").evaluate("(x)=>x.open")
         assert gallery.locator("#atlasFullLink").get_attribute("href").endswith(".png")
