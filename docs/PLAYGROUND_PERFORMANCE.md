@@ -5,7 +5,7 @@ Measured with `python benchmarks/playground_cpu.py --skip-after 25` on this mach
 - Linux 6.8.0-139-generic, x86_64
 - Python 3.12.14
 - PyTorch 2.11.0+cu128, running on CPU with 4 threads
-- Peak RSS for the whole ramp: 811328 KB
+- Peak RSS for the **entire multi-model benchmark process**: 811328 KB (about 792 MiB). This is **not** per-model peak memory, and model caches remain loaded between cases.
 
 Times below are wall clock for `lab.engine.run`, including the first checkpoint load for each model. Later rows for the same model reuse the loaded weights. Every measured row finished with local efficiency under `1e-12`. Nothing in this table is an estimate.
 
