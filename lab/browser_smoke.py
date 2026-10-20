@@ -37,7 +37,25 @@ def main():
         page.goto(BASE, wait_until="domcontentloaded")
         _computed(page)
         assert page.locator("#bars .bar-line").count() == 6
+        assert page.locator(".visual-panel").count() == 3
+        assert page.locator("#predImage").count() == 0
+        assert page.locator("#spectralGrid .channel-card").count() == 6
+        assert page.locator("#map").get_attribute("width") == "768"
+        assert page.evaluate("() => state.targetMask !== null && state.targetMask.width === 128")
         assert page.locator("#inputImage").evaluate("(img) => img.naturalWidth") == 128
+        # The map must be an interpolated overlay, not one flat color per cell.
+        check = page.evaluate("""() => {
+          const a = SSIAtlas.overlayPixels([[1, -1], [0.3, -0.7]], 64, 1, 1);
+          return {left:a[(10*64+10)*4+3], right:a[(10*64+20)*4+3],
+                  other:a[(10*64+20)*4]};
+        }""")
+        assert check["left"] != check["right"], check
+        # Show/hide transparency without recomputing Shapley values.
+        old_map = page.locator("#map").evaluate("(c) => c.toDataURL('image/png')")
+        page.locator("#overlayOpacity").evaluate("(el) => { el.value = '0'; el.dispatchEvent(new Event('input', {bubbles:true})); }")
+        clear_map = page.locator("#map").evaluate("(c) => c.toDataURL('image/png')")
+        assert old_map != clear_map
+        page.locator("#overlayOpacity").evaluate("(el) => { el.value = '68'; el.dispatchEvent(new Event('input', {bubbles:true})); }")
         assert "hidden" in (page.locator("#mapEmpty").get_attribute("class") or "")
         assert page.locator("#scaleNote").text_content()
         page.locator('button[data-grid="4"]').click()
@@ -48,7 +66,7 @@ def main():
             timeout=180000,
         )
         page.get_by_role("button", name="SWIR2", exact=True).click()
-        assert "SWIR2 attribution" in page.locator("#resultTitle").text_content()
+        assert "SWIR2 SSI" in page.locator("#resultTitle").text_content()
         page.locator("#map").click(position={"x": 90, "y": 90})
         assert "Cell (row " in page.locator("#scoreContext").text_content()
         assert "model=hls-unet" in page.url
@@ -103,6 +121,8 @@ def main():
         page.locator("#run").click()
         _computed(page)
         assert page.locator("#bars .bar-line").count() == 3
+        assert page.locator("#spectralGrid .channel-card").count() == 3
+        assert page.evaluate("() => state.targetMask === null")
 
         page.locator("#model").select_option("eurosat")
         page.wait_for_function(
@@ -123,10 +143,12 @@ def main():
         _computed(page)
         assert page.locator("#bandTools").is_visible()
         assert page.locator("#bars .bar-line").count() == 10
+        assert page.locator("#spectralGrid .channel-card").count() == 6
+        assert page.evaluate("() => state.targetMask !== null")
         page.locator("#bandSearch").fill("Band 012")
         page.wait_for_function("() => document.querySelectorAll('#bars .bar-line').length === 1")
         page.locator("#channels select").select_option(label="Band 012")
-        assert "Band 012 attribution" in page.locator("#resultTitle").text_content()
+        assert "Band 012 SSI" in page.locator("#resultTitle").text_content()
         page.locator("#map").click(position={"x": 40, "y": 40})
         assert "Cell (row " in page.locator("#scoreContext").text_content()
         assert page.locator("#bars .bar-line").count() == 1
