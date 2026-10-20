@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 
@@ -37,8 +38,12 @@ class AtlasArtifactsTest(unittest.TestCase):
 
     def test_hls_original_checkpoint_and_image(self):
         with tempfile.TemporaryDirectory() as d:
+            # Confirm users can supply a checkpoint at their own path, rather
+            # than relying on the registered default checkpoint location.
+            own_checkpoint = Path(d) / "my_hls_checkpoint.pt"
+            shutil.copy2(CHECKPOINT, own_checkpoint)
             out = explain_artifacts(
-                CHECKPOINT, SAMPLE,
+                own_checkpoint, SAMPLE,
                 family="hls-unet", output=Path(d) / "hls",
                 grid=4, permutations=1, seed=0,
             )
