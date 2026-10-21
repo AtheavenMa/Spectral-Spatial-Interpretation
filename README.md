@@ -138,22 +138,6 @@ spatial, spectral = result.spatial, result.spectral
 
 Inputs and baseline must use the model's preprocessing. See the [Core SSI API guide](docs/CORE_API.md) for segmentation, numerical outputs and parameter details.
 
-### 📖 Documentation
-
-| Resource | Description |
-|---|---|
-| [SSI Playground](lab/static/index.html) | Interactive HTML, real checkpoints and spatial/channel maps |
-| [Playground quickstart](docs/PLAYGROUND_QUICKSTART.md) | Local, Docker and API instructions |
-| [Visual Atlas](examples/README.md) | All 57 visualizations grouped by dataset |
-| [Complete paper results](docs/PAPER_RESULTS.md) | Tables, evaluation settings, and comparisons |
-| [HLS demo guide](assets/demo/README.md) | Runnable demo, configuration, inputs, and outputs |
-| [Atlas API](docs/ATLAS_API.md) | Generate Atlas PNG and JSON from a supported checkpoint and input |
-| [Core API](ssi.py) | Standalone NumPy implementation and PyTorch image API |
-| [Core SSI usage](docs/CORE_API.md) | Pip installation, channel baselines, resizing and pixel-grid semantics |
-| [Unit tests](tests/) | Mathematical and adapter regression checks |
-| [Repository structure](docs/REPOSITORY_STRUCTURE.md) | Code layout, assets and deployment boundaries |
-| [Deployment](docs/DEPLOYMENT.md) | Local Python API and CPU Docker instructions |
-
 ### 🙏 Appreciation
 
 This project uses the [HLS Foundation Burnscars Dataset](https://huggingface.co/datasets/ibm-nasa-geospatial/hls_burn_scars)
