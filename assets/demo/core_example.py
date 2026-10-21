@@ -1,5 +1,12 @@
 """Exact two-cell SSI toy example, using only NumPy."""
 
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 import numpy as np
 from ssi import explain
 
