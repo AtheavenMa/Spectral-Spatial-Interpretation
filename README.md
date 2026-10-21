@@ -94,7 +94,9 @@ For example, mean-baseline HLS joint deletion is .1545 for SSI versus .2096 for 
 non-SSI method on that metric.
 
 <p align="center">
-  <img src="assets/figures/figure3.png" alt="Spatial localization, spectral hit rates, and channel deletion comparisons between SSI and baseline methods" width="900">
+  <a href="https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/assets/figures/figure3.png">
+    <img src="https://raw.githubusercontent.com/AtheavenMa/Spectral-Spatial-Interpretation/main/assets/figures/figure3.png?v=49b1587cd44e" alt="Spatial localization, spectral hit rates, and channel deletion comparisons between SSI and baseline methods" width="100%">
+  </a>
 </p>
 
 SSI leads the compared methods in spatial localization, spectral Hit@K, and channel deletion across the evaluated datasets.
