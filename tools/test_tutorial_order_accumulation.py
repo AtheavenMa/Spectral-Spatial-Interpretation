@@ -35,7 +35,12 @@ def main():
         chips = page.locator("#orderPills button")
         play = page.locator("#playOrder")
         assert chips.count() == 5
-        assert play.count() == 1 and play.is_disabled()
+        assert play.count() == 1 and play.is_disabled() and play.is_visible()
+        play_bounds = play.bounding_box()
+        chip_bounds = chips.nth(4).bounding_box()
+        assert play_bounds and chip_bounds
+        assert play_bounds["x"] > chip_bounds["x"] + chip_bounds["width"]
+        assert abs(play_bounds["y"] - chip_bounds["y"]) < 32
         assert all(item["sum"] == 0 for item in totals(page))
         page.wait_for_timeout(800)
         assert all(item["sum"] == 0 for item in totals(page)), "No auto selection or autoplay"

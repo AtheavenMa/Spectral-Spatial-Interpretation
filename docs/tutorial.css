@@ -317,3 +317,12 @@ h1{margin-top:56px;font:400 98px/1.07 var(--serif);letter-spacing:-.04em}h1 em{c
 .live-order-dot.active.finished{background:#C8A870;color:#1C2644}
 .live-order-dot:disabled{cursor:default}
 .live-path-band.current .live-path-icon{transform:translateY(-7px) scale(1.04);box-shadow:0 9px 19px #44444435}
+
+/* Primary Play action belongs beside the selected order, not below the chart. */
+.live-order-toolbar{display:flex;align-items:center;gap:26px;justify-content:space-between;margin-top:24px;min-height:64px}
+.live-order-toolbar .live-order-dots{display:flex;flex:1;gap:13px;margin:0;align-items:center}
+.live-order-toolbar .live-play-button{flex:none;display:flex;align-items:center;justify-content:center;min-width:286px;height:62px;margin:0;padding:0 18px;white-space:nowrap;font:600 20px/1.2 var(--sans);background:#1C2644;color:#F6F2EA;border:2px solid #1C2644;box-shadow:0 8px 18px rgba(28,38,68,.17);opacity:1}
+.live-order-toolbar .live-play-button:hover:not(:disabled){background:#38496E;border-color:#38496E}
+.live-order-toolbar .live-play-button:disabled{background:#68758E;border-color:#68758E;color:#FFF;opacity:1;box-shadow:none;cursor:not-allowed}
+.live-play-footer{justify-content:flex-start;margin-top:22px;min-height:48px}
+.live-play-footer .live-play-status{align-items:flex-start;flex-direction:row;gap:24px}
