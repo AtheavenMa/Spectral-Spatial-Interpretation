@@ -3,7 +3,7 @@
 **Which spectral channels matter, and where?** SSI explains a model score with signed attributions for each spatial cell and channel. It keeps the surrounding image fixed while allocating a cell's contribution among its channels using Shapley values.
 
 <p align="center">
-  <strong>Haotian Ma</strong> &nbsp;·&nbsp; <strong>Ruqi Yang</strong> &nbsp;·&nbsp; <strong>Philip Townsend</strong>
+  <strong>Haotian Ma, Ruqi Yang, Philip Townsend</strong>
 </p>
 
 <p align="center">
