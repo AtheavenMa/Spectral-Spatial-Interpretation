@@ -113,14 +113,6 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 ### Install
 
-Use Python 3.10 or newer. Install Core SSI with PyTorch support directly from GitHub:
-
-```bash
-pip install "spectral-spatial-interpretation[torch] @ git+https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git"
-```
-
-Or clone the repository for the Playground, research tools and examples:
-
 ```bash
 git clone https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git
 cd Spectral-Spatial-Interpretation
