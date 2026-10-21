@@ -26,13 +26,11 @@
     <div class="byline">Haotian Ma</div>
   </div>
   <div class="cover-right" aria-hidden="true">
-    <div class="cover-orbit orbit-one"></div><div class="cover-orbit orbit-two"></div>
-    <div class="cover-raster"><img src="./assets/ssi-tour/input.png" alt=""></div>
-    <div class="cover-focus"></div>
-    <div class="cover-bands">
-      <i style="--ch:#3277C8"></i><i style="--ch:#27986F"></i><i style="--ch:#DA5A58"></i><i style="--ch:#8062B5"></i><i style="--ch:#D59A3F"></i><i style="--ch:#A45B45"></i>
+    <div class="cover-raster"><img src="./assets/ssi-tour/input.png" alt="HLS burn-scar sample 0163, upright satellite view"><div class="cover-focus" aria-hidden="true"></div></div>
+    <div class="cover-bands" aria-label="Six spectral channels">
+      <span style="--ch:#3277C8">Blue</span><span style="--ch:#27986F">Green</span><span style="--ch:#DA5A58">Red</span><span style="--ch:#8062B5">NIR</span><span style="--ch:#D59A3F">SWIR1</span><span style="--ch:#A45B45">SWIR2</span>
     </div>
-    <div class="cover-caption">ONE IMAGE <span>×</span> SIX BANDS</div>
+    <div class="cover-caption">HLS BURN SCARS <span>·</span> SIX BANDS</div>
   </div>
   <aside class="notes"><span class="time">~25 s</span><h4>Talk track</h4><p>A satellite image contains information in several spectral bands. A spatial heatmap can show where a model responds, while a spectral ranking can tell us which bands matter overall. What we really want is their joint answer. In this five-minute tutorial, we follow one actual burn-scar image through the SSI method and then look at the evaluation reported in the paper.</p><p class="zh">这一教程从真实的六波段烧毁区域图像出发，解释 SSI 如何在同一计算中保留位置和通道两个维度。</p></aside>
 </section>
@@ -67,40 +65,52 @@
     <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
     <div class="section-eyebrow">02 / LOCAL INTERVENTION</div>
     <h2>Keep the surroundings.<br><em>Change only one cell.</em></h2>
-    <div class="local-grid">
+    <div class="local-grid v2-local-grid">
       <div class="local-photo-wrap">
-        <div class="photo-interactive" id="photoInteractive" aria-label="Select one of three spatial positions"><img src="./assets/ssi-tour/input.png" alt="Satellite image with an interactive selected location"><div class="mask-patch" id="maskPatch"></div><div class="cell-mark" id="cellMark"></div></div>
-        <div class="location-picker" role="group" aria-label="Choose a position"><span>SELECT LOCATION</span><button class="loc-btn selected" data-location="0">A</button><button class="loc-btn" data-location="1">B</button><button class="loc-btn" data-location="2">C</button></div>
+        <div class="local-image-head"><span>OBSERVED IMAGE</span><strong id="locationIndex">g · row 10, col 12</strong></div>
+        <div class="photo-interactive" id="photoInteractive" role="button" tabindex="0" aria-label="Select any spatial location in the HLS image"><img src="./assets/ssi-tour/input.png" alt="HLS satellite image with one selected local region"><div class="mask-patch" id="maskPatch"></div><div class="cell-mark" id="cellMark"></div></div>
+        <div class="location-picker" role="group" aria-label="Choose a spatial position"><span>PICK A CELL OR USE</span><button class="loc-btn selected" data-location="0">A</button><button class="loc-btn" data-location="1">B</button><button class="loc-btn" data-location="2">C</button></div>
       </div>
       <div class="local-readout">
-        <p class="big-context">255 cells remain <em>observed</em>.</p>
-        <div class="comparison"><div><span>SELECTED CELL MASKED</span><strong id="maskedScore">1.1549</strong></div><div class="score-arrow">→</div><div><span>ALL SIX CHANNELS RESTORED</span><strong id="fullScore">1.2065</strong></div></div>
-        <div class="contrast"><span>LOCAL SCORE CHANGE</span><strong id="contrastScore">+0.0516</strong></div>
-        <div class="togglebar"><button id="maskBtn" aria-pressed="true">Mask this cell</button><button id="restoreBtn" aria-pressed="false">Restore all six</button></div>
+        <div class="context-rule"><span class="context-icon">255 / 256</span><div><strong>Keep the other locations observed.</strong><span>Only the selected six-channel cell changes.</span></div></div>
+        <div class="local-state-cards">
+          <button class="state-card selected" id="maskBtn" aria-pressed="true">
+            <span class="state-number">01 / MEAN BASELINE</span>
+            <div class="state-visual masked-visual" aria-hidden="true"><div class="baseline-channel-lines"><i style="--id:#3277C8"></i><i style="--id:#27986F"></i><i style="--id:#DA5A58"></i><i style="--id:#8062B5"></i><i style="--id:#D59A3F"></i><i style="--id:#A45B45"></i></div><span>MEAN</span></div>
+            <span class="state-caption">Cell masked</span><strong id="maskedScore">1.1549</strong>
+          </button>
+          <button class="state-card" id="restoreBtn" aria-pressed="false">
+            <span class="state-number">02 / OBSERVED CHANNELS</span>
+            <canvas id="observedZoom" class="state-visual" width="256" height="256" aria-label="Enlarged original local image"></canvas>
+            <span class="state-caption">Cell restored</span><strong id="fullScore">1.2065</strong>
+          </button>
+        </div>
+        <div class="local-effect-row"><span>LOCAL CONTRAST</span><strong id="contrastScore">+0.0516</strong><span id="currentState">Selected cell is masked</span></div>
       </div>
     </div>
   </div>
   <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Observed context</h3><p>For spatial cell g, keep all 255 other cells at their observed values. Change only the six channels in g, using the per-channel mean baseline when masking. The unmasked score is 1.206524. For each chosen location, the displayed masked score is obtained by subtracting that cell's exact contextual contrast, which equals the sum of its six sampled-Shapley contributions within numerical precision.</p><p>Cells A, B and C are real positions in HLS sample_0163. The numerical scores are based on the published JSON output of the original browser computation. Individual intermediate coalition scores are not displayed, because they were not saved.</p></div>
-  <aside class="notes"><span class="time">~55 s</span><h4>Talk track</h4><p>Pick a small region g. The model still sees the same original image everywhere else. Only the selected region's channels are replaced with the training-split mean baseline. We can now compare the target score with that cell masked and with all six of its channels restored. For location A, the difference is about plus 0.0516 logit units. Click B or C to see that a different position creates a different local contrast. SSI's defining choice is this fixed observed context: it asks what the channels of g do in the image as it actually appears, not in a fully masked world.</p><p class="zh">点击 A/B/C 切换位置。其他位置始终是实际观测值，只有当前局部六个波段进入 baseline 或恢复原值。数值来自真实 SSI 结果。</p></aside>
+  <aside class="notes"><span class="time">~55 s</span><h4>Talk track</h4><p>Click any region g in the image, or choose A, B or C. The model still sees the same original image everywhere else. Only the selected region's channels are replaced with the training-split mean baseline. We can now compare the target score with that cell masked and with all six of its channels restored. For location A, the difference is about plus 0.0516 logit units. Click B or C to see that a different position creates a different local contrast. SSI's defining choice is this fixed observed context: it asks what the channels of g do in the image as it actually appears, not in a fully masked world.</p><p class="zh">点击 A/B/C 切换位置。其他位置始终是实际观测值，只有当前局部六个波段进入 baseline 或恢复原值。数值来自真实 SSI 结果。</p></aside>
 </section>
 
 <section class="slide light" data-title="Channel effects" data-time="54">
   <div class="frame">
     <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
     <div class="section-eyebrow">03 / SHAPLEY ALLOCATION</div>
-    <h2>Restore bands in different orders.<br><em>Average each band’s marginal effect.</em></h2>
-    <div class="orders-grid">
+    <h2>Restore one band at a time.<br><em>Average across five orders.</em></h2>
+    <div class="orders-grid v2-orders-grid">
       <div class="orders-left">
-        <div class="order-title"><span>ACTUAL SAMPLED ORDERS</span><strong id="orderNumber">01 / 05</strong></div>
-        <div class="sequence" id="channelSequence"></div>
-        <div class="sequence-controls"><button id="previousOrder">← Previous</button><button id="nextOrder" class="primary">Next order →</button></div>
-        <div class="sequence-bottom"><span>BEFORE</span><span class="line-connect"></span><span>AFTER</span></div>
+        <div class="order-title"><span>ACTUAL SAMPLED RESTORATION PATH</span><strong id="orderNumber">01 / 05</strong></div>
+        <div class="order-pills" id="orderPills" role="group" aria-label="Choose one of the five sampled channel orders"></div>
+        <div class="sequence" id="channelSequence" aria-label="Click a channel step to restore up through that band"></div>
+        <div class="restoration-status"><div><span>SELECTED CELL</span><strong id="restorationPhase">Six channels at baseline</strong></div><span id="stepProgress">0 / 6 restored</span></div>
+        <div class="sequence-controls"><button id="previousOrder">← Previous path</button><button id="nextOrder" class="primary">Next path →</button><button id="stepNext" class="step-action">Restore next band →</button></div>
       </div>
-      <div class="orders-right"><div class="mini-heading">ONE SIGNED CONTRIBUTION PER BAND</div><div class="signed-bars" id="localBars"></div><div class="orders-foot"><span>FIVE SAMPLED PATHS</span><span>ONE CELL <b>g</b></span></div></div>
+      <div class="orders-right"><div class="mini-heading">SHAPLEY ALLOCATION · THE SAME CELL</div><h3>Six signed contributions</h3><div class="order-subtitle">Each value averages a band’s effect over all five orders.</div><div class="signed-bars" id="localBars"></div><div class="orders-foot"><span>FIVE SAMPLED PATHS</span><span>ONE CELL <b>g</b></span></div></div>
     </div>
   </div>
   <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Conditional Shapley estimation</h3><p>For any subset R of the six channels in the selected cell, all other cells remain observed. The six local channels start at their mean baselines. The algorithm restores them in five sampled permutations. At each addition, it records the model score difference. Averaging the marginal change for channel c across those five orders gives Phi(g,c).</p><p>Order sequences here are reproduced exactly from the seed-0 xorshift32/Fisher–Yates sampler in docs/playground/compute-runtime.js, following its row-major traversal. The local attribution bars are read from the saved result.json; individual per-step logit differences are intentionally not fabricated.</p></div>
-  <aside class="notes"><span class="time">~54 s</span><h4>Talk track</h4><p>Mask the six channels of the chosen cell. Then restore them one at a time in a sampled order. The marginal contribution of a band is how much the model score changes at the moment that band is restored. But a band can have a different marginal effect depending on which other bands have already returned, so we sample five orders and average the band's effects. Use Next order to inspect the actual seeded channel orders used in this run. The bar chart on the right shows the final signed contributions for the selected location. In this cell, SWIR2 is positive while SWIR1 is negative. No individual intermediate model scores are invented here.</p><p class="zh">实际采样顺序来自原 browser 计算的随机采样器；右侧柱形是真实六个 Shapley 贡献。中途的 coalition 分数没有保存，因此不展示伪造数值。</p></aside>
+  <aside class="notes"><span class="time">~54 s</span><h4>Talk track</h4><p>Mask the six channels of the chosen cell. Then restore them one at a time in a sampled order. The marginal contribution of a band is how much the model score changes at the moment that band is restored. But a band can have a different marginal effect depending on which other bands have already returned, so we sample five orders and average the band's effects. Choose one of five measured-run channel orders, then click its six steps to see the restoration progression. The bar chart on the right shows the final signed contributions for the selected location. In this cell, SWIR2 is positive while SWIR1 is negative. No individual intermediate model scores are invented here.</p><p class="zh">实际采样顺序来自原 browser 计算的随机采样器；右侧柱形是真实六个 Shapley 贡献。中途的 coalition 分数没有保存，因此不展示伪造数值。</p></aside>
 </section>
 
 <section class="slide dark" data-title="Joint attribution" data-time="44">
@@ -120,11 +130,25 @@
   <div class="frame">
     <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
     <div class="section-eyebrow">05 / TWO VIEWS, ONE COMPUTATION</div>
-    <h2>Sum across bands for <em>where</em>.<br>Across locations for <em>which</em>.</h2>
-    <div class="views-grid">
-      <div class="view-panel"><div class="view-head"><span>Σ over six channels</span><strong>WHERE</strong></div><div class="view-image"><img src="./assets/ssi-tour/spatial_ssi.png" alt="Real spatial SSI attribution for HLS sample_0163"></div><div class="view-cap">Spatial SSI</div></div>
-      <div class="mid-split"><div class="phi">Φ(g,c)</div><div class="mid-line"></div><div class="mid-branch">↙ <span></span> ↘</div></div>
-      <div class="view-panel"><div class="view-head"><span>Σ over 256 locations</span><strong>WHICH</strong></div><svg id="spectralPlot" viewBox="0 0 650 510" role="img" aria-label="Real signed channel totals"></svg><div class="view-cap">Global signed spectral SSI</div></div>
+    <h2>One joint matrix.<br><em>Two consistent views.</em></h2>
+    <div class="views-grid v2-views-grid" id="viewsGrid" data-focus="where">
+      <section class="view-panel spatial-panel" aria-label="Spatial attribution">
+        <div class="view-head"><span>Σ CHANNELS AT EACH LOCATION</span><strong>WHERE</strong></div>
+        <div class="view-image"><img src="./assets/ssi-tour/spatial_ssi.png" alt="Authentic spatial SSI map of burn-scar sample 0163"></div>
+        <div class="view-cap">Spatial contribution</div>
+      </section>
+      <section class="matrix-panel" aria-label="Joint attribution of 256 cells and six spectral channels">
+        <div class="matrix-header"><span>ONE COMPUTATION</span><strong>Φ(g,c)</strong></div>
+        <div class="matrix-label">256 locations × 6 bands</div>
+        <div class="matrix-band-keys" id="matrixBandKeys"></div>
+        <canvas id="matrixCanvas" width="336" height="512" role="img" aria-label="Measured 256 by six signed SSI attribution matrix"></canvas>
+        <div class="matrix-axes"><button class="axis-toggle active" data-focus="where" aria-pressed="true">← Σ channels</button><button class="axis-toggle" data-focus="which" aria-pressed="false">Σ locations →</button></div>
+      </section>
+      <section class="view-panel spectral-panel" aria-label="Global spectral attribution">
+        <div class="view-head"><span>Σ LOCATIONS FOR EACH BAND</span><strong>WHICH</strong></div>
+        <svg id="spectralPlot" viewBox="0 0 650 510" role="img" aria-label="Real signed spectral contributions"></svg>
+        <div class="view-cap">Global spectral contribution</div>
+      </section>
     </div>
   </div>
   <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Exact aggregation of the same tensor</h3><p>Spatial: S(g) = sum over c of Phi(g,c). Spectral: T(c) = sum over g of Phi(g,c). The six per-channel spatial maps are the fixed-channel slices of the same tensor.</p><p>Local efficiency is exact within each spatial cell: S(g) = f(x) - f(x with all channels of g masked). However, summing S(g) over cells need not recover the global score f(x) or a whole-image baseline contrast. For this run the sum across cells/channels is 0.874582, while the full target logit is 1.206524.</p></div>
