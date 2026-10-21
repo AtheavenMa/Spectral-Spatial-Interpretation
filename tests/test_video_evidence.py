@@ -1,4 +1,4 @@
-"""Regression checks for the authentic sample_0163 promotional SSI evidence."""
+"""Check published SSI tour data, plus optional reproducible video evidence plates."""
 from __future__ import annotations
 
 import hashlib
@@ -12,11 +12,51 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "assets/video/hls_burnscar_0163"
 ORIGINAL = ROOT / "docs/playground/assets/samples/HLS_BurnScars/sample_0163"
+TOUR = ROOT / "docs/assets/ssi-tour"
+
+
+class PublishedTourEvidenceTests(unittest.TestCase):
+    """Always validate the numerical evidence shipped with the public tutorial."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.result = json.loads((TOUR / "result.json").read_text())
+        cls.analysis = json.loads((TOUR / "analysis.json").read_text())
+
+    def test_published_source_identity_and_settings(self):
+        self.assertEqual(self.result["sample_id"], "HLS_BurnScars/sample_0163")
+        for field, value in (("grid", 16), ("baseline", "mean"),
+                             ("permutations", 5), ("seed", 0)):
+            self.assertEqual(self.result[field], value)
+            self.assertEqual(self.analysis["parameters"][field], value)
+
+    def test_published_channel_values_aggregate(self):
+        attribution = np.asarray(self.result["attribution"], dtype=np.float64)
+        spatial = np.asarray(self.result["spatial"], dtype=np.float64)
+        spectral = np.asarray(self.result["spectral"], dtype=np.float64)
+        self.assertEqual(attribution.shape, (16, 16, 6))
+        np.testing.assert_allclose(attribution.sum(axis=2), spatial, atol=1e-8)
+        np.testing.assert_allclose(attribution.sum(axis=(0, 1)), spectral, atol=1e-8)
+        self.assertLess(self.result["local_efficiency_error"], 1e-8)
+        self.assertEqual(self.result["channels"],
+                         ["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2"])
+        self.assertGreater(spectral[4], 0)
+        self.assertGreater(spectral[5], spectral[4])
+
+
 
 
 class HLSVideoEvidenceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # Video plates are produced by the separate, manually-triggerable
+        # video-evidence workflow. They are not shipped in every git checkout.
+        required = ("result.json", "analysis.json", "manifest.json")
+        if any(not (DATA / name).is_file() for name in required):
+            raise unittest.SkipTest(
+                "Optional generated video plates are not in this checkout; "
+                "published tutorial evidence is tested independently."
+            )
         cls.result = json.loads((DATA / "result.json").read_text())
         cls.analysis = json.loads((DATA / "analysis.json").read_text())
         cls.provenance = json.loads((DATA / "manifest.json").read_text())
