@@ -25,14 +25,6 @@ https://github.com/user-attachments/assets/f9697c02-6253-441b-9c15-96abec099b7b
 
 💻 Click to open the [tutorial](https://atheavenma.github.io/Spectral-Spatial-Interpretation/) in your browser · [Tutorial guide](docs/TUTORIAL.md)
 
-### 🖼️ SSI in Action
-
-<p align="center">
-  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="855"></a>
-</p>
-
-**[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas — 57 examples](examples/README.md)
-
 ### 💡 How SSI Works
 
 A channel's contribution can change across an image. SSI asks how the channels **within one spatial cell** affect the chosen model score, conditioned on the **observed values of all other cells**.
@@ -111,9 +103,13 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 ### 🎛️ Interactive SSI Playground
 
-[**Open the SSI Playground ↗**](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
+**All 57 Atlas examples are playable in HTML** with verified model checkpoints and original inputs. Change the grid size and permutations to recompute SSI. The Python API also exports Atlas PNG, JSON and NPZ, with configurable baselines.
 
-**All 57 Atlas examples are playable in HTML** with verified model checkpoints and original inputs. Change the grid, baseline and permutations to recompute SSI. The Python API also exports Atlas PNG, JSON and NPZ.
+<p align="center">
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="855"></a>
+</p>
+
+**[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas — 57 examples](examples/README.md) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
 
 ### ⚙️ Install
 
