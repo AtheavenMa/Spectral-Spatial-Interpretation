@@ -21,8 +21,9 @@ Open `http://localhost:8000/`. Use arrow keys, digits 1–7, `N` for presenter n
 - The input, ground-truth target mask and spatial overlay are copied unchanged from the recorded video-evidence assets.
 - The final-slide comparison numbers come from the paper's mean-baseline Table 1, not from sample_0163. The single sample is illustrative.
 
-## Deployment
+## Live pages
 
-The presentation is placed at `docs/index.html`, parallel to the `docs/index.html` arrangement of the SAR and RSS repositories. GitHub Pages can publish this folder by choosing **Deploy from a branch → main → /docs** in the repository's Pages settings. The corresponding URL will be `https://atheavenma.github.io/Spectral-Spatial-Interpretation/` after Pages is enabled.
+- [5-minute tutorial](https://atheavenma.github.io/Spectral-Spatial-Interpretation/)
+- [SSI Playground](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)
 
-Until Pages is enabled, the README's tutorial link uses the raw.githack.com GitHub static-file renderer so the same repository files can be opened directly as a website.
+Both pages are published from the SSI repository's `docs/` folder using GitHub Pages. Run `python -m http.server 8000 --directory docs` for local browsing.

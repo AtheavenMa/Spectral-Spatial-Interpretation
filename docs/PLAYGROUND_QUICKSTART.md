@@ -2,7 +2,7 @@
 
 ## Play directly in HTML
 
-[**Open the browser SSI Playground ↗**](https://atheavenma.github.io/ssi-playground/)
+[**Open the browser SSI Playground ↗**](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)
 
 The static page uses the genuine bundled HLS checkpoint exported to ONNX, the real input tensor, and browser CPU inference. It recomputes SSI when the grid, baseline or sampling settings change. The full six-model Python Playground is below.
 

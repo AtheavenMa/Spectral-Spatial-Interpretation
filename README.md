@@ -4,10 +4,10 @@
 
 <p align="center">
   <b>NeurIPS 2026</b> &nbsp;·&nbsp;
-  <a href="https://atheavenma.github.io/ssi-playground/">🎛️ Playground</a> &nbsp;·&nbsp;
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/">🎛️ Playground</a> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
   <a href="examples/README.md">🖼️ Visual Atlas</a> &nbsp;·&nbsp;
-  <a href="https://atheavenma.github.io/ssi-tutorial/">🎞️ 5-minute tutorial</a>
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/">🎞️ 5-minute tutorial</a>
 </p>
 
 <p align="center">
@@ -19,20 +19,20 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 ## 🎞️ 5-Minute Tutorial
 
 <p align="center">
-  <a href="https://atheavenma.github.io/ssi-tutorial/"><img src="assets/tour_preview.svg" alt="SSI in Five Minutes interactive tutorial" width="900"/></a>
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/"><img src="assets/tour_preview.png" alt="SSI in Five Minutes interactive tutorial" width="900"/></a>
 </p>
 
-💻 Click to open the [tutorial](https://atheavenma.github.io/ssi-tutorial/) in your browser · [Tutorial guide](docs/TUTORIAL.md)
+💻 Click to open the [tutorial](https://atheavenma.github.io/Spectral-Spatial-Interpretation/) in your browser · [Tutorial guide](docs/TUTORIAL.md)
 
 ---
 
 ## 🖼️ SSI in Action
 
 <p align="center">
-  <a href="https://atheavenma.github.io/ssi-playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="900"></a>
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="900"></a>
 </p>
 
-**[🎛️ Play with SSI ↗](https://atheavenma.github.io/ssi-playground/)** · [Visual Atlas — 57 examples](examples/README.md)
+**[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas — 57 examples](examples/README.md)
 
 ---
 
@@ -118,7 +118,7 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 ## 🎛️ Interactive SSI Playground
 
-[**Open the SSI Playground ↗**](https://atheavenma.github.io/ssi-playground/) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
+[**Open the SSI Playground ↗**](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
 
 **All 57 Atlas examples are playable in HTML** with verified model checkpoints and original inputs. Change the grid, baseline and permutations to recompute SSI. The Python API also exports Atlas PNG, JSON and NPZ.
 

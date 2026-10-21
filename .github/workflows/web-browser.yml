@@ -27,7 +27,7 @@ jobs:
         run: python tools/test_browser_web.py
       - name: Test the public GitHub Pages Playground
         env:
-          SSI_WEB_URL: https://atheavenma.github.io/ssi-playground/
+          SSI_WEB_URL: https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/
         run: python tools/test_browser_web.py
       - name: Save internal browser screenshots
         if: always()
