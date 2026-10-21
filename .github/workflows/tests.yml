@@ -16,6 +16,10 @@ jobs:
         run: python -m pip install "torch==2.6.0" --index-url https://download.pytorch.org/whl/cpu
       - name: Install project and web test dependencies
         run: python -m pip install -r requirements.txt
+      - name: Validate pip installation of the standalone core
+        run: |
+          python -m pip install --no-deps .
+          (cd /tmp && python -c "from ssi import SSI, explain; print('Installed SSI image and NumPy APIs')")
       - name: Unit and real-checkpoint integration tests
         run: python -m unittest discover -s tests -v
       - name: Smoke test the root HLS demo entrypoint

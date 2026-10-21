@@ -78,5 +78,32 @@ class ImageSSITests(unittest.TestCase):
                 grid_size=2).explain()
 
 
+class BundledModelParityTests(unittest.TestCase):
+    def test_new_pixel_grid_api_matches_existing_hls_adapter(self):
+        from pathlib import Path
+        from lab.adapters.hls import (
+            HLSValueFunction, TRAIN_MEAN_NORMALIZED, load_model, load_sample,
+        )
+        from ssi import explain
+
+        root = Path(__file__).resolve().parents[1]
+        checkpoint = root / "assets/checkpoints/hls_unet.pt"
+        sample = root / "assets/samples/hls_sample.npz"
+        model = load_model(checkpoint, torch.device("cpu"))
+        _, gt, normalized = load_sample(sample)
+        old_value = HLSValueFunction(model, normalized, gt, grid=4, baseline="mean", batch_size=8)
+        original = explain(old_value, 16, 6, method="permutation", n_permutations=1, seed=0)
+        new = SSI(
+            model, normalized, target=1, target_mask=gt == 1,
+            baseline=TRAIN_MEAN_NORMALIZED, image_size=128, grid_size=32,
+            permutations=1, seed=0, batch_size=8,
+        ).explain()
+        np.testing.assert_allclose(
+            new.attribution.reshape(16, 6), original.attribution, rtol=2e-5, atol=2e-5,
+        )
+        self.assertEqual(new.n_evaluations, original.n_evaluations)
+        self.assertLess(new.max_local_efficiency_error, 1e-5)
+
+
 if __name__ == "__main__":
     unittest.main()
