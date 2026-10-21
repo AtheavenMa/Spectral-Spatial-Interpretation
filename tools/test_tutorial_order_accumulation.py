@@ -32,6 +32,9 @@ def main():
         page.wait_for_function(
             "() => document.querySelectorAll('#jointMaps .joint-card').length === 6")
         page.keyboard.press("4")
+        page.wait_for_function(
+            "() => document.querySelectorAll('.slide')[3].classList.contains('active')")
+        page.locator("#playOrder").wait_for(state="visible", timeout=5000)
         chips = page.locator("#orderPills button")
         play = page.locator("#playOrder")
         assert chips.count() == 5
@@ -100,6 +103,8 @@ def main():
 
         # Selecting a different spatial cell resets to the empty initial state.
         page.keyboard.press("3")
+        page.wait_for_function(
+            "() => document.querySelectorAll('.slide')[2].classList.contains('active')")
         photo=page.locator("#photoInteractive")
         assert page.locator(".context-banner strong").inner_text()=="Click to move location"
         baseline=float(page.locator("#maskedScore").inner_text())
@@ -116,6 +121,8 @@ def main():
         assert float(page.locator("#maskedScore").inner_text())==baseline
         assert float(page.locator("#fullScore").inner_text())!=moved
         page.keyboard.press("4")
+        page.wait_for_function(
+            "() => document.querySelectorAll('.slide')[3].classList.contains('active')")
         assert play.is_disabled()
         assert all(row["sum"]==0 for row in totals(page))
         assert not errors, errors
