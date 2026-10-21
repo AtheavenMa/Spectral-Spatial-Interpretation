@@ -184,12 +184,6 @@ scores sum to its masking contrast: 20 for the first cell and 8 for the second.
 
 On a real model, supply `value_fn(masks)` returning one scalar per coalition. Keep the target, baseline and any region of interest fixed for all calls. [HLS adapter](lab/adapters/hls.py) is a complete image-to-model adapter with bounded batch sizes.
 
-👉 On HLS Burn Scar
-
-```bash
-python demo.py
-```
-
 ### 🔥 HLS Burn Scar Demo
 
 The included demo explains a **128 × 128, six-band HLS image** with an **8 × 8 spatial grid** and **10 channel permutations per cell** by default. Its scalar target is the burn-class logit averaged over a fixed ground-truth burn region; the default baseline is the training-split channel mean.
