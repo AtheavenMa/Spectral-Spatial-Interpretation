@@ -245,6 +245,8 @@ class SSI:
                                    else target_mask)
             if not torch.isfinite(mask.float()).all():
                 raise ValueError("target_mask must contain finite values")
+            if not torch.all((mask == 0) | (mask == 1)):
+                raise ValueError("target_mask must be a binary 0/1 or Boolean region mask")
             if mask.ndim != 2 or tuple(mask.shape) not in (original_size, size):
                 raise ValueError("target_mask must have the original or resized image HxW shape")
             mask = mask.to(torch.float32)[None, None]

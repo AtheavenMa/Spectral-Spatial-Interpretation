@@ -69,6 +69,7 @@ class ImageSSITests(unittest.TestCase):
             dict(baseline=[0., 0.], image_size=(7, 12), grid_size=(2, 3)),
             dict(baseline=[0., 0.], grid_size=0),
             dict(baseline=[0., 0.], target_mask=np.zeros((4, 6))),
+            dict(baseline=[0., 0.], target_mask=np.full((4, 6), 2)),
         )
         for kw in invalid:
             with self.subTest(kw=kw), self.assertRaises((ValueError, TypeError)):
