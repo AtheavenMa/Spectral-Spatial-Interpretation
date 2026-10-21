@@ -326,3 +326,10 @@ h1{margin-top:56px;font:400 98px/1.07 var(--serif);letter-spacing:-.04em}h1 em{c
 .live-order-toolbar .live-play-button:disabled{background:#68758E;border-color:#68758E;color:#FFF;opacity:1;box-shadow:none;cursor:not-allowed}
 .live-play-footer{justify-content:flex-start;margin-top:22px;min-height:48px}
 .live-play-footer .live-play-status{align-items:flex-start;flex-direction:row;gap:24px}
+
+/* Spatial cell location is draggable; no full-image grid. */
+.local-scene-v3 .cell-mark{pointer-events:auto;cursor:grab;touch-action:none;user-select:none}
+.local-scene-v3 .photo-interactive[data-dragging="true"] .cell-mark{cursor:grabbing;transition:none;box-shadow:0 0 0 3px #1C2644,0 0 0 9px #C8A87088}
+.local-scene-v3 .photo-interactive[data-dragging="true"]{cursor:grabbing}
+.local-scene-v3 .context-banner{padding-bottom:25px}
+.local-scene-v3 .context-banner strong{font:400 39px/1.14 var(--serif);color:#C8A870;letter-spacing:-.01em}

@@ -54,12 +54,55 @@
     document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',toggleDetails));
 
     const photo=$('photoInteractive');
+    const mark=$('cellMark');
+    let dragPointer=null, movedDuringDrag=false, suppressDragClick=false;
+    const pointerCell=(e)=>{
+      const rect=photo.getBoundingClientRect(),n=result?.grid||16;
+      return {
+        col:Math.max(0,Math.min(n-1,Math.floor((e.clientX-rect.left)/rect.width*n))),
+        row:Math.max(0,Math.min(n-1,Math.floor((e.clientY-rect.top)/rect.height*n)))
+      };
+    };
     photo.addEventListener('click',e=>{
-      const rect=photo.getBoundingClientRect();
-      const x=Math.max(0,Math.min(15,Math.floor((e.clientX-rect.left)/rect.width*16)));
-      const y=Math.max(0,Math.min(15,Math.floor((e.clientY-rect.top)/rect.height*16)));
-      selectImageCell(y,x);
+      if(suppressDragClick){suppressDragClick=false;return;}
+      if(!result)return;
+      const loc=pointerCell(e);
+      if(loc.row!==currentCell().row||loc.col!==currentCell().col)
+        selectImageCell(loc.row,loc.col);
     });
+    mark.addEventListener('pointerdown',e=>{
+      if(e.button!==0&&!['touch','pen'].includes(e.pointerType))return;
+      dragPointer=e.pointerId;
+      movedDuringDrag=false;
+      photo.dataset.dragging='true';
+      photo.setPointerCapture(e.pointerId);
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    photo.addEventListener('pointermove',e=>{
+      if(dragPointer!==e.pointerId||!result)return;
+      const loc=pointerCell(e),previous=currentCell();
+      if(loc.row!==previous.row||loc.col!==previous.col){
+        movedDuringDrag=true;
+        selectImageCell(loc.row,loc.col);
+      }
+      e.preventDefault();
+    });
+    const finishDrag=e=>{
+      if(dragPointer!==e.pointerId)return;
+      if(e.type==='pointerup'&&result){
+        const loc=pointerCell(e),previous=currentCell();
+        if(loc.row!==previous.row||loc.col!==previous.col){
+          movedDuringDrag=true;selectImageCell(loc.row,loc.col);
+        }
+      }
+      if(photo.hasPointerCapture(e.pointerId))photo.releasePointerCapture(e.pointerId);
+      dragPointer=null;
+      delete photo.dataset.dragging;
+      suppressDragClick=movedDuringDrag;
+    };
+    photo.addEventListener('pointerup',finishDrag);
+    photo.addEventListener('pointercancel',finishDrag);
     photo.addEventListener('keydown',e=>{
       const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[e.key];
       if(!delta||!result)return;
@@ -82,7 +125,10 @@
       else if(e.key==='?'||e.key.toLowerCase()==='h')showHelp();else if(e.key==='Escape')dismiss();
     });
     window.addEventListener('wheel',e=>{if($('notesPanel').classList.contains('show')||slides[current].classList.contains('drawer-open'))return;const now=Date.now();if(Math.abs(e.deltaY)>40 && now-lastWheel>800){lastWheel=now;showSlide(current+Math.sign(e.deltaY))}},{passive:true});
-    window.addEventListener('touchstart',e=>{touchX=e.touches[0].clientX},{passive:true});
+    window.addEventListener('touchstart',e=>{
+      if(e.target.closest('#photoInteractive')){touchX=null;return}
+      touchX=e.touches[0].clientX;
+    },{passive:true});
     window.addEventListener('touchend',e=>{if(touchX===null)return;const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>75)showSlide(current+(d<0?1:-1));touchX=null},{passive:true});
   }
 

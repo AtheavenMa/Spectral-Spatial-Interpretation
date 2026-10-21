@@ -65,11 +65,11 @@
     <div class="local-scene-v3">
       <div class="local-scene-image">
         <div class="scene-label"><span>OBSERVED IMAGE</span><strong id="locationIndex">g · row 10, col 12</strong></div>
-        <div class="photo-interactive" id="photoInteractive" tabindex="0" role="grid" aria-label="Click the satellite image to choose the local spatial cell; arrow keys move selection"><img src="./assets/ssi-tour/input.png" alt="Original HLS satellite image"><div class="cell-mark" id="cellMark"></div></div>
-        <div class="scene-prompt"><span class="scene-cursor">↖</span> Click any location <span class="scene-label-hint">or use arrow keys</span></div>
+        <div class="photo-interactive" id="photoInteractive" tabindex="0" role="grid" aria-label="Drag the selection box or click the satellite image to choose a spatial location; arrow keys move the box"><img src="./assets/ssi-tour/input.png" alt="Original HLS satellite image"><div class="cell-mark" id="cellMark"></div></div>
+        
       </div>
       <div class="scene-comparison">
-        <div class="context-banner"><span class="context-count">255 / 256</span><strong>Locations remain observed.</strong></div>
+        <div class="context-banner"><strong>Drag box to move location</strong></div>
         <div class="states-heading">Only the six channels inside <em>g</em> change.</div>
         <div class="scene-states" aria-label="Measured model score with one cell masked versus restored">
           <div class="scene-state">
@@ -90,8 +90,8 @@
       </div>
     </div>
   </div>
-  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Observed context</h3><p>For spatial cell g, keep all 255 other cells at their observed values. Change only the six channels in g, using the per-channel mean baseline when masking. The unmasked score is 1.206524. For each chosen location, the displayed masked score is obtained by subtracting that cell's exact contextual contrast, which equals the sum of its six sampled-Shapley contributions within numerical precision.</p><p>Click any of the 256 spatial cells. The displayed masked score is inferred exactly from the saved full score and the local efficiency identity; no unrecorded intermediate coalition scores are displayed.</p></div>
-  <aside class="notes"><span class="time">~55 s</span><h4>Talk track</h4><p>Choose any location by clicking the original image. All surrounding pixels remain at their observed values. Only the six bands of the selected local cell are either replaced by their mean baseline, or returned to the original values. We compare the U-Net burn-region score for these two states. The contrast for this cell is the score change shown below. When you click somewhere else, the two scores update using the same verified SSI result.</p><p class="zh">只需选择位置，无须再操作两张状态卡。其他位置始终不动，左右状态与分数同时显示，差值是该位置的真实局部对比。</p></aside>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Observed context</h3><p>For spatial cell g, keep all 255 other cells at their observed values. Change only the six channels in g, using the per-channel mean baseline when masking. The unmasked score is 1.206524. For each chosen location, the displayed masked score is obtained by subtracting that cell's exact contextual contrast, which equals the sum of its six sampled-Shapley contributions within numerical precision.</p><p>Drag the selection box or click any of the 256 spatial cells. The displayed masked score is inferred exactly from the saved full score and the local efficiency identity; no unrecorded intermediate coalition scores are displayed.</p></div>
+  <aside class="notes"><span class="time">~55 s</span><h4>Talk track</h4><p>Drag the outlined box to any location, or click the original image to move it. All surrounding pixels remain at their observed values. Only the six bands of the selected local cell are either replaced by their mean baseline, or returned to the original values. We compare the U-Net burn-region score for these two states. The contrast for this cell is the score change shown below. When you click somewhere else, the two scores update using the same verified SSI result.</p><p class="zh">只需选择位置，无须再操作两张状态卡。其他位置始终不动，左右状态与分数同时显示，差值是该位置的真实局部对比。</p></aside>
 </section>
 
 <section class="slide light" data-title="Channel effects" data-time="60">

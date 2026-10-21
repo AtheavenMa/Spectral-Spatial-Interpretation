@@ -100,7 +100,18 @@ def main():
 
         # Selecting a different spatial cell resets to the empty initial state.
         page.keyboard.press("3")
-        page.locator("#photoInteractive").click(position={"x":125,"y":120})
+        photo=page.locator("#photoInteractive")
+        marker=page.locator("#cellMark")
+        old=page.locator("#locationIndex").inner_text()
+        box=marker.bounding_box()
+        assert box is not None
+        page.mouse.move(box["x"]+box["width"]/2,box["y"]+box["height"]/2)
+        page.mouse.down()
+        page.mouse.move(box["x"]+box["width"]/2+150,box["y"]+box["height"]/2+90,steps=8)
+        page.mouse.up()
+        assert page.locator("#locationIndex").inner_text()!=old, "The selection box should actually drag"
+        assert page.locator("#photoInteractive").get_attribute("data-dragging") is None
+        photo.click(position={"x":125,"y":120})
         page.keyboard.press("4")
         assert play.is_disabled()
         assert all(row["sum"]==0 for row in totals(page))
