@@ -117,7 +117,7 @@
   // Stable location-specific Gaussian samples with standard deviation 0.5.
   // This tutorial score is intentionally independent of the saved attribution tensor.
   function locationObserved(row,col,baseline){
-    let x=(Math.imul(row+1,0x9E3779B1)^Math.imul(col+1,0x85EBCA77)^0x51A60F2D)>>>0;
+    let x=(Math.imul(row+1,0x9E3779B1)^Math.imul(col+1,0x85EBCA77)^0x00C0FFEE)>>>0;
     const rand=()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296};
     const u=Math.max(rand(),1e-12),v=rand();
     const z=Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);

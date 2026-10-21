@@ -106,7 +106,7 @@ def main():
         page.wait_for_function(
             "() => document.querySelectorAll('.slide')[2].classList.contains('active')")
         photo=page.locator("#photoInteractive")
-        assert page.locator(".context-banner strong").inner_text()=="Click to move location"
+        assert page.locator(".context-banner strong").text_content().strip()=="Click to move location"
         baseline=float(page.locator("#maskedScore").inner_text())
         start=float(page.locator("#fullScore").inner_text())
         start_cell=page.locator("#locationIndex").inner_text()
