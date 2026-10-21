@@ -198,8 +198,8 @@ class SSI:
         if raw.ndim != 3:
             raise ValueError("input must be one CHW/HWC image, optionally with a leading batch dimension of 1")
         channels = int(channel_baseline.numel())
-        if raw.shape[0] == channels and raw.shape[-1] == channels:
-            raise ValueError("Ambiguous channel dimension: provide a CHW image with distinguishable dimensions")
+        # When both axes happen to equal the channel count, prefer CHW.
+        # This follows the PyTorch convention and supports tiny images.
         if raw.shape[0] == channels:
             pass
         elif raw.shape[-1] == channels:
@@ -312,7 +312,7 @@ class SSI:
                 result.append(selected.detach().to("cpu", dtype=torch.float64).numpy())
             return np.concatenate(result)
 
-        was_training = self.model.training
+        training_modes = [(module, module.training) for module in self.model.modules()]
         self.model.eval()
         try:
             with torch.inference_mode():
@@ -320,7 +320,8 @@ class SSI:
                                  method="auto", n_permutations=self.permutations,
                                  seed=self.seed)
         finally:
-            self.model.train(was_training)
+            for module, training in training_modes:
+                module.training = training
         return ImageSSIResult(
             attribution=values.attribution.reshape(rows, cols, channels),
             position_contrasts=values.position_contrasts.reshape(rows, cols),

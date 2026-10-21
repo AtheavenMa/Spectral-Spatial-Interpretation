@@ -129,6 +129,38 @@ The single `requirements.txt` installs dependencies for the demo, Python Playgro
 no dataset or model download is needed at runtime. See the [setup guide](docs/HLS_DEMO.md#installation) for environment
 and platform details.
 
+### 🧱 Core SSI for your own model
+
+Install the lightweight Python package with PyTorch support:
+
+```bash
+pip install "spectral-spatial-interpretation[torch] @ git+https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git"
+```
+
+The image API accepts a PyTorch model, its model-ready input, a fixed class
+target and a dataset-level **channel baseline vector**:
+
+```python
+from ssi import SSI
+
+result = SSI(
+    model=my_model,
+    input=my_image,                   # CHW tensor
+    target=6,                        # fixed output class
+    baseline=dataset_channel_mean,   # one numeric value per channel
+    image_size=(128, 128),           # actual model input resolution
+    grid_size=16,                    # pixels per spatial cell -> 8 x 8 cells
+    permutations=5,
+).explain()
+spatial, spectral = result.spatial, result.spectral
+```
+
+Inputs may be resized, but their values and the baseline must already
+match the model's preprocessing. See the [Core SSI API guide](docs/CORE_API.md)
+for segmentation masks, output shapes and reliability checks. The standalone
+NumPy \`explain(value_fn, ...)\` remains available for custom score functions
+and backward-compatible experiments.
+
 ### 🚀 Quickstart
 
 ```python
@@ -182,7 +214,8 @@ The demo saves a visualization, NumPy attribution arrays, and a JSON summary. Se
 | [Complete paper results](docs/PAPER_RESULTS.md) | Tables, evaluation settings, and comparisons |
 | [HLS demo guide](docs/HLS_DEMO.md) | Runnable demo, configuration, inputs, and outputs |
 | [Atlas API](docs/ATLAS_API.md) | Generate Atlas PNG and JSON from a supported checkpoint and input |
-| [Core API](ssi.py) | Standalone NumPy implementation |
+| [Core API](ssi.py) | Standalone NumPy implementation and PyTorch image API |
+| [Core SSI usage](docs/CORE_API.md) | Pip installation, channel baselines, resizing and pixel-grid semantics |
 | [Unit tests](tests/) | Mathematical and adapter regression checks |
 | [Repository structure](docs/REPOSITORY_STRUCTURE.md) | Code layout, assets and deployment boundaries |
 | [Deployment](docs/DEPLOYMENT.md) | Local Python API and CPU Docker instructions |
