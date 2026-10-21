@@ -115,7 +115,7 @@ def main():
         def check_recorded_scores():
             import re
             label=page.locator("#locationIndex").text_content()
-            match=re.search(r"row (\\d+), col (\\d+)",label)
+            match=re.search(r"row (\d+), col (\d+)",label)
             assert match, label
             row,col=(int(s)-1 for s in match.groups())
             reference=page.evaluate(
