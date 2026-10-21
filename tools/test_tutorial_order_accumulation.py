@@ -106,20 +106,21 @@ def main():
         page.wait_for_function(
             "() => document.querySelectorAll('.slide')[2].classList.contains('active')")
         photo=page.locator("#photoInteractive")
+        photo.wait_for(state="visible",timeout=8000)
         assert page.locator(".context-banner strong").text_content().strip()=="Click to move location"
-        baseline=float(page.locator("#maskedScore").inner_text())
-        start=float(page.locator("#fullScore").inner_text())
-        start_cell=page.locator("#locationIndex").inner_text()
+        baseline=float(page.locator("#maskedScore").text_content())
+        start=float(page.locator("#fullScore").text_content())
+        start_cell=page.locator("#locationIndex").text_content()
         photo.click(position={"x":125,"y":120})
-        assert page.locator("#locationIndex").inner_text()!=start_cell
-        assert float(page.locator("#maskedScore").inner_text())==baseline
-        moved=float(page.locator("#fullScore").inner_text())
+        assert page.locator("#locationIndex").text_content()!=start_cell
+        assert float(page.locator("#maskedScore").text_content())==baseline
+        moved=float(page.locator("#fullScore").text_content())
         assert moved!=start
         photo.click(position={"x":125,"y":120})
-        assert float(page.locator("#fullScore").inner_text())==moved, "Same location must have stable random value"
+        assert float(page.locator("#fullScore").text_content())==moved, "Same location must have stable random value"
         photo.click(position={"x":345,"y":345})
-        assert float(page.locator("#maskedScore").inner_text())==baseline
-        assert float(page.locator("#fullScore").inner_text())!=moved
+        assert float(page.locator("#maskedScore").text_content())==baseline
+        assert float(page.locator("#fullScore").text_content())!=moved
         page.keyboard.press("4")
         page.wait_for_function(
             "() => document.querySelectorAll('.slide')[3].classList.contains('active')")
