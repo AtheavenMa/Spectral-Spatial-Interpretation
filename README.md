@@ -93,14 +93,11 @@ Lower deletion AUC and higher insertion AUC are better. Entries are **paper-repo
 For example, mean-baseline HLS joint deletion is .1545 for SSI versus .2096 for KernelSHAP, the strongest
 non-SSI method on that metric.
 
-The [complete paper results and settings](docs/PAPER_RESULTS.md) cover both masking baselines, spatial localization,
-spectral aggregation, MC-Owen comparisons, and different spatial grid sizes.
-
 <p align="center">
-  <img src="assets/figures/fig4.png" alt="Qualitative SSI and baseline method comparisons for CUB-200, HLS Burn Scars, and EuroSAT" width="900">
+  <img src="assets/figures/figure3.png" alt="Spatial localization, spectral hit rates, and channel deletion comparisons between SSI and baseline methods" width="900">
 </p>
 
-*Qualitative comparisons from the paper. The quantitative evaluations are reported in the tables.*
+*SSI leads the compared methods in spatial localization, spectral Hit@K, and channel deletion across the evaluated datasets.*
 
 ### 🎛️ Interactive SSI Playground
 
