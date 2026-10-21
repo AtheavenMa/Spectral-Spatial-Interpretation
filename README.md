@@ -111,7 +111,7 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 **[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas — 57 examples](examples/README.md) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
 
-### Install
+### 🚀 Quick Start
 
 ```bash
 git clone https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git
