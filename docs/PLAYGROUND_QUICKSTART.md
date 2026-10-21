@@ -11,7 +11,7 @@ The static page has six verified ONNX model families and 57 registered Atlas sam
 From the repository root, with a CPU PyTorch install:
 
 ```bash
-python -m pip install -r requirements_lab.txt
+python -m pip install -r requirements.txt
 uvicorn lab.app:app --host 127.0.0.1 --port 7860
 ```
 

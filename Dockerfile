@@ -10,8 +10,8 @@ WORKDIR /app
 RUN python -m pip install --no-cache-dir "torch==2.6.0" \
     --index-url https://download.pytorch.org/whl/cpu
 
-COPY requirements.txt requirements_lab.txt ./
-RUN python -m pip install --no-cache-dir -r requirements_lab.txt
+COPY requirements.txt ./
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 

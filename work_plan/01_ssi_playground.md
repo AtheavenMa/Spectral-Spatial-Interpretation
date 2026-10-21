@@ -31,7 +31,7 @@ The site must never swap a PNG in place of recomputing SSI when the user changes
 | lab/static/style.css | Desktop/mobile layout, warm light + navy design | [x] committed |
 | lab/static/app.js | Parameter controls, HTTP calls, signed map canvas, cell/channel scores, exports | [x] committed |
 | tests/test_lab.py | CPU integration tests using real HLS checkpoint and input | [x] test source committed; execution requires CI confirmation |
-| requirements_lab.txt / requirements_lab_test.txt | Runtime and test dependencies | [x] committed |
+| requirements.txt (consolidated) | Runtime and test dependencies | [x] committed |
 | Dockerfile | CPU PyTorch + FastAPI container, port 7860 | [x] committed |
 | deploy/README.md | Local, Docker, Spaces, API and test instructions | [x] committed |
 | lab/adapters/extra.py | CUB, EuroSAT, PaviaU, Salinas and WHU-Hi-LongKou adapters | [x] real checkpoint, input and numeric reference |
@@ -146,7 +146,7 @@ GPU tasks are limited to finding/exporting unavailable training artifacts, prepa
 ## 7. Local commands
 
 ```bash
-python -m pip install -r requirements_lab_test.txt
+python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 uvicorn lab.app:app --host 127.0.0.1 --port 7860
 ```

@@ -11,7 +11,7 @@ The repository includes a real CPU-compatible SSI Playground. It serves a minima
 From the repository root:
 
 ```bash
-python -m pip install -r requirements_lab.txt
+python -m pip install -r requirements.txt
 uvicorn lab.app:app --host 127.0.0.1 --port 7860
 ```
 
@@ -47,7 +47,7 @@ python -m lab.cli explain --model-id cub-200 --sample-id cub-0158 --grid 4 --per
 ## Testing
 
 ```bash
-python -m pip install -r requirements_lab_test.txt
+python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 node --check lab/static/app.js
 ```

@@ -9,7 +9,7 @@ This is a real Python API that evaluates the requested checkpoint with the origi
 Install from the repository root:
 
 ~~~~bash
-python -m pip install -r requirements_lab.txt
+python -m pip install -r requirements.txt
 ~~~~
 
 **Bundled HLS checkpoint and input**

@@ -125,7 +125,7 @@ cd Spectral-Spatial-Interpretation
 python -m pip install -r requirements.txt
 ```
 
-`ssi.py` needs only NumPy. The demo also needs PyTorch and Matplotlib. The prepared sample and weights are bundled, so
+The single `requirements.txt` installs dependencies for the demo, Python Playground and tests. Standalone `ssi.py` itself only requires NumPy. The prepared sample and weights are bundled, so
 no dataset or model download is needed at runtime. See the [setup guide](docs/HLS_DEMO.md#installation) for environment
 and platform details.
 
