@@ -31,7 +31,7 @@ https://github.com/user-attachments/assets/f9697c02-6253-441b-9c15-96abec099b7b
 ### 🖼️ SSI in Action
 
 <p align="center">
-  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="720"></a>
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="855"></a>
 </p>
 
 **[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas — 57 examples](examples/README.md)
