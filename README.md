@@ -97,7 +97,7 @@ non-SSI method on that metric.
   <img src="assets/figures/figure3.png" alt="Spatial localization, spectral hit rates, and channel deletion comparisons between SSI and baseline methods" width="900">
 </p>
 
-*SSI leads the compared methods in spatial localization, spectral Hit@K, and channel deletion across the evaluated datasets.*
+SSI leads the compared methods in spatial localization, spectral Hit@K, and channel deletion across the evaluated datasets.
 
 ### 🎛️ Interactive SSI Playground
 
