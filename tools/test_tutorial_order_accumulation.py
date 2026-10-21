@@ -108,19 +108,39 @@ def main():
         photo=page.locator("#photoInteractive")
         photo.wait_for(state="visible",timeout=8000)
         assert page.locator(".context-banner strong").text_content().strip()=="Click to move location"
-        baseline=float(page.locator("#maskedScore").text_content())
-        start=float(page.locator("#fullScore").text_content())
+        full=float(page.locator("#fullScore").text_content())
+        first_masked=float(page.locator("#maskedScore").text_content())
         start_cell=page.locator("#locationIndex").text_content()
+
+        def check_recorded_scores():
+            import re
+            label=page.locator("#locationIndex").text_content()
+            match=re.search(r"row (\\d+), col (\\d+)",label)
+            assert match, label
+            row,col=(int(s)-1 for s in match.groups())
+            reference=page.evaluate(
+                "([r,c]) => ({full: window.__SSI_DATA__.full_value,"
+                " contrast: window.__SSI_DATA__.attribution[r][c].reduce((a,b)=>a+b,0)})",
+                [row,col])
+            restored=float(page.locator("#fullScore").text_content())
+            masked=float(page.locator("#maskedScore").text_content())
+            contrast=float(page.locator("#contrastScore").text_content())
+            assert math.isclose(restored,reference["full"],abs_tol=1e-4)
+            assert math.isclose(contrast,reference["contrast"],abs_tol=1e-4)
+            assert math.isclose(masked,reference["full"]-reference["contrast"],abs_tol=1e-4)
+            return masked
+
+        check_recorded_scores()
         photo.click(position={"x":125,"y":120})
         assert page.locator("#locationIndex").text_content()!=start_cell
-        assert float(page.locator("#maskedScore").text_content())==baseline
-        moved=float(page.locator("#fullScore").text_content())
-        assert moved!=start
+        assert float(page.locator("#fullScore").text_content())==full
+        masked_at_new_cell=check_recorded_scores()
+        assert masked_at_new_cell!=first_masked
         photo.click(position={"x":125,"y":120})
-        assert float(page.locator("#fullScore").text_content())==moved, "Same location must have stable random value"
+        assert check_recorded_scores()==masked_at_new_cell, "Same cell must reproduce the recorded contrast"
         photo.click(position={"x":345,"y":345})
-        assert float(page.locator("#maskedScore").text_content())==baseline
-        assert float(page.locator("#fullScore").text_content())!=moved
+        assert float(page.locator("#fullScore").text_content())==full
+        check_recorded_scores()
         page.keyboard.press("4")
         page.wait_for_function(
             "() => document.querySelectorAll('.slide')[3].classList.contains('active')")
