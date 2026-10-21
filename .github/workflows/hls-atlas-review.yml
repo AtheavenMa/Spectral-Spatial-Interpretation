@@ -1,0 +1,22 @@
+name: Review HLS Atlas gallery
+on:
+  push:
+    paths:
+      - ".github/workflows/hls-atlas-review.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify archived HLS sample images
+        run: |
+          ls -lh examples/HLS_BurnScars/sample_*.png
+          test "$(find examples/HLS_BurnScars -name 'sample_*.png' | wc -l)" -eq 10
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hls-atlas-gallery-review
+          path: examples/HLS_BurnScars/sample_*.png
+          if-no-files-found: error
