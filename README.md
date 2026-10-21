@@ -3,6 +3,10 @@
 **Which spectral channels matter, and where?** SSI explains a model score with signed attributions for each spatial cell and channel. It keeps the surrounding image fixed while allocating a cell's contribution among its channels using Shapley values.
 
 <p align="center">
+  <strong>Haotian Ma</strong> &nbsp;·&nbsp; <strong>Ruqi Yang</strong> &nbsp;·&nbsp; <strong>Philip Townsend</strong>
+</p>
+
+<p align="center">
   <b>NeurIPS 2026</b> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
   <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/">🎛️ Playground</a> &nbsp;·&nbsp;
