@@ -16,7 +16,7 @@ from lab.atlas_plot import draw_atlas
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "assets/video/hls_burnscar_0163/result.json"
+DATA = ROOT / "docs/assets/ssi-tour/result.json"
 META = ROOT / "docs/playground/assets/samples/HLS_BurnScars/sample_0163/meta.json"
 ASSETS = META.parent
 OUTPUT = ROOT / "examples/HLS_BurnScars/sample_0163_mean_g16_k5.png"

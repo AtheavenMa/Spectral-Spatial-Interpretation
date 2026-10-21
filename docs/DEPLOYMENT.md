@@ -15,7 +15,7 @@ python -m pip install -r requirements_lab.txt
 uvicorn lab.app:app --host 127.0.0.1 --port 7860
 ```
 
-Open http://127.0.0.1:7860. The page calls `/api/catalog`, `/api/preview`, and `/api/jobs`. `POST /api/explain` remains for scripts. OpenAPI is at `/docs`. A short tour is in [docs/PLAYGROUND_QUICKSTART.md](../docs/PLAYGROUND_QUICKSTART.md).
+Open http://127.0.0.1:7860. The page calls `/api/catalog`, `/api/preview`, and `/api/jobs`. `POST /api/explain` remains for scripts. OpenAPI is at `/docs`. A short tour is in [Playground quickstart](PLAYGROUND_QUICKSTART.md).
 
 ## CPU Docker
 

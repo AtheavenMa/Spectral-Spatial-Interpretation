@@ -18,6 +18,8 @@ jobs:
         run: python -m pip install -r requirements_lab_test.txt
       - name: Unit and real-checkpoint integration tests
         run: python -m unittest discover -s tests -v
+      - name: Ensure both published renderers match the canonical source
+        run: python tools/sync_atlas_renderer.py --check
       - name: Validate JavaScript syntax
         run: node --check lab/static/app.js
   docker-smoke:

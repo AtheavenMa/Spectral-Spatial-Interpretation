@@ -186,6 +186,7 @@ The demo saves a visualization, NumPy attribution arrays, and a JSON summary. Se
 | [Core API](ssi.py) | Standalone NumPy implementation |
 | [Unit tests](tests/) | Mathematical and adapter regression checks |
 | [Repository structure](docs/REPOSITORY_STRUCTURE.md) | Code layout, assets and deployment boundaries |
+| [Deployment](docs/DEPLOYMENT.md) | Local Python API and CPU Docker instructions |
 
 ### 🙏 Appreciation
 
