@@ -4,8 +4,8 @@
 
 <p align="center">
   <b>NeurIPS 2026</b> &nbsp;·&nbsp;
-  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/">🎛️ Playground</a> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/">🎛️ Playground</a> &nbsp;·&nbsp;
   <a href="examples/README.md">🖼️ Visual Atlas</a> &nbsp;·&nbsp;
   <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/">🎞️ 5-minute tutorial</a>
 </p>
@@ -13,10 +13,20 @@
 <p align="center">
   <img src="assets/figures/fig1.png" alt="Figure 1: spatially varying channel relevance in RGB and multispectral images" width="900">
 </p>
+<p>A spatial heatmap shows <strong>where</strong> evidence appears; a global spectral ranking shows <strong>which channels</strong> matter overall. SSI retains both axes instead of assuming the same channel profile at every location.</p>
 
-A spatial heatmap shows **where** evidence appears; a global spectral ranking shows **which channels** matter overall. SSI retains both axes instead of assuming the same channel profile at every location.
+<p align="center">
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/video.html">
+    <img src="assets/video/ssi_video_preview.svg" alt="Play the 33-second SSI explainer video" width="800">
+  </a>
+</p>
 
-## 🎞️ 5-Minute Tutorial
+<p align="center">
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/video.html">▶ Play SSI video (33 seconds)</a> &nbsp;·&nbsp;
+  <a href="https://media.githubusercontent.com/media/AtheavenMa/Spectral-Spatial-Interpretation/main/assets/video/SSI_video.mp4">MP4</a>
+</p>
+
+### 🎞️ 5-Minute Tutorial
 
 <p align="center">
   <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/"><img src="assets/tour_preview.png" alt="SSI in Five Minutes interactive tutorial" width="900"/></a>
@@ -24,19 +34,15 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 
 💻 Click to open the [tutorial](https://atheavenma.github.io/Spectral-Spatial-Interpretation/) in your browser · [Tutorial guide](docs/TUTORIAL.md)
 
----
-
-## 🖼️ SSI in Action
+### 🖼️ SSI in Action
 
 <p align="center">
-  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="900"></a>
+  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="720"></a>
 </p>
 
 **[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas — 57 examples](examples/README.md)
 
----
-
-## 💡 How SSI Works
+### 💡 How SSI Works
 
 A channel's contribution can change across an image. SSI asks how the channels **within one spatial cell** affect the chosen model score, conditioned on the **observed values of all other cells**.
 
@@ -62,9 +68,7 @@ The resulting attribution matrix has shape **(spatial cells, channels)**. Summin
 
 The standalone [NumPy implementation](ssi.py) supports exact subset enumeration and sampled channel permutations.
 
----
-
-## 📊 Main Results
+### 📊 Main Results
 
 The NeurIPS 2026 paper compares SSI with Integrated Gradients (IG), DeepSHAP, KernelSHAP, and a rank-1 RISE control. The main settings use **16 × 16 grids for CUB-200** and **8 × 8 grids for EuroSAT and HLS Burn Scars**, with the per-channel mean masking baseline.
 
@@ -114,17 +118,13 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 *Qualitative comparisons from the paper. The quantitative evaluations are reported in the tables.*
 
----
-
-## 🎛️ Interactive SSI Playground
+### 🎛️ Interactive SSI Playground
 
 [**Open the SSI Playground ↗**](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
 
 **All 57 Atlas examples are playable in HTML** with verified model checkpoints and original inputs. Change the grid, baseline and permutations to recompute SSI. The Python API also exports Atlas PNG, JSON and NPZ.
 
----
-
-## ⚙️ Install
+### ⚙️ Install
 
 Use Python 3.10 or newer, preferably in a virtual environment.
 
@@ -138,9 +138,7 @@ python -m pip install -r requirements.txt
 no dataset or model download is needed at runtime. See the [setup guide](docs/HLS_DEMO.md#installation) for environment
 and platform details.
 
----
-
-## 🚀 Quickstart
+### 🚀 Quickstart
 
 ```python
 import numpy as np
@@ -169,9 +167,7 @@ On a real model, supply `value_fn(masks)` returning one scalar per coalition. Ke
 python demo.py
 ```
 
----
-
-## 🔥 HLS Burn Scar Demo
+### 🔥 HLS Burn Scar Demo
 
 The included demo explains a **128 × 128, six-band HLS image** with an **8 × 8 spatial grid** and **10 channel permutations per cell** by default. Its scalar target is the burn-class logit averaged over a fixed ground-truth burn region; the default baseline is the training-split channel mean.
 
@@ -185,9 +181,7 @@ python demo.py --method exact --output outputs/hls_exact
 
 The demo saves a visualization, NumPy attribution arrays, and a JSON summary. See the [HLS demo guide](docs/HLS_DEMO.md) for model and sample provenance, preprocessing, CLI options, expected output, and validation commands.
 
----
-
-## 📖 Documentation
+### 📖 Documentation
 
 | Resource | Description |
 |---|---|
@@ -200,7 +194,7 @@ The demo saves a visualization, NumPy attribution arrays, and a JSON summary. Se
 | [Core API](ssi.py) | Standalone NumPy implementation |
 | [Unit tests](tests/) | Mathematical and adapter regression checks |
 
-## 🙏 Appreciation
+### 🙏 Appreciation
 
 This project uses the [HLS Foundation Burnscars Dataset](https://huggingface.co/datasets/ibm-nasa-geospatial/hls_burn_scars)
 by Christopher Phillips, Sujit Roy, Kumar Ankur and Rahul Ramachandran (2023),
@@ -212,17 +206,13 @@ The upstream source is vendored unchanged with its [license](LICENSES/brain-segm
 📄 **Paper.** Haotian Ma, Ruqi Yang, and Philip Townsend. *Spectral-Spatial Interpretation*. NeurIPS 2026.
 See [CITATION.cff](CITATION.cff) for citation metadata.
 
----
-
-## 📜 License
+### 📜 License
 
 Code and documentation are licensed under **MIT**, Copyright © 2026 SSI contributors. See [LICENSE](LICENSE).
 HLS data and derived materials retain **CC-BY-4.0** attribution. The bundled model weights and manuscript figures are
 not covered by the root MIT license. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
----
-
-## 📚 Citation
+### 📚 Citation
 
 If you use this work, please cite the paper:
 
