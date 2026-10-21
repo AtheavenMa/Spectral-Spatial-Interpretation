@@ -17,6 +17,9 @@
 
 [🎞️ SSI Video (MP4)](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/blob/main/assets/video/SSI_video_github.mp4)
 
+https://github.com/user-attachments/assets/f9697c02-6253-441b-9c15-96abec099b7b
+
+
 ### 🎞️ 5-Minute Tutorial
 
 <p align="center">
