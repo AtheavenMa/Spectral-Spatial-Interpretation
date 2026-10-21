@@ -13,7 +13,7 @@ Checked on the six registered models. Each row is one real checkpoint and one re
 | salinas | `assets/checkpoints/salinas_unet.pt` | val tile 0, seed 1 | Mean logit of class 2, Brocoli green weeds 2, on the fixed ground-truth region | Band 001–204 |
 | whu-hi-longkou | `assets/checkpoints/longkou_unet.pt` | val tile 0, seed 1 | Mean logit of class 4, Broad-leaf soybean, on the fixed ground-truth region | Band 001–270 |
 
-SHA-256 values for the five `assets/lab` files are in `assets/metadata/model_manifest.json`. `tests/test_audit.py` recomputes them. HLS hashes remain in `assets/checkpoints/metadata.json` and `assets/samples/hls_metadata.json`.
+SHA-256 values for the five additional model families' checkpoints and inputs are in `assets/metadata/model_manifest.json`. `tests/test_audit.py` recomputes them. HLS hashes remain in `assets/checkpoints/metadata.json` and `assets/samples/hls_metadata.json`.
 
 Training experiment ids, from the export that produced these tensors:
 

@@ -2,7 +2,7 @@
 
 **Checkpoint + original image + SSI parameters → atlas.png + result.json + attribution.npz.**
 
-This is a real Python API that evaluates the requested checkpoint with the original SSI observed-context Shapley estimator. The generated figure follows the Visual Atlas layout: image, true target/ground truth, spatial SSI overlaid on the image, spectral overlays and signed channel contributions.
+The Python API evaluates the supplied checkpoint using the SSI observed-context Shapley estimator. The generated figure follows the Visual Atlas layout: image, true target/ground truth, spatial SSI overlaid on the image, spectral overlays and signed channel contributions.
 
 ## Quickstart
 
@@ -113,4 +113,4 @@ python -m unittest tests.test_atlas_api -v
 
 Tests run the API on actual HLS/PaviaU weights and inputs and a CUB RGB PNG with an explicit class target. Tests inspect the PNG/JSON/NPZ and numerical aggregation identities.
 
-The [HTML Visual Atlas gallery](https://atheavenma.github.io/ssi-playground/?view=atlas) includes all 57 existing research figures. Each of those 57 samples now has its original tensor and a verified ONNX model, so the browser recomputes SSI from that tensor. The gallery PNG is only the stored figure. The Python API covers the same six families.
+The [HTML Visual Atlas gallery](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/) includes all 57 existing research figures. Each of those 57 samples now has its original tensor and a verified ONNX model, so the browser recomputes SSI from that tensor. The gallery PNG is only the stored figure. The Python API covers the same six families.

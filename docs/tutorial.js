@@ -112,23 +112,17 @@
     ctx.imageSmoothingEnabled=false;
     ctx.drawImage(img,loc.col*cw,loc.row*ch,cw,ch,0,0,canvas.width,canvas.height);
   }
-  // Stable location-specific Gaussian samples with standard deviation 0.5.
-  // This tutorial score is intentionally independent of the saved attribution tensor.
-  function locationObserved(row,col,baseline){
-    let x=(Math.imul(row+1,0x9E3779B1)^Math.imul(col+1,0x85EBCA77)^0x00C0FFEE)>>>0;
-    const rand=()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296};
-    const u=Math.max(rand(),1e-12),v=rand();
-    const z=Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
-    return baseline+0.5*z;
-  }
+  // The observed full-image score is fixed. The recorded SSI tensor gives
+  // f(x) - f(x with this cell masked) by the within-cell Shapley identity.
   function renderLocal(){
     if(!result)return;
     const pos=currentCell();
-    const fixedBaseline=result.full_value-sum(result.attribution[9][11]);
-    const observed=locationObserved(pos.row,pos.col,fixedBaseline);
-    $('maskedScore').textContent=fixedBaseline.toFixed(4);
+    const observed=result.full_value;
+    const contrast=sum(result.attribution[pos.row][pos.col]);
+    const masked=observed-contrast;
+    $('maskedScore').textContent=masked.toFixed(4);
     $('fullScore').textContent=observed.toFixed(4);
-    $('contrastScore').textContent=displaySigned(observed-fixedBaseline,4);
+    $('contrastScore').textContent=displaySigned(contrast,4);
     $('locationIndex').textContent=`g · row ${pos.row+1}, col ${pos.col+1}`;
     const el=$('cellMark');
     el.style.left=`${pos.col/result.grid*100}%`;

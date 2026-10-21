@@ -91,11 +91,10 @@ Lower deletion AUC and higher insertion AUC are better. Entries are **paper-repo
 
 ✅ SSI has the best reported mean for all three metrics on all three datasets under both masking baselines.
 For example, mean-baseline HLS joint deletion is .1545 for SSI versus .2096 for KernelSHAP, the strongest
-non-SSI method on that metric. The complete zero-baseline comparison is below.
+non-SSI method on that metric.
 
-**Across these three datasets, SSI has the best reported mean for all three metrics.** These metrics assess rankings under the paper's deletion and insertion protocols, rather than proving that every individual attribution is correct.
-
-Additional results cover zero baselines, spatial localization, spectral aggregation, MC-Owen comparisons, and different spatial grid sizes. See the **[complete paper results and settings](docs/PAPER_RESULTS.md)**.
+The [complete paper results and settings](docs/PAPER_RESULTS.md) cover both masking baselines, spatial localization,
+spectral aggregation, MC-Owen comparisons, and different spatial grid sizes.
 
 <p align="center">
   <img src="assets/figures/fig4.png" alt="Qualitative SSI and baseline method comparisons for CUB-200, HLS Burn Scars, and EuroSAT" width="900">

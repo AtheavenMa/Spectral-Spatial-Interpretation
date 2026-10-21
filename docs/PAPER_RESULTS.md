@@ -16,7 +16,7 @@ not statistical significance. No confidence interval or paired significance test
 | Tables 8–9 | Spatial mIoU at reported coverage levels |
 | Tables 10–11 | Channel deletion and Hit@1 through Hit@5 |
 
-Return to the [README](../README.md#-comparison-of-methods).
+Return to the [README](../README.md#-main-results).
 
 ## Table 1: Joint faithfulness
 
