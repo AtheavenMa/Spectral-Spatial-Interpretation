@@ -5,7 +5,7 @@ SSI separates its small mathematical core from model adapters, reproducible mode
 | Path | Purpose |
 | --- | --- |
 | `ssi.py` | Standalone NumPy implementation of the observed-context SSI game |
-| `demo.py` | Direct, offline HLS demonstration (`python demo.py`) |
+| `assets/demo/` | Self-contained HLS demonstration, NumPy toy example, reference outputs and guide |
 | `lab/models/` | Verified HLS U-Net and ResNet-18 architectures |
 | `lab/adapters/` | Dataset-specific preprocessing, model scoring and provenance |
 | `lab/app.py`, `lab/cli.py` | FastAPI service and local commands |

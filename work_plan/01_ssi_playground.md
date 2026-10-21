@@ -45,7 +45,7 @@ The site must never swap a PNG in place of recomputing SSI when the user changes
 - Real original prepared sample: `assets/examples/hls_sample.npz`; normalized in `hls.py`; fixed GT burn region.
 - Attribution algorithm: `ssi.py`, unchanged.
 - Runnable paper-aligned adapter: `hls.py`, using six bands Blue, Green, Red, NIR, SWIR1, SWIR2.
-- Preserved CLI: `demo.py`; same model, target and baseline semantics.
+- Preserved CLI: `assets/demo/hls_burn_scar.py`; same model, target and baseline semantics.
 
 ## 3. API contract and reproducibility
 
@@ -92,7 +92,7 @@ Completed in source:
 Remaining confirmation tasks (not GPU tasks):
 
 - [x] GitHub Actions tests pass with CPU PyTorch and actual HLS checkpoint (including JavaScript syntax validation).
-- [x] Default 8×8, mean baseline, 10 permutations, seed 0 run agrees with assets/demo_summary.json spectral totals and 2,152 evaluations.
+- [x] Default 8×8, mean baseline, 10 permutations, seed 0 run agrees with assets/demo/demo_summary.json spectral totals and 2,152 evaluations.
 - [x] Headless Chromium checked desktop/mobile, input previews, real grid change, channel selection, cell inspection, and zero horizontal mobile overflow; saved screenshots as GitHub Actions artifacts.
 - [x] GitHub Actions built the CPU Docker image, started the FastAPI service, checked asset readiness, and requested genuine 4×4 SSI inference.
 - [ ] Publish a Docker Hugging Face Space under the desired account/organization once write access and Space name are available.

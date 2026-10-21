@@ -46,7 +46,7 @@ The root MIT license does not grant additional rights to the weights.
 
 `assets/figures/hls_paper_comparison.png` is the author-supplied HLS panel from manuscript Figure 4, copied unchanged from the provided image. It is used as the README illustration and is subject to the manuscript figure attribution above. It is separate from the runnable demo output.
 
-`assets/demo_output.png` and `tests/fixtures/hls_legacy_reference.npz` are generated from the attributed HLS derivative above. Their underlying HLS material retains CC-BY-4.0 attribution and modification notices. The fixture contains numerical model outputs, attribution arrays and a synthetic input probe; it contains no legacy model source code. These generated materials are separate from the manuscript figures and pretrained weight file.
+`assets/demo/demo_output.png` and `tests/fixtures/hls_legacy_reference.npz` are generated from the attributed HLS derivative above. Their underlying HLS material retains CC-BY-4.0 attribution and modification notices. The fixture contains numerical model outputs, attribution arrays and a synthetic input probe; it contains no legacy model source code. These generated materials are separate from the manuscript figures and pretrained weight file.
 
 ## Additional playground weights and samples
 

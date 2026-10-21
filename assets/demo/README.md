@@ -1,6 +1,6 @@
 # HLS Burn Scar demo guide
 
-Detailed setup, explanation settings, output files and validation for the bundled example. See the [English README](../README.md) for the project overview.
+Detailed setup, explanation settings, output files and validation for the bundled example. See the [project README](../../README.md) for the project overview.
 
 ## Installation
 
@@ -24,9 +24,9 @@ The core needs **NumPy**. The HLS demo additionally needs **PyTorch** and **Matp
 ## Running and interpreting the demo
 
 ```bash
-python demo.py
-python demo.py --baseline zero
-python demo.py --method exact --output outputs/hls_exact
+python assets/demo/hls_burn_scar.py
+python assets/demo/hls_burn_scar.py --baseline zero
+python assets/demo/hls_burn_scar.py --method exact --output outputs/hls_exact
 ```
 
 The default uses a **128 × 128 image, 6 bands, an 8 × 8 grid and 10 permutations per cell**. `--grid 8` means eight cells along each side, so each cell is 16 × 16 pixels. The `mean` baseline is the original training-split per-channel mean in normalized model space. `zero` means raw zero reflectance followed by the same normalization; it does not mean zero in normalized space.
@@ -36,7 +36,7 @@ The scalar target is the **burn-class logit averaged over the fixed ground-truth
 Bands are ordered **Blue, Green, Red, NIR, SWIR1, SWIR2** (B02, B03, B04, B8A, B11, B12). The prepared image stores reflectance before normalization. The demo multiplies it by 10,000 and applies the means/stds in `lab/adapters/hls.py`.
 
 The sample is the first image encountered in the pinned official dataset archive, selected before evaluation. It belongs to the **training split** and is an illustrative example, not held-out evidence. The supplied demo weights were exported from a `train_1` checkpoint without retraining. See
-[sample metadata](../assets/samples/hls_metadata.json) and [model metadata](../assets/checkpoints/metadata.json)
+[sample metadata](../samples/hls_metadata.json) and [model metadata](../checkpoints/metadata.json)
 for hashes and provenance.
 
 **MIT model implementation.** The demo assembles its two-level network from the convolution blocks in a pinned MIT-licensed U-Net source. Historical checkpoint keys are mapped at load time without changing the weights. No training framework or original project dependency is required.
@@ -55,9 +55,9 @@ Max local-efficiency error: 1.388e-17
   SWIR2  +4.576118
 ```
 
-Attribution took about **6.5 seconds** in the recorded CPU run with four threads and batch size 32. This excludes model loading and plotting and is not a cross-machine speed guarantee. The [recorded summary](../assets/demo_summary.json) contains the environment and full precision values. Batched floating-point results may differ slightly across devices and library versions.
+Attribution took about **6.5 seconds** in the recorded CPU run with four threads and batch size 32. This excludes model loading and plotting and is not a cross-machine speed guarantee. The [recorded summary](demo_summary.json) contains the environment and full precision values. Batched floating-point results may differ slightly across devices and library versions.
 
-In the [runnable demo output](../assets/demo_output.png), blue/red in attribution maps represent negative/positive contributions. All six channel maps share one signed color scale; the spatial map has its own scale. The RGB percentile stretch is for display only. Channel totals are model attributions under the chosen target and baseline, not direct measurements of physical causation.
+In the [runnable demo output](demo_output.png), blue/red in attribution maps represent negative/positive contributions. All six channel maps share one signed color scale; the spatial map has its own scale. The RGB percentile stretch is for display only. Channel totals are model attributions under the chosen target and baseline, not direct measurements of physical causation.
 
 The demo saves `demo_output.png`, `attribution.npz` and `summary.json` under `outputs/hls_demo/`. Set `--output` to preserve another run. The NPZ stores signed cell/channel scores, spatial and spectral summaries, position contrasts, the prediction and GT mask.
 
@@ -72,11 +72,11 @@ ssi.py                  Independent NumPy core
 lab/adapters/hls.py      HLS preprocessing and batched scoring adapter
 lab/models/hls_unet.py   MIT HLS model and historical weight-key conversion
 third_party/            Pinned, unchanged MIT upstream source and provenance
-demo.py                 Command-line demo and visualization
+assets/demo/hls_burn_scar.py  Command-line demo and visualization
 assets/samples/         Prepared reflectance image, GT mask and provenance
 assets/checkpoints/     Tensor-only pretrained weights and provenance
 assets/figures/          Figures extracted from the supplied manuscript
-assets/demo_output.png  Verified demo preview
+assets/demo/demo_output.png      Verified demo preview
 tests/                  Mathematical and adapter checks
 ```
 
@@ -87,3 +87,5 @@ python -m unittest discover -s tests -v
 ```
 
 They cover known additive and interacting games, fixed external context, local/global efficiency, seeded permutation sampling, score-shift invariance, the segmentation masking adapter, and model/attribution regression against stored numerical references. 
+
+The independent NumPy toy example is in [core_example.py](core_example.py). From the repository root, run `python assets/demo/core_example.py`.

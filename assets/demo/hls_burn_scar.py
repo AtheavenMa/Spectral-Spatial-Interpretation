@@ -1,18 +1,21 @@
-"""HLS Burn Scar demo. Run: python demo.py (bundled sample and weights, offline)."""
+"""Bundled HLS Burn Scar demo. Run from repository root: python assets/demo/hls_burn_scar.py."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
+import sys
 import platform
 import time
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 import numpy as np
 import torch
 
 from lab.adapters.hls import BAND_NAMES, HLSValueFunction, load_model, load_sample
 from ssi import explain
-
-ROOT = Path(__file__).resolve().parent
 
 
 def sha256(path):

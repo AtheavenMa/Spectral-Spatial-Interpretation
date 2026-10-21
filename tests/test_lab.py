@@ -88,7 +88,7 @@ class SSILabTests(unittest.TestCase):
 
     def test_default_hls_matches_recorded_reference(self):
         import json
-        reference = json.loads((engine.ROOT / "assets" / "demo_summary.json").read_text())
+        reference = json.loads((engine.ROOT / "assets" / "demo" / "demo_summary.json").read_text())
         result = engine.run(
             model_id=engine.MODEL_ID, sample_id=engine.SAMPLE_ID,
             grid=8, baseline="mean", method="permutation",

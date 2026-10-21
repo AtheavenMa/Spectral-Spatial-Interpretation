@@ -22,9 +22,9 @@ jobs:
           (cd /tmp && python -c "from ssi import SSI, explain; print('Installed SSI image and NumPy APIs')")
       - name: Unit and real-checkpoint integration tests
         run: python -m unittest discover -s tests -v
-      - name: Smoke test the root HLS demo entrypoint
+      - name: Smoke test the bundled HLS demo entrypoint
         run: |
-          python demo.py --device cpu --threads 2 --grid 4 --method permutation --permutations 1 --output /tmp/ssi_hls_root_demo
+          python assets/demo/hls_burn_scar.py --device cpu --threads 2 --grid 4 --method permutation --permutations 1 --output /tmp/ssi_hls_root_demo
           python - <<'PY'
           import json
           from pathlib import Path
@@ -35,6 +35,8 @@ jobs:
           assert report['grid'] == [4, 4]
           assert report['max_local_efficiency_error'] < 1e-6
           PY
+      - name: Exercise standalone NumPy demo
+        run: python assets/demo/core_example.py
       - name: Ensure both published renderers match the canonical source
         run: python tools/sync_atlas_renderer.py --check
       - name: Validate JavaScript syntax

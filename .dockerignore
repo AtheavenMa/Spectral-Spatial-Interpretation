@@ -13,7 +13,7 @@ docs
 assets/video/
 assets/figures/
 assets/tour_preview.*
-assets/demo_output.png
+assets/demo/
 tools/
 examples/
 deploy/

@@ -24,6 +24,16 @@ class RepositoryLayoutTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertTrue((ROOT / path).is_file(), path)
 
+    def test_demo_files_live_under_assets(self):
+        for path in ("assets/demo/hls_burn_scar.py",
+                     "assets/demo/core_example.py",
+                     "assets/demo/demo_output.png",
+                     "assets/demo/demo_summary.json",
+                     "assets/demo/README.md"):
+            with self.subTest(path=path):
+                self.assertTrue((ROOT / path).is_file(), path)
+        self.assertFalse((ROOT / "demo.py").exists())
+
     def test_published_browser_catalog_is_complete(self):
         manifest = json.loads((ROOT / "docs/playground/compute-manifest.json").read_text())
         self.assertEqual(len(manifest["models"]), 6)

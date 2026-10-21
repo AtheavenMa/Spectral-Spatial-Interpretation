@@ -22,9 +22,9 @@ At the baseline commit, these are already present:
 - SSI mathematical core in ssi.py with actual observed-context Shapley calculations.
 - Six registered model choices: hls-unet, cub-200, eurosat, paviau, salinas, whu-hi-longkou.
 - Real weights and model inputs in assets/checkpoints, assets/examples and assets/lab; five new models with SHA-256 entries in assets/lab/manifest.json.
-- The original HLS input, inference adapter and demo.py; five additional adapters in lab/adapters/extra.py and backbones.py.
+- The original HLS input, inference adapter and assets/demo/hls_burn_scar.py; five additional adapters in lab/adapters/extra.py and backbones.py.
 - FastAPI in lab/app.py; UI in lab/static/; real checkpoint inference; baseline/method/grid/seed selection, signed spatial map, channel selection, selected cell, JSON export and reproduction command.
-- Six-dataset numeric references in assets/demo_summary.json and assets/lab/references.json.
+- Six-dataset numeric references in assets/demo/demo_summary.json and assets/lab/references.json.
 - Local Docker and CI. The latest pre-plan GitHub Actions run 39330945421 passed.
 
 The added five-dataset reference tests currently use **4x4 grid, mean baseline, 1 permutation, seed 0**. This validates those tested configurations, not the performance of default 8x8/10 permutations on 103, 204 and 270 channels.
@@ -131,7 +131,7 @@ Add a documented **local extension path**:
 - Keep main README short: title, paper link, representative images, short local Playground quickstart, 57-image Visual Atlas, citations. No verbose defensive explanations.
 - Move provenance, CPU benchmark results, validation, method details, troubleshooting and dataset constraints to docs/.
 - Add docs/PLAYGROUND_QUICKSTART.md, docs/PLAYGROUND_VALIDATION.md and docs/PLAYGROUND_PERFORMANCE.md. Update deploy/README.md for local Python and Docker only. Do not publish a Space.
-- Check a fresh clone, dependency installation, Python support, CPU wheel, original demo.py, existing mathematical tests, model/input assets, Docker size, permissions and static assets. Use .dockerignore to avoid packaging caches/test artifacts.
+- Check a fresh clone, dependency installation, Python support, CPU wheel, original assets/demo/hls_burn_scar.py, existing mathematical tests, model/input assets, Docker size, permissions and static assets. Use .dockerignore to avoid packaging caches/test artifacts.
 - Verify that weights and samples have appropriate source/redistribution attribution. The root MIT license should not be implied to cover third-party datasets/checkpoints.
 - Maintain existing SSI core, original HLS demo, paper figures, 57 PNG gallery and tutorial links intact.
 - Avoid unnecessary files in root, large regenerated figures, placeholder demos, or renamed concepts.

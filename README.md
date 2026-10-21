@@ -111,9 +111,15 @@ Additional results cover zero baselines, spatial localization, spectral aggregat
 
 **[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas — 57 examples](examples/README.md) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
 
-### ⚙️ Install
+### Install
 
-Use Python 3.10 or newer, preferably in a virtual environment.
+Use Python 3.10 or newer. Install Core SSI with PyTorch support directly from GitHub:
+
+```bash
+pip install "spectral-spatial-interpretation[torch] @ git+https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git"
+```
+
+Or clone the repository for the Playground, research tools and examples:
 
 ```bash
 git clone https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git
@@ -121,20 +127,7 @@ cd Spectral-Spatial-Interpretation
 python -m pip install -r requirements.txt
 ```
 
-The single `requirements.txt` installs dependencies for the demo, Python Playground and tests. Standalone `ssi.py` itself only requires NumPy. The prepared sample and weights are bundled, so
-no dataset or model download is needed at runtime. See the [setup guide](docs/HLS_DEMO.md#installation) for environment
-and platform details.
-
-### 🧱 Core SSI for your own model
-
-Install the lightweight Python package with PyTorch support:
-
-```bash
-pip install "spectral-spatial-interpretation[torch] @ git+https://github.com/AtheavenMa/Spectral-Spatial-Interpretation.git"
-```
-
-The image API accepts a PyTorch model, its model-ready input, a fixed class
-target and a dataset-level **channel baseline vector**:
+To explain your own model, provide its model-ready image, a fixed class target and a dataset-level channel baseline vector:
 
 ```python
 from ssi import SSI
@@ -144,55 +137,15 @@ result = SSI(
     input=my_image,                   # CHW tensor
     target=6,                        # fixed output class
     baseline=dataset_channel_mean,   # one numeric value per channel
-    image_size=(128, 128),           # actual model input resolution
-    grid_size=16,                    # pixels per spatial cell -> 8 x 8 cells
+    image_size=(128, 128),           # model input resolution
+    grid_size=16,                    # pixels per cell -> 8 x 8 cells
     permutations=5,
 ).explain()
+
 spatial, spectral = result.spatial, result.spectral
 ```
 
-Inputs may be resized, but their values and the baseline must already
-match the model's preprocessing. See the [Core SSI API guide](docs/CORE_API.md)
-for segmentation masks, output shapes and reliability checks. The standalone
-NumPy \`explain(value_fn, ...)\` remains available for custom score functions
-and backward-compatible experiments.
-
-### 🚀 Quickstart
-
-```python
-import numpy as np
-from ssi import explain
-
-def score(s):  # Boolean masks: (batch, cells, channels); True keeps a player
-    return (2*s[:, 0, 0] + 4*s[:, 0, 1]
-            + 6*(s[:, 0, 0] & s[:, 0, 1])
-            + 8*(s[:, 0, 0] & s[:, 1, 0]))
-
-r = explain(score, n_cells=2, n_channels=2)
-print(r.attribution)        # [[13.  7.], [ 8.  0.]]
-print(r.spatial)            # [20.  8.]
-print(r.position_contrasts) # [20.  8.]
-assert np.allclose(r.spatial, r.position_contrasts)
-```
-
-💡 This game has two cells and two channels, with interactions both within and between cells. Each cell's channel
-scores sum to its masking contrast: 20 for the first cell and 8 for the second.
-
-On a real model, supply `value_fn(masks)` returning one scalar per coalition. Keep the target, baseline and any region of interest fixed for all calls. [HLS adapter](lab/adapters/hls.py) is a complete image-to-model adapter with bounded batch sizes.
-
-### 🔥 HLS Burn Scar Demo
-
-The included demo explains a **128 × 128, six-band HLS image** with an **8 × 8 spatial grid** and **10 channel permutations per cell** by default. Its scalar target is the burn-class logit averaged over a fixed ground-truth burn region; the default baseline is the training-split channel mean.
-
-The bundled input is an **illustrative training-split sample**, not a held-out test example. The prepared sample and checkpoint run offline after installing dependencies.
-
-```bash
-python demo.py
-python demo.py --baseline zero
-python demo.py --method exact --output outputs/hls_exact
-```
-
-The demo saves a visualization, NumPy attribution arrays, and a JSON summary. See the [HLS demo guide](docs/HLS_DEMO.md) for model and sample provenance, preprocessing, CLI options, expected output, and validation commands.
+Inputs and baseline must use the model's preprocessing. See the [Core SSI API guide](docs/CORE_API.md) for segmentation, numerical outputs and parameter details.
 
 ### 📖 Documentation
 
@@ -202,7 +155,7 @@ The demo saves a visualization, NumPy attribution arrays, and a JSON summary. Se
 | [Playground quickstart](docs/PLAYGROUND_QUICKSTART.md) | Local, Docker and API instructions |
 | [Visual Atlas](examples/README.md) | All 57 visualizations grouped by dataset |
 | [Complete paper results](docs/PAPER_RESULTS.md) | Tables, evaluation settings, and comparisons |
-| [HLS demo guide](docs/HLS_DEMO.md) | Runnable demo, configuration, inputs, and outputs |
+| [HLS demo guide](assets/demo/README.md) | Runnable demo, configuration, inputs, and outputs |
 | [Atlas API](docs/ATLAS_API.md) | Generate Atlas PNG and JSON from a supported checkpoint and input |
 | [Core API](ssi.py) | Standalone NumPy implementation and PyTorch image API |
 | [Core SSI usage](docs/CORE_API.md) | Pip installation, channel baselines, resizing and pixel-grid semantics |

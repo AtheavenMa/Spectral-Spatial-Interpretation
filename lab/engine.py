@@ -1,7 +1,7 @@
 """Real CPU inference for the interactive SSI laboratory.
 
 This module uses the exact HLS weights, bundled input, preprocessing, target,
-baseline and SSI implementation used by demo.py. Additional modalities should
+baseline and SSI implementation used by assets/demo/hls_burn_scar.py. Additional modalities should
 be registered with their own validated model/input adapters.
 """
 from __future__ import annotations
