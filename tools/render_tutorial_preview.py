@@ -63,6 +63,13 @@ def render() -> None:
                 arg=slide,
                 timeout=5000,
             )
+            if slide == 4:
+                page.locator("#orderPills button").nth(0).click()
+                page.locator("#playOrder").click()
+                page.wait_for_function(
+                    "() => document.querySelector('#stepProgress').textContent.startsWith('1 / 5 orders added') && !document.querySelector('#playOrder').disabled",
+                    timeout=12000,
+                )
             page.wait_for_timeout(480)
             screenshot = Image.open(io.BytesIO(page.screenshot(type="png"))).convert("RGB")
             frames.append(screenshot.resize(TILE_SIZE, Image.Resampling.LANCZOS))

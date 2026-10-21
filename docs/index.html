@@ -97,11 +97,11 @@
 <section class="slide light" data-title="Channel effects" data-time="60">
   <div class="frame">
     <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
-    <h2 class="order-title-v3">Choose an order.<br><em>See its contribution appear.</em></h2>
+    <h2 class="order-title-v3">Select one order.<br><em>Play its contribution.</em></h2>
     <div class="live-shapley-layout">
       <div class="live-path-panel">
-        <div class="live-panel-kicker"><span>CLICK AN ORDER TO ADD OR REMOVE</span><strong id="orderNumber">— / 05</strong></div>
-        <div class="live-order-dots" id="orderPills" role="group" aria-label="Include or exclude sampled channel orders"></div>
+        <div class="live-panel-kicker"><span>SELECT AN ORDER · THEN PRESS PLAY</span><strong id="orderNumber">— / 05</strong></div>
+        <div class="live-order-dots" id="orderPills" role="group" aria-label="Select an order to play or remove an included order"></div>
         <div class="live-sequence" id="channelSequence" aria-label="Six spectral channels restored in sequence"></div>
         <div class="live-score-board" aria-live="polite">
           <div><span>BASELINE</span><strong id="demoScoreBefore">—</strong></div>
@@ -110,7 +110,8 @@
           <div class="live-current-delta"><span id="demoDeltaLabel">ORDER CONTRIBUTION</span><strong id="demoDelta">—</strong></div>
         </div>
         <div class="live-play-footer">
-          <div class="live-play-status"><strong id="restorationPhase">Choose any order</strong><span id="stepProgress">0 / 5 orders selected</span></div>
+          <button type="button" id="playOrder" class="live-play-button" disabled>▶ &nbsp; Select an order</button>
+          <div class="live-play-status"><strong id="restorationPhase">Choose any order</strong><span id="stepProgress">0 / 5 orders added</span></div>
         </div>
       </div>
       <div class="live-ledger-panel">
@@ -123,8 +124,8 @@
       </div>
     </div>
   </div>
-  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Shapley accumulation</h3><p>Restoring each channel changes the model score. Every sampled order contributes one fifth of its marginal effects to the running Shapley sum. Add or remove an order to change only the contributions from that order. With all five orders, the sum equals Φ(g,c).</p></div>
-  <aside class="notes"><span class="time">~60 s</span><h4>Talk track</h4><p>Begin with no orders selected and every contribution at zero. Click any numbered order to include its six channel effects. Clicking the same order again removes those effects. The displayed sum contains only the selected orders. All five recover the final Shapley allocation.</p></aside>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Shapley accumulation</h3><p>Choose one order, then press Play to restore its six local channels in sequence. Each marginal score change contributes one fifth to that channel's running total. Other orders remain unchanged. Selecting an included order again removes it, and replaying an order replaces rather than duplicates its contribution.</p></div>
+  <aside class="notes"><span class="time">~60 s</span><h4>Talk track</h4><p>Start with all contributions at zero. Choose an order, press Play, and watch its six local channels return one at a time while the right-hand totals increase. Choose a different order and press Play again to add only that order. Click an already selected completed order again to remove it. All five paths reproduce the final Shapley allocation.</p></aside>
 </section>
 
 <section class="slide dark" data-title="Joint attribution" data-time="44">

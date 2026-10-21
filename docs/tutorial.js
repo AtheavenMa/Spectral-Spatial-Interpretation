@@ -11,6 +11,7 @@
   let result = null;
   let customLocation = null, viewFocus = 'where';
   const includedOrders = new Set();
+  let activeOrder = null, restoreStep = 0, playbackTimer = null;
   let lastWheel = 0, touchX = null;
   const $ = (id) => document.getElementById(id);
   const displaySigned = (x,n=4) => (x>=0?'+':'−')+Math.abs(x).toFixed(n);
@@ -31,6 +32,7 @@
   }
   function showSlide(i){
     const next=Math.max(0,Math.min(slides.length-1,i));
+    if(current===3&&next!==3)stopPlayback();
     current=next;
     slides.forEach((s,k)=>{s.classList.toggle('active',k===current);s.classList.toggle('visible',k===current);if(k!==current)s.classList.remove('drawer-open')});
     document.querySelectorAll('.road button').forEach(b=>b.classList.toggle('on',Number(b.dataset.go)===current+1));
@@ -65,6 +67,7 @@
       const loc=currentCell();
       selectImageCell(Math.max(0,Math.min(result.grid-1,loc.row+delta[0])),Math.max(0,Math.min(result.grid-1,loc.col+delta[1])));
     });
+    $('playOrder').onclick=startPlayback;
     document.querySelectorAll('.axis-toggle').forEach(button=>button.addEventListener('click',()=>{
       viewFocus=button.dataset.focus;renderMatrix();
     }));
@@ -90,6 +93,7 @@
     const match=LOCATIONS.findIndex(c=>c.row===row&&c.col===col);
     selectedLocation=match>=0?match:-1;
     customLocation=match>=0?null:{row,col};
+    stopPlayback();
     includedOrders.clear();orderIndex=null;refreshLocation();
   }
   function refreshLocation(){
@@ -166,63 +170,129 @@
     if(Math.abs(score(63)-result.full_value)>1e-10)throw Error('Endpoint mismatch');
     return {paths,effects,target,base,score};
   }
+  function stopPlayback(){
+    if(playbackTimer!==null){clearTimeout(playbackTimer);playbackTimer=null}
+    activeOrder=null;
+    restoreStep=0;
+  }
+  function startPlayback(){
+    if(!result||orderIndex===null||activeOrder!==null)return;
+    stopPlayback();
+    const target=orderIndex;
+    // Remove only the selected order before replay. Previously completed orders stay intact.
+    includedOrders.delete(target);
+    activeOrder=target;
+    restoreStep=0;
+    renderOrders();
+    const advance=()=>{
+      if(current!==3||activeOrder!==target){stopPlayback();renderOrders();return}
+      restoreStep++;
+      if(restoreStep>=6){
+        includedOrders.add(target);
+        activeOrder=null;
+        playbackTimer=null;
+        restoreStep=6;
+        renderOrders();
+        return;
+      }
+      renderOrders();
+      playbackTimer=setTimeout(advance,390);
+    };
+    playbackTimer=setTimeout(advance,390);
+  }
   function renderOrders(){
     if(!result)return;
     const game=buildIllustratedGame();
     const focus=orderIndex;
-    const selected=focus!==null&&includedOrders.has(focus);
-    const complete=includedOrders.size===5;
+    const active=activeOrder!==null;
+    const focusIsIncluded=focus!==null&&includedOrders.has(focus);
+    const focusSteps=active&&focus===activeOrder?restoreStep:focusIsIncluded?6:0;
+    const complete=includedOrders.size===5&&!active;
     $('orderNumber').textContent=focus===null?'— / 05':
       String(focus+1).padStart(2,'0')+' / 05';
     $('orderPills').innerHTML=game.paths.map((_,p)=>
       '<button type="button" data-order="'+p+'" class="live-order-dot '+
       (includedOrders.has(p)?'finished selected ':'')+
-      '" aria-label="'+(includedOrders.has(p)?'Remove':'Add')+' order '+(p+1)+
-      '" aria-pressed="'+includedOrders.has(p)+'">'+
-      String(p+1).padStart(2,'0')+'</button>'
+      (p===focus?'active ':'')+
+      '" aria-label="Order '+(p+1)+(includedOrders.has(p)?', included':'')+
+      (p===focus?', selected':'')+'" aria-pressed="'+(p===focus)+'"'+
+      (active?' disabled':'')+'>'+String(p+1).padStart(2,'0')+'</button>'
     ).join('');
     $('orderPills').querySelectorAll('button').forEach(button=>button.onclick=()=>{
+      if(active)return;
       const p=Number(button.dataset.order);
-      if(includedOrders.has(p))includedOrders.delete(p);
-      else includedOrders.add(p);
-      orderIndex=p;
+      // An included, already-focused order can be removed with another click.
+      if(p===orderIndex&&includedOrders.has(p)){
+        includedOrders.delete(p);
+        restoreStep=0;
+      } else {
+        orderIndex=p;
+        restoreStep=includedOrders.has(p)?6:0;
+      }
       renderOrders();
     });
     $('channelSequence').innerHTML=focus===null?
       '<div class="live-empty-sequence">Select an order above</div>':
-      game.paths[focus].map(c=>
-        '<div class="live-path-band '+(selected?'restored':'')+
+      game.paths[focus].map((c,i)=>
+        '<div class="live-path-band '+(i<focusSteps?'restored ':'')+
+        (i===focusSteps-1&&active?'current':'')+
         '" style="--id:'+IDS[c]+'"><i class="live-path-icon"></i>'+
         '<span>'+CHANNELS[c]+'</span></div>'
       ).join('');
-    $('stepProgress').textContent=includedOrders.size+' / 5 orders selected';
-    $('restorationPhase').textContent=complete?'Full Shapley allocation':
-      includedOrders.size?includedOrders.size+' orders included':'Choose any order';
-    $('demoScoreBefore').textContent=selected?game.base.toFixed(4):'—';
-    $('demoScore').textContent=selected?result.full_value.toFixed(4):'—';
-    $('demoDeltaLabel').textContent='ORDER CONTRIBUTION';
-    const currentOrderTotal=selected?
-      sum(game.effects[focus])/game.paths.length:null;
-    $('demoDelta').textContent=currentOrderTotal===null?'—':
-      displaySigned(currentOrderTotal,4);
-    $('demoDelta').className=currentOrderTotal===null?'':currentOrderTotal>=0?'positive':'negative';
-    const columns=game.paths.length;
-    const grid=Array.from({length:6},()=>Array(columns).fill(null));
-    for(let p=0;p<columns;p++){
-      if(!includedOrders.has(p))continue;
-      for(let c=0;c<6;c++)grid[c][p]=game.effects[p][c]/columns;
+    $('stepProgress').textContent=active
+      ?includedOrders.size+' / 5 orders added · '+restoreStep+' / 6 channels'
+      :includedOrders.size+' / 5 orders added';
+    const restoredBand=active&&restoreStep>0?
+      game.paths[activeOrder][restoreStep-1]:null;
+    $('restorationPhase').textContent=active?
+      (restoredBand===null?'Order '+(activeOrder+1)+' ready':
+       CHANNELS[restoredBand]+' restored'):
+      complete?'Five orders combined':focus===null?'Choose any order':
+      focusIsIncluded?'Order '+(focus+1)+' included':'Order '+(focus+1)+' ready';
+    const shown=active?restoreStep:focusIsIncluded?6:0;
+    if(focus===null||shown===0){
+      $('demoScoreBefore').textContent='—';
+      $('demoScore').textContent='—';
+      $('demoDeltaLabel').textContent='ORDER CONTRIBUTION';
+      $('demoDelta').textContent='—';
+      $('demoDelta').className='';
+    } else {
+      const sequence=game.paths[focus],bits=sequence.slice(0,shown)
+        .reduce((mask,c)=>mask|(1<<c),0);
+      const score=game.score(bits);
+      const before=active&&restoredBand!==null?
+        game.score(bits&~(1<<restoredBand)):game.base;
+      const delta=active&&restoredBand!==null?
+        game.effects[focus][restoredBand]/game.paths.length:
+        (result.full_value-game.base)/game.paths.length;
+      $('demoScoreBefore').textContent=before.toFixed(4);
+      $('demoScore').textContent=score.toFixed(4);
+      $('demoDeltaLabel').textContent=active&&restoredBand!==null?
+        'Δ '+CHANNELS[restoredBand].toUpperCase()+' ÷ 5':'ORDER CONTRIBUTION';
+      $('demoDelta').textContent=displaySigned(delta,4);
+      $('demoDelta').className=delta>=0?'positive':'negative';
+    }
+    const grid=Array.from({length:6},()=>Array(5).fill(null));
+    for(let p=0;p<5;p++){
+      const steps=includedOrders.has(p)?6:p===activeOrder?restoreStep:0;
+      for(let i=0;i<steps;i++){
+        const channel=game.paths[p][i];
+        grid[channel][p]=game.effects[p][channel]/5;
+      }
     }
     const scale=Math.max(.082,...game.target.map(Math.abs));
     $('localBars').innerHTML=grid.map((samples,c)=>{
-      const total=sum(samples.map(v=>v===null?0:v));
-      const cells=samples.map(v=>
+      const values=samples.filter(v=>v!==null);
+      const total=sum(values);
+      const cells=samples.map((v,p)=>
         '<span class="live-effect-slot '+(v===null?'pending':v>=0?'positive':'negative')+
+        (p===activeOrder&&c===restoredBand?' new':'')+
         '"'+(v===null?'':' data-value="'+v+'"')+'>'+
         (v===null?'·':displaySigned(v,4))+'</span>'
       ).join('');
       const width=Math.min(46,Math.abs(total)/scale*46),left=total>=0?50:50-width;
-      return '<div class="live-effect-row '+(complete?'final':'')+
-        '" style="--id:'+IDS[c]+'" data-total="'+total+'">'+
+      return '<div class="live-effect-row '+(c===restoredBand?'highlight ':'')+
+        (complete?'final':'')+'" style="--id:'+IDS[c]+'" data-total="'+total+'">'+
         '<span class="live-effect-name">'+CHANNELS[c]+'</span>'+
         '<div class="live-effect-slots">'+cells+'</div>'+
         '<div class="live-effect-mean">'+
@@ -230,10 +300,18 @@
         '%;width:'+width+'%;background:'+(total<0?NEG:POS)+'"></i></div>'+
         '<output>'+displaySigned(total,4)+'</output></div></div>';
     }).join('');
-    $('demoFooter').textContent=complete?'Five orders combined · Φ(g,c)':
-      includedOrders.size?includedOrders.size+' of 5 orders included':
-      'Select an order to add its contribution.';
+    $('demoFooter').textContent=active?
+      (restoredBand===null?'Restoring Order '+(activeOrder+1):
+      CHANNELS[restoredBand]+' added to the running sum'):
+      complete?'All five orders combined · Φ(g,c)':
+      includedOrders.size+' of 5 orders included · choose one order and press Play';
     $('demoFooter').classList.toggle('done',complete);
+    const button=$('playOrder');
+    button.disabled=focus===null||active;
+    button.textContent=active?'Playing Order '+(activeOrder+1)+'…':
+      focus===null?'▶  Select an order':
+      focusIsIncluded?'↻  Replay Order '+(focus+1):
+      '▶  Play Order '+(focus+1);
   }
   function drawMap(canvas,band){
     const ctx=canvas.getContext('2d');if(!ctx)return;

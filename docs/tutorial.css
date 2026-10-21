@@ -307,3 +307,13 @@ h1{margin-top:56px;font:400 98px/1.07 var(--serif);letter-spacing:-.04em}h1 em{c
   background:rgba(255,255,255,.14)}
 .live-order-dot{transition:background .18s,border-color .18s}
 .live-path-band:not(.restored) .live-path-icon{opacity:.13}
+
+/* Per-order playback. A focused order is distinct from an included order. */
+.live-play-footer{align-items:center;justify-content:space-between;min-height:86px;margin-top:22px}
+.live-play-status{align-items:flex-end}
+.live-play-button{min-width:260px;cursor:pointer}
+.live-play-button:disabled{opacity:.55;cursor:not-allowed}
+.live-order-dot.active{outline:3px solid #1C2644;outline-offset:3px}
+.live-order-dot.active.finished{background:#C8A870;color:#1C2644}
+.live-order-dot:disabled{cursor:default}
+.live-path-band.current .live-path-icon{transform:translateY(-7px) scale(1.04);box-shadow:0 9px 19px #44444435}

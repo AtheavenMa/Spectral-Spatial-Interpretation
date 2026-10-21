@@ -1,4 +1,4 @@
-"""Verify empty initial state, click-to-add/remove orders and exact SSI totals."""
+"""Verify Play adds only the chosen order, preserving unplayed orders and exact totals."""
 from __future__ import annotations
 
 import math
@@ -22,65 +22,86 @@ def check_additive(rows):
 
 def main():
     with sync_playwright() as p:
-        browser = p.chromium.launch(
-            headless=True,
+        browser = p.chromium.launch(headless=True,
             executable_path=os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE") or None,
-            args=["--no-sandbox"],
-        )
+            args=["--no-sandbox"])
         page = browser.new_page(viewport={"width": 1600, "height": 900})
         errors = []
-        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.on("pageerror", lambda e: errors.append(str(e)))
         page.set_content(self_contained_html(), wait_until="domcontentloaded")
         page.wait_for_function(
             "() => document.querySelectorAll('#jointMaps .joint-card').length === 6")
         page.keyboard.press("4")
-        assert page.locator("#playOrder").count() == 0
         chips = page.locator("#orderPills button")
+        play = page.locator("#playOrder")
         assert chips.count() == 5
-        assert all(chips.nth(i).get_attribute("aria-pressed") == "false" for i in range(5))
-        assert all(item["sum"] == 0 and len(item["cells"]) == 0 for item in totals(page))
-        page.wait_for_timeout(1100)
-        assert all(item["sum"] == 0 for item in totals(page)), "Autoplay is not allowed"
+        assert play.count() == 1 and play.is_disabled()
+        assert all(item["sum"] == 0 for item in totals(page))
+        page.wait_for_timeout(800)
+        assert all(item["sum"] == 0 for item in totals(page)), "No auto selection or autoplay"
 
-        chips.nth(2).click()
-        first = totals(page)
-        check_additive(first)
-        assert all(len(item["cells"]) == 1 for item in first)
-        assert chips.nth(2).get_attribute("aria-pressed") == "true"
+        def select(p):
+            chips.nth(p).click()
+            assert play.is_enabled()
+
+        def play_selected(expected_total):
+            play.click()
+            page.wait_for_function(
+                "(n) => document.querySelector('#stepProgress').textContent.startsWith(n+' / 5 orders added') && !document.querySelector('#playOrder').disabled",
+                arg=expected_total,
+                timeout=12000)
+            rows = totals(page)
+            check_additive(rows)
+            return rows
+
+        # Selecting a chip alone never changes the result.
+        select(2)
+        assert all(item["sum"] == 0 for item in totals(page))
+        row1=play_selected(1)
+        assert all(len(item["cells"]) == 1 for item in row1)
+        assert all(chips.nth(i).get_attribute("aria-pressed") == ("true" if i==2 else "false") for i in range(5))
+
+        # Select order 1, but do not play: nothing else gets added.
+        select(0)
+        row_no_play=totals(page)
+        assert all(math.isclose(a["sum"],b["sum"],abs_tol=1e-11)
+                   for a,b in zip(row_no_play,row1))
+        row2=play_selected(2)
+        assert all(len(item["cells"]) == 2 for item in row2)
+        assert any(abs(a["sum"]-b["sum"])>1e-9 for a,b in zip(row2,row1))
+
+        # Replaying the selected order replaces it rather than double-counting.
+        replay=play_selected(2)
+        assert all(math.isclose(a["sum"],b["sum"],abs_tol=1e-11)
+                   for a,b in zip(replay,row2))
+
+        # Clicking a completed focused order removes it.
         chips.nth(0).click()
-        two = totals(page)
-        check_additive(two)
-        assert all(len(item["cells"]) == 2 for item in two)
-        assert any(abs(two[i]["sum"] - first[i]["sum"]) > 1e-9 for i in range(6))
+        one_left=totals(page)
+        assert all(len(item["cells"]) == 1 for item in one_left)
+        assert all(math.isclose(a["sum"],b["sum"],abs_tol=1e-11)
+                   for a,b in zip(one_left,row1))
 
-        chips.nth(2).click()
-        single = totals(page)
-        check_additive(single)
-        assert all(len(item["cells"]) == 1 for item in single)
-        chips.nth(0).click()
-        assert all(item["sum"] == 0 and len(item["cells"]) == 0 for item in totals(page))
+        # Only Play on a chosen order can include it again.
+        for order,count in ((4,2),(1,3),(3,4),(0,5)):
+            select(order)
+            assert sum(len(r["cells"]) for r in totals(page))==(count-1)*6
+            play_selected(count)
+        expected=page.evaluate("() => window.__SSI_DATA__.attribution[9][11]")
+        final=totals(page)
+        assert all(len(row["cells"])==5 for row in final)
+        for row,val in zip(final,expected):
+            assert math.isclose(row["sum"],val,abs_tol=1e-10),(row,val)
 
-        for i in (4, 2, 0, 3, 1):
-            chips.nth(i).click()
-        final = totals(page)
-        check_additive(final)
-        expected = page.evaluate("() => window.__SSI_DATA__.attribution[9][11]")
-        for row, val in zip(final, expected):
-            assert len(row["cells"]) == 5
-            assert math.isclose(row["sum"], val, abs_tol=1e-10), (row, val)
-
-        chips.nth(3).click()
-        assert all(len(item["cells"]) == 4 for item in totals(page))
-        chips.nth(3).click()
-        assert all(len(item["cells"]) == 5 for item in totals(page))
+        # Selecting a different spatial cell resets to the empty initial state.
         page.keyboard.press("3")
-        photo = page.locator("#photoInteractive")
-        photo.click(position={"x": 125, "y": 120})
+        page.locator("#photoInteractive").click(position={"x":125,"y":120})
         page.keyboard.press("4")
-        assert all(item["sum"] == 0 for item in totals(page)), "New cell must start empty"
+        assert play.is_disabled()
+        assert all(row["sum"]==0 for row in totals(page))
         assert not errors, errors
         browser.close()
-        print("Passed: no autoplay, empty initial state, arbitrary order click, add/remove, exact full totals, reset on cell change")
+        print("Passed: no autoplay; selection doesn't add; Play affects one order; partial, replay, remove and final SSI totals; cell reset")
 
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
