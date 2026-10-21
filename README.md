@@ -13,7 +13,6 @@
 <div align="center">
   <img src="assets/figures/fig1.png" alt="Figure 1: spatially varying channel relevance in RGB and multispectral images" width="900">
 </div>
-<div>A spatial heatmap shows <strong>where</strong> evidence appears. A global spectral ranking shows <strong>which channels</strong> matter overall. SSI retains both axes instead of assuming the same channel profile at every location.</div>
 
 https://github.com/user-attachments/assets/f9697c02-6253-441b-9c15-96abec099b7b
 
