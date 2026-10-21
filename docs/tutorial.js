@@ -10,6 +10,8 @@
   let current = 0, selectedLocation = 0, selectedBand = 5, orderIndex = 0;
   let result = null;
   let customLocation = null, restoreStep = 0, viewFocus = 'where', playbackTimer = null;
+  const includedOrders = new Set();
+  let activeOrder = null, isPlaying = false;
   let lastWheel = 0, touchX = null;
   const $ = (id) => document.getElementById(id);
   const displaySigned = (x,n=4) => (x>=0?'+':'−')+Math.abs(x).toFixed(n);
@@ -91,7 +93,7 @@
     const match=LOCATIONS.findIndex(c=>c.row===row&&c.col===col);
     selectedLocation=match>=0?match:-1;
     customLocation=match>=0?null:{row,col};
-    stopPlayback();orderIndex=0;restoreStep=0;refreshLocation();
+    stopPlayback();includedOrders.clear();orderIndex=0;restoreStep=0;refreshLocation();
   }
   function refreshLocation(){
     if(!result)return;
@@ -137,6 +139,11 @@
 
   function stopPlayback(){
     if(playbackTimer!==null){window.clearTimeout(playbackTimer);playbackTimer=null}
+    isPlaying=false;
+    activeOrder=null;
+    restoreStep=0;
+    const button=$('playOrder');
+    if(button)button.disabled=false;
   }
   function buildIllustratedGame(){
     const target=rowAt(), paths=seededOrders(cellIndex()),n=6,k=paths.length;
@@ -172,58 +179,112 @@
   }
   function startPlayback(){
     if(!result)return;
-    stopPlayback();orderIndex=0;restoreStep=0;renderOrders();
-    const button=$('playOrder');
-    button.disabled=true;button.textContent='Playing five orders…';
+    stopPlayback();
+    if(includedOrders.size===5){
+      includedOrders.clear();
+      orderIndex=0;
+    }
+    const remaining=Array.from({length:5},(_,p)=>p).filter(p=>!includedOrders.has(p));
+    isPlaying=true;
     const advance=()=>{
-      if(current!==3){stopPlayback();button.disabled=false;return}
-      if(restoreStep<6)restoreStep++;else{orderIndex++;restoreStep=0}
-      renderOrders();
-      if(orderIndex===4&&restoreStep===6){
-        stopPlayback();button.disabled=false;button.textContent='↻  Replay 5 orders';return;
+      if(current!==3){stopPlayback();renderOrders();return}
+      if(activeOrder===null){
+        const next=remaining.shift();
+        if(next===undefined){stopPlayback();renderOrders();return}
+        activeOrder=next;orderIndex=next;restoreStep=0;
+        renderOrders();
+        playbackTimer=window.setTimeout(advance,260);
+        return;
       }
-      playbackTimer=window.setTimeout(advance,restoreStep===6?540:360);
+      restoreStep=Math.min(6,restoreStep+1);
+      if(restoreStep===6){
+        includedOrders.add(activeOrder);
+        activeOrder=null;
+        renderOrders();
+        playbackTimer=window.setTimeout(advance,400);
+      } else {
+        renderOrders();
+        playbackTimer=window.setTimeout(advance,270);
+      }
     };
-    playbackTimer=window.setTimeout(advance,360);
+    advance();
   }
   function renderOrders(){
     if(!result)return;
-    const game=buildIllustratedGame(),order=game.paths[orderIndex];
-    const complete=orderIndex===4&&restoreStep===6;
-    $('orderNumber').textContent=String(orderIndex+1).padStart(2,'0')+' / 05';
+    const game=buildIllustratedGame(),focus=activeOrder===null?orderIndex:activeOrder;
+    const order=game.paths[focus];
+    const shownSteps=activeOrder===focus?restoreStep:includedOrders.has(focus)?6:0;
+    const finished=includedOrders.size===5 && activeOrder===null;
+    $('orderNumber').textContent=String(focus+1).padStart(2,'0')+' / 05';
     $('orderPills').innerHTML=game.paths.map((_,p)=>
-      '<span class="live-order-dot '+(p<orderIndex||complete?'finished ':'')+(p===orderIndex?'active':'')+'">'+String(p+1).padStart(2,'0')+'</span>'
+      '<button type="button" data-order="'+p+'" class="live-order-dot '+
+      (includedOrders.has(p)?'finished selected ':'')+(activeOrder===p?'active ':'')+
+      '" aria-label="'+(includedOrders.has(p)?'Remove':'Add')+' order '+(p+1)+
+      '" aria-pressed="'+includedOrders.has(p)+'" '+(isPlaying?'disabled':'')+
+      '>'+String(p+1).padStart(2,'0')+'</button>'
     ).join('');
+    $('orderPills').querySelectorAll('button').forEach(btn=>btn.onclick=()=>{
+      if(isPlaying)return;
+      const p=Number(btn.dataset.order);
+      if(includedOrders.has(p))includedOrders.delete(p);else includedOrders.add(p);
+      orderIndex=p;restoreStep=0;renderOrders();
+    });
     $('channelSequence').innerHTML=order.map((c,i)=>
-      '<div class="live-path-band '+(i<restoreStep?'restored ':'')+(i===restoreStep-1?'current':'')+'" style="--id:'+IDS[c]+'"><i class="live-path-icon"></i><span>'+CHANNELS[c]+'</span></div>'
+      '<div class="live-path-band '+(i<shownSteps?'restored ':'')+
+      (i===shownSteps-1?'current':'')+'" style="--id:'+IDS[c]+'"><i class="live-path-icon"></i><span>'+CHANNELS[c]+'</span></div>'
     ).join('');
-    const band=restoreStep?order[restoreStep-1]:null;
-    $('stepProgress').textContent=(orderIndex*6+restoreStep)+' / 30 steps';
-    $('restorationPhase').textContent=complete?'Shapley allocation complete':band===null?'All channels at baseline':CHANNELS[band]+' restored';
-    let bits=0;
-    for(let i=0;i<restoreStep;i++)bits|=(1<<order[i]);
-    const now=game.score(bits),before=band===null?game.base:game.score(bits&~(1<<band));
+    $('stepProgress').textContent=activeOrder===null
+      ?includedOrders.size+' / 5 orders added'
+      :includedOrders.size+' / 5 orders · '+restoreStep+' / 6 channels';
+    const band=activeOrder!==null&&restoreStep>0?order[restoreStep-1]:null;
+    $('restorationPhase').textContent=finished?'Five orders combined'
+      :activeOrder!==null?(band===null?'Beginning order '+(focus+1):CHANNELS[band]+' added')
+      :includedOrders.has(focus)?'Order '+(focus+1)+' included'
+      :includedOrders.size?'Select another order':'No orders added';
+    let bits=0;for(let i=0;i<shownSteps;i++)bits|=1<<order[i];
+    const now=game.score(bits);
+    const before=band===null?game.base:game.score(bits&~(1<<band));
     $('demoScoreBefore').textContent=before.toFixed(4);
     $('demoScore').textContent=now.toFixed(4);
-    $('demoDeltaLabel').textContent=band===null?'CHANGE IN SCORE':'Δ '+CHANNELS[band].toUpperCase();
-    const delta=band===null?null:game.effects[orderIndex][band];
-    $('demoDelta').textContent=delta===null?'—':displaySigned(delta,4);
-    $('demoDelta').className=delta===null?'':delta>=0?'positive':'negative';
-    const grid=Array.from({length:6},()=>Array(5).fill(null));
-    for(let p=0;p<5;p++){
-      const steps=p<orderIndex?6:p===orderIndex?restoreStep:0;
-      for(let i=0;i<steps;i++){const c=game.paths[p][i];grid[c][p]=game.effects[p][c]}
+    const addition=band!==null?game.effects[focus][band]/game.paths.length
+      :includedOrders.has(focus)?(result.full_value-game.base)/game.paths.length:null;
+    $('demoDeltaLabel').textContent=band===null?'ORDER CONTRIBUTION':'Δ '+CHANNELS[band].toUpperCase()+' ÷ 5';
+    $('demoDelta').textContent=addition===null?'—':displaySigned(addition,4);
+    $('demoDelta').className=addition===null?'':addition>=0?'positive':'negative';
+    const columns=game.paths.length;
+    const grid=Array.from({length:6},()=>Array(columns).fill(null));
+    for(let p=0;p<columns;p++){
+      const count=includedOrders.has(p)?6:p===activeOrder?restoreStep:0;
+      for(let i=0;i<count;i++){
+        const c=game.paths[p][i];
+        grid[c][p]=game.effects[p][c]/columns;
+      }
     }
-    const scale=Math.max(.08,...game.target.map(Math.abs));
+    const scale=Math.max(.082,...game.target.map(Math.abs));
     $('localBars').innerHTML=grid.map((samples,c)=>{
-      const values=samples.filter(v=>v!==null),avg=values.length?sum(values)/values.length:null;
-      const cells=samples.map((v,p)=>'<span class="live-effect-slot '+(v===null?'pending':v>=0?'positive':'negative')+(c===band&&p===orderIndex?' new':'')+'">'+(v===null?'·':displaySigned(v,3))+'</span>').join('');
-      const width=avg===null?0:Math.min(46,Math.abs(avg)/scale*46),left=avg===null?50:avg>=0?50:50-width;
-      return '<div class="live-effect-row '+(c===band?'highlight ':'')+(complete?'final':'')+'" style="--id:'+IDS[c]+'"><span class="live-effect-name">'+CHANNELS[c]+'</span><div class="live-effect-slots">'+cells+'</div><div class="live-effect-mean"><div class="live-mean-rail"><i class="live-effect-line" style="left:'+left+'%;width:'+width+'%;background:'+(avg!==null&&avg<0?NEG:POS)+'"></i></div><output>'+(avg===null?'—':displaySigned(avg,4))+'</output></div></div>';
+      const total=sum(samples.map(v=>v===null?0:v));
+      const cells=samples.map((v,p)=>
+        '<span class="live-effect-slot '+(v===null?'pending':v>=0?'positive':'negative')+
+        (p===activeOrder&&c===band?' new':'')+'"'+(v===null?'':' data-value="'+v+'"')+'>'+
+        (v===null?'·':displaySigned(v,4))+'</span>'
+      ).join('');
+      const width=Math.min(46,Math.abs(total)/scale*46),left=total>=0?50:50-width;
+      return '<div class="live-effect-row '+(c===band?'highlight ':'')+(finished?'final':'')+
+        '" style="--id:'+IDS[c]+'" data-total="'+total+'"><span class="live-effect-name">'+CHANNELS[c]+
+        '</span><div class="live-effect-slots">'+cells+'</div><div class="live-effect-mean">'+
+        '<div class="live-mean-rail"><i class="live-effect-line" style="left:'+left+
+        '%;width:'+width+'%;background:'+(total<0?NEG:POS)+'"></i></div><output>'+
+        displaySigned(total,4)+'</output></div></div>';
     }).join('');
-    $('demoFooter').textContent=complete?'Five paths averaged · Φ(g,c) ready':band===null?'Five paths, six steps each':CHANNELS[band]+' · '+displaySigned(delta,4)+' added to order '+(orderIndex+1);
-    $('demoFooter').classList.toggle('done',complete);
-    if(!complete&&playbackTimer===null){$('playOrder').textContent='▶  Play 5 orders';$('playOrder').disabled=false}
+    $('demoFooter').textContent=finished?'All five orders · Φ(g,c) complete'
+      :activeOrder!==null?(band===null?'Order '+(focus+1)+' · ready':
+        CHANNELS[band]+' added '+displaySigned(addition,4))
+      :includedOrders.size+' of 5 orders included · select to add or remove';
+    $('demoFooter').classList.toggle('done',finished);
+    $('playOrder').disabled=isPlaying;
+    $('playOrder').textContent=isPlaying?'Playing…':
+      finished?'↻  Replay all 5 orders':
+      includedOrders.size?'▶  Add remaining orders':'▶  Play all 5 orders';
   }
   function drawMap(canvas,band){
     const ctx=canvas.getContext('2d');if(!ctx)return;

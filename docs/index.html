@@ -97,11 +97,11 @@
 <section class="slide light" data-title="Channel effects" data-time="60">
   <div class="frame">
     <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
-    <h2 class="order-title-v3">Restore one channel.<br><em>Watch its contribution appear.</em></h2>
+    <h2 class="order-title-v3">Add an order.<br><em>Watch the total grow.</em></h2>
     <div class="live-shapley-layout">
       <div class="live-path-panel">
-        <div class="live-panel-kicker"><span>CHANNEL RESTORATION</span><strong id="orderNumber">01 / 05</strong></div>
-        <div class="live-order-dots" id="orderPills" aria-label="Five sampled channel orders"></div>
+        <div class="live-panel-kicker"><span>ADD OR REMOVE AN ORDER</span><strong id="orderNumber">01 / 05</strong></div>
+        <div class="live-order-dots" id="orderPills" role="group" aria-label="Include or exclude sampled channel orders"></div>
         <div class="live-sequence" id="channelSequence" aria-label="Six spectral channels restored in sequence"></div>
         <div class="live-score-board" aria-live="polite">
           <div><span>BEFORE</span><strong id="demoScoreBefore">1.1549</strong></div>
@@ -111,21 +111,21 @@
         </div>
         <div class="live-play-footer">
           <button type="button" id="playOrder" class="live-play-button">▶ &nbsp; Play 5 orders</button>
-          <div class="live-play-status"><strong id="restorationPhase">All channels at baseline</strong><span id="stepProgress">0 / 30 steps</span></div>
+          <div class="live-play-status"><strong id="restorationPhase">No orders added</strong><span id="stepProgress">0 / 5 orders</span></div>
         </div>
       </div>
       <div class="live-ledger-panel">
-        <div class="live-ledger-kicker">SHAPLEY ALLOCATION</div>
-        <h3>One effect per step.</h3>
-        <div class="live-ledger-subtitle">Five observations. One average.</div>
-        <div class="live-ledger-columns"><span>CHANNEL</span><span>FIVE ORDERS</span><span>AVERAGE</span></div>
+        <div class="live-ledger-kicker">RUNNING SHAPLEY SUM</div>
+        <h3>Only what you add.</h3>
+        <div class="live-ledger-subtitle">Each order contributes one fifth of its effect.</div>
+        <div class="live-ledger-columns"><span>CHANNEL</span><span>ORDER CONTRIBUTIONS</span><span>SUM</span></div>
         <div class="live-ledger" id="localBars" aria-label="Live marginal effects for each channel"></div>
-        <div id="demoFooter" class="live-ledger-footer">Ready to measure the first channel.</div>
+        <div id="demoFooter" class="live-ledger-footer">Select an order to add its contribution.</div>
       </div>
     </div>
   </div>
-  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Marginal effects and averaging</h3><p>Each order starts with all six local channels at their mean baselines while the rest of the image stays observed. Restoring a channel changes the score and adds that change to the channel's row. Five orders yield five values for each band, whose mean is its Shapley contribution.</p><p>The example path scores preserve the original endpoints and exactly reproduce the saved channel contributions.</p></div>
-  <aside class="notes"><span class="time">~60 s</span><h4>Talk track</h4><p>Press Play. Each restoration changes the score and immediately fills the corresponding channel cell on the right. Each path ends at the original score. After five paths, we average each channel's five marginal effects to obtain the joint attribution row for this position.</p><p class="zh">恢复一个通道，右边立刻增加对应的分数变化。五条顺序结束后，同一通道的五个数求平均，得到最终 Shapley 贡献。</p></aside>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Shapley accumulation</h3><p>Restoring each channel changes the model score. Every sampled order contributes one fifth of its marginal effects to the running Shapley sum. Add or remove an order to change only the contributions from that order. With all five orders, the sum equals Φ(g,c).</p></div>
+  <aside class="notes"><span class="time">~60 s</span><h4>Talk track</h4><p>Choose any of the five channel orders. It immediately contributes to the results on the right. Click again to remove it. Play the remaining orders to watch each restored channel add one fifth of its score change. The running total contains only the paths and channels you have already added.</p></aside>
 </section>
 
 <section class="slide dark" data-title="Joint attribution" data-time="44">

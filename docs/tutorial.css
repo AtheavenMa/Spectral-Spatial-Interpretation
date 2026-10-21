@@ -287,3 +287,14 @@ h1{margin-top:56px;font:400 98px/1.07 var(--serif);letter-spacing:-.04em}h1 em{c
 .live-effect-line{height:13px;position:absolute;top:7px}
 .live-ledger-footer{margin-top:19px;border-top:1px solid #C6BDAF;padding-top:19px;color:#7D7771;font:400 18px var(--sans)}
 .live-ledger-footer.done{color:#9C7C43;font-weight:600}
+
+/* Contributions are accumulated across exactly the selected orders. */
+.live-order-dot{cursor:pointer;background:transparent;transition:background .18s,border-color .18s,color .18s}
+.live-order-dot:hover:not(:disabled){border-color:#9C7C43;background:#F7EFE2;color:#1C2644}
+.live-order-dot.selected,.live-order-dot.finished{background:#DCCBA8;border-color:#9C7C43;color:#1C2644;font-weight:600}
+.live-order-dot.active{border-color:#1C2644;background:#1C2644;color:#F6F2EA}
+.live-order-dot:disabled{cursor:default;opacity:.8}
+.live-ledger-columns,.live-effect-row{grid-template-columns:83px 299px minmax(90px,1fr);gap:8px}
+.live-effect-slot{font-size:11px;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.live-effect-line{transition:left .22s ease,width .22s ease}
+.live-effect-row.highlight .live-effect-mean output{color:#9C7C43;font-weight:600}
