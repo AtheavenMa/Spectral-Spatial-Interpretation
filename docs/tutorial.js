@@ -8,8 +8,8 @@
   const slides = Array.from(document.querySelectorAll('.stage > .slide'));
   const stage = document.getElementById('stage');
   let current = 0, selectedLocation = 0, selectedBand = 5, orderIndex = 0;
-  let restored = false, result = null;
-  let customLocation = null, restoreStep = 0, viewFocus = 'where';
+  let result = null;
+  let customLocation = null, restoreStep = 0, viewFocus = 'where', playbackTimer = null;
   let lastWheel = 0, touchX = null;
   const $ = (id) => document.getElementById(id);
   const displaySigned = (x,n=4) => (x>=0?'+':'−')+Math.abs(x).toFixed(n);
@@ -30,6 +30,7 @@
   }
   function showSlide(i){
     const next=Math.max(0,Math.min(slides.length-1,i));
+    if(current===3 && next!==3)stopPlayback();
     current=next;
     slides.forEach((s,k)=>{s.classList.toggle('active',k===current);s.classList.toggle('visible',k===current);if(k!==current)s.classList.remove('drawer-open')});
     document.querySelectorAll('.road button').forEach(b=>b.classList.toggle('on',Number(b.dataset.go)===current+1));
@@ -50,10 +51,6 @@
     $('notesToggle').onclick=showNotes;$('helpToggle').onclick=showHelp;$('closeNotes').onclick=()=> $('notesPanel').classList.remove('show');$('closeHelp').onclick=()=> $('helpPanel').classList.remove('show');
     document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',toggleDetails));
 
-    document.querySelectorAll('.loc-btn').forEach(b=>b.addEventListener('click',()=>{
-      customLocation=null;selectedLocation=Number(b.dataset.location);
-      orderIndex=0;restoreStep=0;restored=false;refreshLocation();
-    }));
     const photo=$('photoInteractive');
     photo.addEventListener('click',e=>{
       const rect=photo.getBoundingClientRect();
@@ -62,13 +59,13 @@
       selectImageCell(y,x);
     });
     photo.addEventListener('keydown',e=>{
-      if(e.key==='Enter'){e.preventDefault();restored=!restored;renderLocal()}
+      const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[e.key];
+      if(!delta||!result)return;
+      e.preventDefault();e.stopPropagation();
+      const loc=currentCell();
+      selectImageCell(Math.max(0,Math.min(result.grid-1,loc.row+delta[0])),Math.max(0,Math.min(result.grid-1,loc.col+delta[1])));
     });
-    $('maskBtn').onclick=()=>{restored=false;renderLocal()};
-    $('restoreBtn').onclick=()=>{restored=true;renderLocal()};
-    $('previousOrder').onclick=()=>{orderIndex=(orderIndex+4)%5;restoreStep=0;renderOrders()};
-    $('nextOrder').onclick=()=>{orderIndex=(orderIndex+1)%5;restoreStep=0;renderOrders()};
-    $('stepNext').onclick=()=>{restoreStep=(restoreStep+1)%7;renderOrders()};
+    $('playOrder').onclick=startPlayback;
     document.querySelectorAll('.axis-toggle').forEach(button=>button.addEventListener('click',()=>{
       viewFocus=button.dataset.focus;renderMatrix();
     }));
@@ -94,7 +91,7 @@
     const match=LOCATIONS.findIndex(c=>c.row===row&&c.col===col);
     selectedLocation=match>=0?match:-1;
     customLocation=match>=0?null:{row,col};
-    orderIndex=0;restoreStep=0;restored=false;refreshLocation();
+    stopPlayback();orderIndex=0;restoreStep=0;refreshLocation();
   }
   function refreshLocation(){
     if(!result)return;
@@ -115,22 +112,13 @@
     $('fullScore').textContent=result.full_value.toFixed(4);
     $('contrastScore').textContent=displaySigned(total,4);
     $('locationIndex').textContent=`g · row ${pos.row+1}, col ${pos.col+1}`;
-    $('currentState').textContent=restored?'Selected cell restored':'Selected cell masked';
-    document.querySelectorAll('.loc-btn').forEach(b=>b.classList.toggle('selected',customLocation===null&&Number(b.dataset.location)===selectedLocation));
-    for(const id of ['maskPatch','cellMark']){
-      const el=$(id);el.style.left=`${pos.col/result.grid*100}%`;
-      el.style.top=`${pos.row/result.grid*100}%`;
-      el.style.width=`${100/result.grid}%`;
-      el.style.height=`${100/result.grid}%`;
-    }
-    $('maskPatch').style.opacity=restored?'0':'1';
-    $('maskBtn').setAttribute('aria-pressed',String(!restored));
-    $('restoreBtn').setAttribute('aria-pressed',String(restored));
-    $('maskBtn').classList.toggle('selected',!restored);
-    $('restoreBtn').classList.toggle('selected',restored);
+    const el=$('cellMark');
+    el.style.left=`${pos.col/result.grid*100}%`;
+    el.style.top=`${pos.row/result.grid*100}%`;
+    el.style.width=`${100/result.grid}%`;
+    el.style.height=`${100/result.grid}%`;
     drawObservedZoom();
   }
-
   // The exact original xorshift32 and Fisher–Yates sampler from docs/playground/compute-runtime.js.
   function seededOrders(target){
     let x=(0^0x9e3779b9)>>>0;const rng=()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return(x>>>0)/4294967296};
@@ -147,34 +135,43 @@
     return orders;
   }
 
+  function stopPlayback(){
+    if(playbackTimer!==null){window.clearInterval(playbackTimer);playbackTimer=null}
+  }
+  function startPlayback(){
+    if(!result)return;
+    stopPlayback();restoreStep=0;renderOrders();
+    $('playOrder').disabled=true;
+    playbackTimer=window.setInterval(()=>{
+      if(current!==3){stopPlayback();$('playOrder').disabled=false;return}
+      restoreStep=Math.min(6,restoreStep+1);
+      renderOrders();
+      if(restoreStep>=6){stopPlayback();$('playOrder').disabled=false}
+    },380);
+  }
   function renderOrders(){
     if(!result)return;
     const orders=seededOrders(cellIndex()),ord=orders[orderIndex];
     $('orderNumber').textContent=`0${orderIndex+1} / 05`;
     $('orderPills').innerHTML=orders.map((a,i)=>
-      `<button class="order-pill" data-order="${i}" aria-pressed="${i===orderIndex}">${String(i+1).padStart(2,'0')}</button>`
+      `<button type="button" class="order-pill" data-order="${i}" aria-label="Sampled order ${i+1}" aria-pressed="${i===orderIndex}">${String(i+1).padStart(2,'0')}</button>`
     ).join('');
     $('orderPills').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      stopPlayback();$('playOrder').disabled=false;
       orderIndex=Number(b.dataset.order);restoreStep=0;renderOrders();
     });
     $('channelSequence').innerHTML=ord.map((band,i)=>{
-      const done=i<restoreStep,current=i===restoreStep;
-      return `<button class="order-step ${done?'done':''} ${current?'current':''}" data-step="${i+1}" style="--id:${IDS[band]}" aria-label="Restore through step ${i+1}, ${CHANNELS[band]}" aria-pressed="${done}"><span class="step-index">${String(i+1).padStart(2,'0')}</span><i class="step-shape"></i><span class="step-band">${CHANNELS[band]}</span></button>`;
+      const done=i<restoreStep,now=i===restoreStep-1;
+      return `<div class="path-band ${done?'restored':''} ${now?'current':''}" style="--id:${IDS[band]}" aria-label="Step ${i+1}: ${CHANNELS[band]}"><i class="path-node"></i><span>${CHANNELS[band]}</span></div>`;
     }).join('');
-    $('channelSequence').querySelectorAll('.order-step').forEach(b=>b.onclick=()=>{
-      restoreStep=Number(b.dataset.step);renderOrders();
-    });
     $('stepProgress').textContent=`${restoreStep} / 6 restored`;
-    $('restorationPhase').textContent=restoreStep===0?'Six channels at baseline':restoreStep===6?'All six observed':`${CHANNELS[ord[restoreStep-1]]} restored`;
-    $('stepNext').textContent=restoreStep===6?'Reset path ↺':'Restore next band →';
+    $('restorationPhase').textContent=restoreStep===0?'Six bands at baseline':restoreStep===6?'All bands restored':`${CHANNELS[ord[restoreStep-1]]} restored`;
     const data=rowAt(),m=Math.max(.0754,...data.map(x=>Math.abs(x)));
-    const highlighted=restoreStep>0?ord[restoreStep-1]:-1;
     $('localBars').innerHTML=data.map((v,i)=>{
       const width=Math.abs(v)/m*50,left=v>=0?50:50-width;
-      return `<div class="signed-row ${highlighted===i?'is-active':''}"><label style="--id:${IDS[i]}">${CHANNELS[i]}</label><div class="signed-track"><i class="bar ${v<0?'neg':''}" style="left:${left}%;width:${Math.max(1,width)}%"></i></div><output>${displaySigned(v)}</output></div>`;
+      return `<div class="signed-row"><label style="--id:${IDS[i]}">${CHANNELS[i]}</label><div class="signed-track"><i class="bar ${v<0?'neg':''}" style="left:${left}%;width:${Math.max(1,width)}%"></i></div><output>${displaySigned(v)}</output></div>`;
     }).join('');
   }
-
   function drawMap(canvas,band){
     const ctx=canvas.getContext('2d');if(!ctx)return;
     const g=result.grid,dim=320,size=dim/g,values=result.attribution;
