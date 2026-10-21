@@ -192,7 +192,11 @@ class SSI:
         if channel_baseline.ndim != 1 or channel_baseline.numel() == 0 or not torch.isfinite(channel_baseline).all():
             raise ValueError("baseline must be a nonempty finite vector of shape (channels,)")
 
-        raw = torch.as_tensor(np.asarray(input) if not isinstance(input, torch.Tensor) else input)
+        if isinstance(input, torch.Tensor):
+            raw = input.detach()
+        else:
+            # NumPy views with negative strides cannot be wrapped by PyTorch.
+            raw = torch.as_tensor(np.ascontiguousarray(np.asarray(input)))
         if raw.ndim == 4 and raw.shape[0] == 1:
             raw = raw[0]
         if raw.ndim != 3:
@@ -239,6 +243,8 @@ class SSI:
         if target_mask is not None:
             mask = torch.as_tensor(np.asarray(target_mask) if not isinstance(target_mask, torch.Tensor)
                                    else target_mask)
+            if not torch.isfinite(mask.float()).all():
+                raise ValueError("target_mask must contain finite values")
             if mask.ndim != 2 or tuple(mask.shape) not in (original_size, size):
                 raise ValueError("target_mask must have the original or resized image HxW shape")
             mask = mask.to(torch.float32)[None, None]
@@ -266,10 +272,14 @@ class SSI:
         import torch
         import torch.nn.functional as F
 
-        device = next((p.device for p in self.model.parameters()),
-                      next((b.device for b in self.model.buffers()), torch.device("cpu")))
-        x = self.input.to(device)
-        baseline = self.baseline.to(device).reshape(1, -1, 1, 1)
+        parameter = next(iter(self.model.parameters()), None)
+        buffer = next(iter(self.model.buffers()), None)
+        reference = parameter if parameter is not None else buffer
+        device = reference.device if reference is not None else torch.device("cpu")
+        dtype = (reference.dtype if reference is not None and reference.is_floating_point()
+                 else torch.float32)
+        x = self.input.to(device=device, dtype=dtype)
+        baseline = self.baseline.to(device=device, dtype=dtype).reshape(1, -1, 1, 1)
         mask = self.target_mask.to(device) if self.target_mask is not None else None
         rows, cols = self.grid_shape
         cell_h, cell_w = self.grid_size
