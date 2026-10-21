@@ -7,7 +7,7 @@
   <a href="https://atheavenma.github.io/ssi-playground/">🎛️ Playground</a> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2610.21114">📄 Paper</a> &nbsp;·&nbsp;
   <a href="examples/README.md">🖼️ Visual Atlas</a> &nbsp;·&nbsp;
-  <a href="docs/index.html">🎞️ 5-minute tutorial</a>
+  <a href="https://atheavenma.github.io/ssi-tutorial/">🎞️ 5-minute tutorial</a>
 </p>
 
 <p align="center">
@@ -19,10 +19,10 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 ## 🎞️ 5-Minute Tutorial
 
 <p align="center">
-  <a href="docs/index.html"><img src="assets/tour_preview.svg" alt="SSI in Five Minutes interactive tutorial" width="900"/></a>
+  <a href="https://atheavenma.github.io/ssi-tutorial/"><img src="assets/tour_preview.svg" alt="SSI in Five Minutes interactive tutorial" width="900"/></a>
 </p>
 
-💻 [Explore the 5-minute tutorial](docs/index.html) · [Tutorial guide](docs/TUTORIAL.md)
+💻 Click to open the [tutorial](https://atheavenma.github.io/ssi-tutorial/) in your browser · [Tutorial guide](docs/TUTORIAL.md)
 
 ---
 
