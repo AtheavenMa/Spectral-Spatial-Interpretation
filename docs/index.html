@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="SSI in Five Minutes — an interactive, data-grounded introduction to Spectral-Spatial Interpretation.">
+<meta name="theme-color" content="#1c2644">
+<title>SSI in Five Minutes · Spectral-Spatial Interpretation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,500&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./tutorial.css">
+</head>
+<body>
+<div class="viewport" id="viewport"><div class="stage" id="stage">
+<div class="gold-line" aria-hidden="true"></div>
+
+<section class="slide dark active visible" data-title="Cover" data-time="25">
+  <div class="cover-left">
+    <div class="eyebrow gold">NEURIPS 2026 · AN INTERACTIVE RESEARCH TUTORIAL</div>
+    <h1>Spectral–Spatial<br><em>Interpretation.</em></h1>
+    <p class="cover-question">Which spectral channels matter<br>and <i>where</i> do they matter?</p>
+    <div class="cover-steps" aria-label="Tutorial sections">
+      <button data-go="2">The question</button><button data-go="3">Local game</button><button data-go="4">Channel effects</button><button data-go="5">Joint attribution</button><button data-go="6">Two views</button>
+    </div>
+    <div class="byline">Haotian Ma</div>
+  </div>
+  <div class="cover-right" aria-hidden="true">
+    <div class="cover-orbit orbit-one"></div><div class="cover-orbit orbit-two"></div>
+    <div class="cover-raster"><img src="./assets/ssi-tour/input.png" alt=""></div>
+    <div class="cover-focus"></div>
+    <div class="cover-bands">
+      <i style="--ch:#3277C8"></i><i style="--ch:#27986F"></i><i style="--ch:#DA5A58"></i><i style="--ch:#8062B5"></i><i style="--ch:#D59A3F"></i><i style="--ch:#A45B45"></i>
+    </div>
+    <div class="cover-caption">ONE IMAGE <span>×</span> SIX BANDS</div>
+  </div>
+  <aside class="notes"><span class="time">~25 s</span><h4>Talk track</h4><p>A satellite image contains information in several spectral bands. A spatial heatmap can show where a model responds, while a spectral ranking can tell us which bands matter overall. What we really want is their joint answer. In this five-minute tutorial, we follow one actual burn-scar image through the SSI method and then look at the evaluation reported in the paper.</p><p class="zh">这一教程从真实的六波段烧毁区域图像出发，解释 SSI 如何在同一计算中保留位置和通道两个维度。</p></aside>
+</section>
+
+<section class="slide light" data-title="The question" data-time="42">
+  <div class="frame">
+    <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
+    <div class="section-eyebrow">01 / THE QUESTION</div>
+    <h2>A model sees <em>six bands</em>.<br>What produced its burn-scar score?</h2>
+    <div class="problem-grid">
+      <div class="photo-pair">
+        <div class="photo-block"><img src="./assets/ssi-tour/input.png" alt="Real HLS sample 0163 satellite image"><span class="img-caption">HLS BURN SCARS</span></div>
+        <div class="mask-block"><img src="./assets/ssi-tour/ground_truth.png" alt="Fixed target burn region"><span class="img-caption">FIXED TARGET REGION</span></div>
+      </div>
+      <div class="problem-right">
+        <div class="pipe">
+          <div class="pipe-node"><strong>HLS image</strong><span>6 spectral bands</span></div><div class="pipe-arrow">→</div>
+          <div class="pipe-node"><strong>U-Net</strong><span>segmentation</span></div><div class="pipe-arrow">→</div>
+          <div class="pipe-node selected"><strong>Burn-class logit</strong><span>fixed region mean</span></div>
+        </div>
+        <div class="problem-question">Spatial alone tells us <b>where</b>.<br>Spectral alone tells us <b>which</b>.<br><em>Neither tells us which band matters where.</em></div>
+        <div class="problem-mini"><span class="mini-chip">Blue</span><span class="mini-chip">Green</span><span class="mini-chip">Red</span><span class="mini-chip">NIR</span><span class="mini-chip">SWIR1</span><span class="mini-chip">SWIR2</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>The score being explained</h3><p>This is an HLS Burn Scars segmentation image with six bands, Blue, Green, Red, NIR, SWIR1 and SWIR2. The trained U-Net produces burn-class logits. The explanation target is the mean logit over 2,734 pixels in the fixed ground-truth burn region.</p><p>The ground-truth mask is used to define the scalar score; it is not an input channel to the U-Net. This is a single illustrative example, not an independent localization evaluation.</p></div>
+  <aside class="notes"><span class="time">~42 s</span><h4>Talk track</h4><p>Our running example is one 128-by-128 HLS burn-scar image. The U-Net receives the original six-band input and predicts burn-scar logits. To produce one scalar score for explanation, we average the burn-class logit over a fixed ground-truth burn region. That mask defines the measurement but is never an extra model input. A global spectral ranking tells us whether SWIR2 or Blue matters overall. A spatial heatmap tells us which part of the image matters overall. Neither separates the effect of one spectral band at one particular location. SSI keeps both dimensions.</p><p class="zh">HLS 六波段输入进入 U-Net。GT 仅定义分数计算区域，不作为额外模型输入。单独的空间图与全局波段排名都缺失位置和通道的联合信息。</p></aside>
+</section>
+
+<section class="slide dark" data-title="Local game" data-time="55">
+  <div class="frame">
+    <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
+    <div class="section-eyebrow">02 / LOCAL INTERVENTION</div>
+    <h2>Keep the surroundings.<br><em>Change only one cell.</em></h2>
+    <div class="local-grid">
+      <div class="local-photo-wrap">
+        <div class="photo-interactive" id="photoInteractive" aria-label="Select one of three spatial positions"><img src="./assets/ssi-tour/input.png" alt="Satellite image with an interactive selected location"><div class="mask-patch" id="maskPatch"></div><div class="cell-mark" id="cellMark"></div></div>
+        <div class="location-picker" role="group" aria-label="Choose a position"><span>SELECT LOCATION</span><button class="loc-btn selected" data-location="0">A</button><button class="loc-btn" data-location="1">B</button><button class="loc-btn" data-location="2">C</button></div>
+      </div>
+      <div class="local-readout">
+        <p class="big-context">255 cells remain <em>observed</em>.</p>
+        <div class="comparison"><div><span>SELECTED CELL MASKED</span><strong id="maskedScore">1.1549</strong></div><div class="score-arrow">→</div><div><span>ALL SIX CHANNELS RESTORED</span><strong id="fullScore">1.2065</strong></div></div>
+        <div class="contrast"><span>LOCAL SCORE CHANGE</span><strong id="contrastScore">+0.0516</strong></div>
+        <div class="togglebar"><button id="maskBtn" aria-pressed="true">Mask this cell</button><button id="restoreBtn" aria-pressed="false">Restore all six</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Observed context</h3><p>For spatial cell g, keep all 255 other cells at their observed values. Change only the six channels in g, using the per-channel mean baseline when masking. The unmasked score is 1.206524. For each chosen location, the displayed masked score is obtained by subtracting that cell's exact contextual contrast, which equals the sum of its six sampled-Shapley contributions within numerical precision.</p><p>Cells A, B and C are real positions in HLS sample_0163. The numerical scores are based on the published JSON output of the original browser computation. Individual intermediate coalition scores are not displayed, because they were not saved.</p></div>
+  <aside class="notes"><span class="time">~55 s</span><h4>Talk track</h4><p>Pick a small region g. The model still sees the same original image everywhere else. Only the selected region's channels are replaced with the training-split mean baseline. We can now compare the target score with that cell masked and with all six of its channels restored. For location A, the difference is about plus 0.0516 logit units. Click B or C to see that a different position creates a different local contrast. SSI's defining choice is this fixed observed context: it asks what the channels of g do in the image as it actually appears, not in a fully masked world.</p><p class="zh">点击 A/B/C 切换位置。其他位置始终是实际观测值，只有当前局部六个波段进入 baseline 或恢复原值。数值来自真实 SSI 结果。</p></aside>
+</section>
+
+<section class="slide light" data-title="Channel effects" data-time="54">
+  <div class="frame">
+    <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
+    <div class="section-eyebrow">03 / SHAPLEY ALLOCATION</div>
+    <h2>Restore bands in different orders.<br><em>Average each band’s marginal effect.</em></h2>
+    <div class="orders-grid">
+      <div class="orders-left">
+        <div class="order-title"><span>ACTUAL SAMPLED ORDERS</span><strong id="orderNumber">01 / 05</strong></div>
+        <div class="sequence" id="channelSequence"></div>
+        <div class="sequence-controls"><button id="previousOrder">← Previous</button><button id="nextOrder" class="primary">Next order →</button></div>
+        <div class="sequence-bottom"><span>BEFORE</span><span class="line-connect"></span><span>AFTER</span></div>
+      </div>
+      <div class="orders-right"><div class="mini-heading">ONE SIGNED CONTRIBUTION PER BAND</div><div class="signed-bars" id="localBars"></div><div class="orders-foot"><span>FIVE SAMPLED PATHS</span><span>ONE CELL <b>g</b></span></div></div>
+    </div>
+  </div>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Conditional Shapley estimation</h3><p>For any subset R of the six channels in the selected cell, all other cells remain observed. The six local channels start at their mean baselines. The algorithm restores them in five sampled permutations. At each addition, it records the model score difference. Averaging the marginal change for channel c across those five orders gives Phi(g,c).</p><p>Order sequences here are reproduced exactly from the seed-0 xorshift32/Fisher–Yates sampler in docs/playground/compute-runtime.js, following its row-major traversal. The local attribution bars are read from the saved result.json; individual per-step logit differences are intentionally not fabricated.</p></div>
+  <aside class="notes"><span class="time">~54 s</span><h4>Talk track</h4><p>Mask the six channels of the chosen cell. Then restore them one at a time in a sampled order. The marginal contribution of a band is how much the model score changes at the moment that band is restored. But a band can have a different marginal effect depending on which other bands have already returned, so we sample five orders and average the band's effects. Use Next order to inspect the actual seeded channel orders used in this run. The bar chart on the right shows the final signed contributions for the selected location. In this cell, SWIR2 is positive while SWIR1 is negative. No individual intermediate model scores are invented here.</p><p class="zh">实际采样顺序来自原 browser 计算的随机采样器；右侧柱形是真实六个 Shapley 贡献。中途的 coalition 分数没有保存，因此不展示伪造数值。</p></aside>
+</section>
+
+<section class="slide dark" data-title="Joint attribution" data-time="44">
+  <div class="frame">
+    <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
+    <div class="section-eyebrow">04 / THE JOINT OBJECT</div>
+    <h2>One position gives six numbers.<br><em>Repeat across the image.</em></h2>
+    <div class="joint-kicker"><strong>Φ(g,c)</strong><span>256 LOCATIONS × 6 SPECTRAL BANDS</span></div>
+    <div class="joint-maps" id="jointMaps"></div>
+    <div class="joint-bottom"><div><span>CHOOSE A BAND TO INSPECT</span><strong id="selectedBandTotal">SWIR2 · +0.7510</strong></div><div class="diverging"><span>NEGATIVE</span><i></i><span>POSITIVE</span></div></div>
+  </div>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>One matrix, not two explainers</h3><p>The joint attribution Phi(g,c) is a 16×16×6 tensor for this run: 256 locations and six channels. A row gives the six within-cell Shapley contributions. Fixing a channel shows how its contribution varies across locations.</p><p>Every small map here comes directly from the real 1,536-element attribution tensor, with one common diverging signed color scale. The thin colored band markers encode channel identity; red and teal within each map encode positive and negative attribution, separately from band identity.</p></div>
+  <aside class="notes"><span class="time">~44 s</span><h4>Talk track</h4><p>We now repeat the same procedure at all 256 spatial locations. Each location yields six signed numbers, so the full result is one 256-by-6 joint attribution object. These six maps are not six separate explainers; they are the six slices of that one tensor. The identity color above each map tells us which band we are looking at, while red versus teal shows positive versus negative model attribution. Click a map to inspect its global signed total. Keeping this joint structure is what makes the next two summaries consistent.</p><p class="zh">每个局部位置计算六个贡献，遍历 256 个位置得到 256×6 的同一张联合归因表。通道身份色与正负贡献颜色严格分离。</p></aside>
+</section>
+
+<section class="slide light" data-title="Two views" data-time="45">
+  <div class="frame">
+    <header class="chrome"><nav class="road"></nav><button class="details-btn" data-details>Details</button></header>
+    <div class="section-eyebrow">05 / TWO VIEWS, ONE COMPUTATION</div>
+    <h2>Sum across bands for <em>where</em>.<br>Across locations for <em>which</em>.</h2>
+    <div class="views-grid">
+      <div class="view-panel"><div class="view-head"><span>Σ over six channels</span><strong>WHERE</strong></div><div class="view-image"><img src="./assets/ssi-tour/spatial_ssi.png" alt="Real spatial SSI attribution for HLS sample_0163"></div><div class="view-cap">Spatial SSI</div></div>
+      <div class="mid-split"><div class="phi">Φ(g,c)</div><div class="mid-line"></div><div class="mid-branch">↙ <span></span> ↘</div></div>
+      <div class="view-panel"><div class="view-head"><span>Σ over 256 locations</span><strong>WHICH</strong></div><svg id="spectralPlot" viewBox="0 0 650 510" role="img" aria-label="Real signed channel totals"></svg><div class="view-cap">Global signed spectral SSI</div></div>
+    </div>
+  </div>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Exact aggregation of the same tensor</h3><p>Spatial: S(g) = sum over c of Phi(g,c). Spectral: T(c) = sum over g of Phi(g,c). The six per-channel spatial maps are the fixed-channel slices of the same tensor.</p><p>Local efficiency is exact within each spatial cell: S(g) = f(x) - f(x with all channels of g masked). However, summing S(g) over cells need not recover the global score f(x) or a whole-image baseline contrast. For this run the sum across cells/channels is 0.874582, while the full target logit is 1.206524.</p></div>
+  <aside class="notes"><span class="time">~45 s</span><h4>Talk track</h4><p>Now there is no need to run a spatial method and a spectral method separately. If we sum each location's six values, we obtain the spatial map: where the evidence is. If we sum the contribution of each band over all locations, we obtain the global spectral chart: which bands support or oppose the chosen model score. Both are views of the same tensor. In this example, SWIR2 and SWIR1 have the largest positive global contributions, while Red is negative. These are signed effects on a logit, not reflectance or burn probabilities. The exact accounting guarantee is local to each cell, not a decomposition of the entire model score.</p><p class="zh">空间归因是对六个通道求和；全局光谱归因是对所有位置求和。两者来自同一个张量。不能将所有 SSI 值的总和误称为模型最终 logit。</p></aside>
+</section>
+
+<section class="slide dark" data-title="Takeaways" data-time="35">
+  <div class="frame">
+    <header class="chrome"><span>TAKEAWAYS</span><button class="details-btn" data-details>Details</button></header>
+    <div class="section-eyebrow">06 / THE EVIDENCE</div>
+    <h2>Channel contributions can be <em>spatially different</em>.<br>The paper tests whether joint rankings help.</h2>
+    <div class="take-grid">
+      <div class="take-local"><div class="big-number">−0.532</div><span>SWIR1 VS SWIR2 SPATIAL CORRELATION</span><p>Both positive in the global total.<br>Different patterns across this image.</p><div class="two-total"><span>SWIR1 <b>+0.5668</b></span><span>SWIR2 <b>+0.7510</b></span></div></div>
+      <div class="take-bench"><div class="result-intro">PAPER RESULTS · MEAN-BASELINE JOINT DELETION ↓</div><div class="bench-row"><span>CUB-200</span><strong>0.0088</strong><em>SSI</em><small>best non-SSI&nbsp; 0.0112</small></div><div class="bench-row"><span>EuroSAT</span><strong>0.1397</strong><em>SSI</em><small>best non-SSI&nbsp; 0.2078</small></div><div class="bench-row"><span>HLS Burn Scars</span><strong>0.1545</strong><em>SSI</em><small>best non-SSI&nbsp; 0.2096</small></div><p class="bench-foot">SSI has the best reported mean across all three paper metrics on these datasets.</p></div>
+    </div>
+    <footer class="end-links"><a href="https://arxiv.org/abs/2610.21114" target="_blank" rel="noopener">Paper ↗</a><a href="https://atheavenma.github.io/ssi-playground/" target="_blank" rel="noopener">Playground ↗</a><a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation" target="_blank" rel="noopener">Code ↗</a></footer>
+  </div>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>What the evidence supports</h3><p>For the single HLS sample, the SWIR1 and SWIR2 signed spatial maps have Pearson correlation −0.5318 even though each band has a positive global total. At cell A, SWIR2 is +0.0730 while SWIR1 is −0.0313. These are observations for a fixed score target, not a general theorem about burn spectroscopy.</p><p>Separately, the paper reports the best mean among compared methods on joint deletion, rank-1 deletion and insertion for CUB-200, EuroSAT and HLS Burn Scars with mean and zero baselines. The displayed joint-deletion values are from the mean-baseline Table 1, not the training-split sample shown earlier.</p></div>
+  <aside class="notes"><span class="time">~35 s</span><h4>Talk track</h4><p>Here is why the joint answer matters. In our real HLS example, the two short-wave infrared bands have positive total contributions, but their spatial contribution maps are negatively correlated. At a particular cell one is positive and the other is negative. A single spatial map or global spectral ranking would lose that distinction. The paper also evaluates whether the joint ranking is useful under deletion and insertion protocols. The three datasets shown here each have a lower, better mean joint-deletion score than the best competing method. This case illustrates the method; the benchmark results come from separate paper experiments. Explore the live Playground or read the paper for the full evaluation.</p><p class="zh">本例里 SWIR1 和 SWIR2 虽然全局均为正，但空间分布不同。论文中的删除插入指标属于独立 benchmark，不应当与这个单样本混为一谈。</p></aside>
+</section>
+
+</div></div>
+<div class="progress" id="progress"></div>
+<div class="deck-controls" id="deckControls"><button id="prevSlide" aria-label="Previous slide">←</button><span id="pageCount">1 / 7</span><button id="nextSlide" aria-label="Next slide">→</button><button id="notesToggle" aria-label="Presenter notes">N</button><button id="helpToggle" aria-label="Keyboard help">?</button></div>
+<div class="notes-panel" id="notesPanel" role="region" aria-label="Presenter notes"><div class="notes-title">PRESENTER NOTES <button id="closeNotes">×</button></div><div id="notesContent"></div></div>
+<div class="help-panel" id="helpPanel" role="dialog" aria-label="Help"><div class="help-box"><h3>Controls</h3><p>← / → &nbsp; Previous or next</p><p>1–7 &nbsp; Jump to a slide</p><p>N &nbsp; Presenter notes</p><p>D &nbsp; Slide details</p><p>Home / End &nbsp; First or last</p><p>Esc &nbsp; Close overlays</p><button id="closeHelp">Close</button></div></div>
+<div class="status" id="status" role="status" aria-live="polite"></div>
+<script src="./tutorial.js"></script>
+</body>
+</html>

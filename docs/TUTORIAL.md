@@ -1,0 +1,28 @@
+# SSI in Five Minutes
+
+The seven-slide interactive browser tutorial at [`index.html`](index.html) follows the presentation pattern used by [SAR](https://github.com/OpenSAE/SAE-Behavioral-Compositionality) and [RSS](https://github.com/OpenSAE/Redistribution-Sensitivity-Score): fixed 1920×1080 stage, alternating dark and light sections, keyboard navigation, slide details and a presenter-notes panel.
+
+## Preview locally
+
+From the repository root:
+
+```bash
+python -m http.server 8000 --directory docs
+```
+
+Open `http://localhost:8000/`. Use arrow keys, digits 1–7, `N` for presenter notes, `D` for details and `?` for help. The tutorial can be hosted as a static site; it needs no backend, GPU or model download.
+
+## Data and scientific scope
+
+- `assets/ssi-tour/result.json` is an unmodified copy of `assets/video/hls_burnscar_0163/result.json`.
+- The tutorial uses the real 16×16×6 SSI attribution tensor, mean baseline, five sampled permutations, seed 0 and HLS Burn Scars sample_0163.
+- The five permutation orders are reproduced from the browser runtime's seeded xorshift32/Fisher–Yates sampler in row-major cell order.
+- Local masked scores are recovered from the exact within-cell identity `sum_c Phi(g,c) = f(x) - f(x with cell g masked)`; individual intermediate coalition scores are not reconstructed or fabricated.
+- The input, ground-truth target mask and spatial overlay are copied unchanged from the recorded video-evidence assets.
+- The final-slide comparison numbers come from the paper's mean-baseline Table 1, not from sample_0163. The single sample is illustrative.
+
+## Deployment
+
+The presentation is placed at `docs/index.html`, parallel to the `docs/index.html` arrangement of the SAR and RSS repositories. GitHub Pages can publish this folder by choosing **Deploy from a branch → main → /docs** in the repository's Pages settings. The corresponding URL will be `https://atheavenma.github.io/Spectral-Spatial-Interpretation/` after Pages is enabled.
+
+Until Pages is enabled, the README's tutorial link uses the raw.githack.com GitHub static-file renderer so the same repository files can be opened directly as a website.
