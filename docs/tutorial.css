@@ -298,3 +298,12 @@ h1{margin-top:56px;font:400 98px/1.07 var(--serif);letter-spacing:-.04em}h1 em{c
 .live-effect-slot{font-size:11px;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
 .live-effect-line{transition:left .22s ease,width .22s ease}
 .live-effect-row.highlight .live-effect-mean output{color:#9C7C43;font-weight:600}
+
+/* Manual order selection: no autoplay, no play button. */
+.live-play-footer{justify-content:flex-start;min-height:74px;margin-top:26px}
+.live-play-status{align-items:flex-start}
+.live-empty-sequence{grid-column:1/-1;display:grid;place-items:center;width:100%;
+  color:#827B70;font:400 26px var(--serif);border:1px dashed #C8C0B2;
+  background:rgba(255,255,255,.14)}
+.live-order-dot{transition:background .18s,border-color .18s}
+.live-path-band:not(.restored) .live-path-icon{opacity:.13}

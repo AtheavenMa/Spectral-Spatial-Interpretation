@@ -1,4 +1,4 @@
-"""Verify clickable order subsets, add/remove and five-order playback in the SSI tutorial."""
+"""Verify empty initial state, click-to-add/remove orders and exact SSI totals."""
 from __future__ import annotations
 
 import math
@@ -22,46 +22,65 @@ def check_additive(rows):
 
 def main():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True,
+        browser = p.chromium.launch(
+            headless=True,
             executable_path=os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE") or None,
-            args=["--no-sandbox"])
+            args=["--no-sandbox"],
+        )
         page = browser.new_page(viewport={"width": 1600, "height": 900})
         errors = []
-        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.on("pageerror", lambda error: errors.append(str(error)))
         page.set_content(self_contained_html(), wait_until="domcontentloaded")
-        page.wait_for_function("() => document.querySelectorAll('#jointMaps .joint-card').length === 6")
+        page.wait_for_function(
+            "() => document.querySelectorAll('#jointMaps .joint-card').length === 6")
         page.keyboard.press("4")
-        assert all(item["sum"] == 0 for item in totals(page))
-        chips=page.locator("#orderPills button")
-        chips.nth(0).click()
-        first=totals(page)
+        assert page.locator("#playOrder").count() == 0
+        chips = page.locator("#orderPills button")
+        assert chips.count() == 5
+        assert all(chips.nth(i).get_attribute("aria-pressed") == "false" for i in range(5))
+        assert all(item["sum"] == 0 and len(item["cells"]) == 0 for item in totals(page))
+        page.wait_for_timeout(1100)
+        assert all(item["sum"] == 0 for item in totals(page)), "Autoplay is not allowed"
+
+        chips.nth(2).click()
+        first = totals(page)
         check_additive(first)
         assert all(len(item["cells"]) == 1 for item in first)
-        chips.nth(2).click()
-        two=totals(page)
+        assert chips.nth(2).get_attribute("aria-pressed") == "true"
+        chips.nth(0).click()
+        two = totals(page)
         check_additive(two)
         assert all(len(item["cells"]) == 2 for item in two)
         assert any(abs(two[i]["sum"] - first[i]["sum"]) > 1e-9 for i in range(6))
-        chips.nth(0).click()
-        one=totals(page)
-        check_additive(one)
-        assert all(len(item["cells"]) == 1 for item in one)
+
         chips.nth(2).click()
-        assert all(item["sum"] == 0 for item in totals(page))
-        page.locator("#playOrder").click()
-        page.wait_for_function(
-            "() => document.querySelector('#stepProgress').textContent.includes('5 / 5 orders added')",
-            timeout=26000
-        )
-        final=totals(page)
+        single = totals(page)
+        check_additive(single)
+        assert all(len(item["cells"]) == 1 for item in single)
+        chips.nth(0).click()
+        assert all(item["sum"] == 0 and len(item["cells"]) == 0 for item in totals(page))
+
+        for i in (4, 2, 0, 3, 1):
+            chips.nth(i).click()
+        final = totals(page)
         check_additive(final)
-        expected=page.evaluate("() => window.__SSI_DATA__.attribution[9][11]")
-        for a,b in zip(final,expected):
-            assert len(a["cells"])==5
-            assert math.isclose(a["sum"],b,rel_tol=0,abs_tol=1e-10), (a,b)
+        expected = page.evaluate("() => window.__SSI_DATA__.attribution[9][11]")
+        for row, val in zip(final, expected):
+            assert len(row["cells"]) == 5
+            assert math.isclose(row["sum"], val, abs_tol=1e-10), (row, val)
+
+        chips.nth(3).click()
+        assert all(len(item["cells"]) == 4 for item in totals(page))
+        chips.nth(3).click()
+        assert all(len(item["cells"]) == 5 for item in totals(page))
+        page.keyboard.press("3")
+        photo = page.locator("#photoInteractive")
+        photo.click(position={"x": 125, "y": 120})
+        page.keyboard.press("4")
+        assert all(item["sum"] == 0 for item in totals(page)), "New cell must start empty"
         assert not errors, errors
         browser.close()
-        print("Passed: empty sum, add, remove, noncontiguous subset, five-order playback, exact final SSI")
+        print("Passed: no autoplay, empty initial state, arbitrary order click, add/remove, exact full totals, reset on cell change")
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
