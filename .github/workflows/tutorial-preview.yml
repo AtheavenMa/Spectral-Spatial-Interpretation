@@ -9,6 +9,7 @@ on:
       - "docs/tutorial.js"
       - "docs/assets/ssi-tour/**"
       - "tools/render_tutorial_preview.py"
+      - "tools/test_tutorial_order_accumulation.py"
       - ".github/workflows/tutorial-preview.yml"
   workflow_dispatch:
 
