@@ -4,3 +4,16 @@ __pycache__/
 .venv/
 outputs/
 .DS_Store
+
+# Local build and tool outputs
+node_modules/
+dist/
+build/
+*.egg-info/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.env
+.env.*
+!.env.example

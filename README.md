@@ -17,7 +17,6 @@
 
 https://github.com/user-attachments/assets/f9697c02-6253-441b-9c15-96abec099b7b
 
-
 ### 🎞️ 5-Minute Tutorial
 
 <p align="center">

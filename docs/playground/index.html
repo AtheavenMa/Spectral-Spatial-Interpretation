@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="Explore real Spectral–Spatial Interpretation in your browser using an original HLS UNet checkpoint and satellite input.">
+  <meta name="description" content="Recompute Spectral–Spatial Interpretation in your browser for 57 verified samples across six model families.">
   <title>SSI Playground — Spectral-Spatial Interpretation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,8 +140,8 @@
     </section>
     <details class="method-details">
       <summary>How does this work?</summary>
-      <p>The browser loads the <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/blob/main/assets/checkpoints/hls_unet.pt">original UNet checkpoint</a> exported to ONNX and the same original input tensor and target mask used by the Python adapter. Each selected configuration is recomputed on your device. Other cells stay observed while SSI allocates each cell's contrast among its spectral channels. Only the heatmap display is interpolated.</p>
-      <p>For all six registered models, custom checkpoints, or larger workloads, use the <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/tree/main/lab">full Python API</a>. This browser example uses the included HLS sample only.</p>
+      <p>The browser loads verified model exports in ONNX format, together with the selected example's original input tensor and fixed target. Each configuration is recomputed on your device. Other cells stay observed while SSI allocates each cell's contrast among its spectral channels. Only the heatmap display is interpolated.</p>
+      <p>For custom checkpoints, local batch runs or larger workloads, use the <a href="https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/tree/main/lab">Python API</a>. The browser has 57 verified Atlas samples plus a separate bundled HLS example.</p>
     </details>
     </div>
     </div>
