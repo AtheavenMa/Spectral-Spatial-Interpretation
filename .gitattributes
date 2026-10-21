@@ -1,1 +1,2 @@
 assets/video/SSI_video.mp4 filter=lfs diff=lfs merge=lfs -text
+assets/video/SSI_video_github.mp4 filter=lfs diff=lfs merge=lfs -text
