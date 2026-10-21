@@ -109,7 +109,7 @@ SSI leads the compared methods in spatial localization, spectral Hit@K, and chan
   <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="855"></a>
 </p>
 
-**[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas — 57 examples](examples/README.md) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
+**[🎛️ Play with SSI ↗](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)** · [Visual Atlas](examples/README.md) · [**Checkpoint + image → Atlas PNG + JSON**](docs/ATLAS_API.md)
 
 ### 🚀 Quick Start
 
