@@ -15,16 +15,7 @@
 </p>
 <p>A spatial heatmap shows <strong>where</strong> evidence appears; a global spectral ranking shows <strong>which channels</strong> matter overall. SSI retains both axes instead of assuming the same channel profile at every location.</p>
 
-<p align="center">
-  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/video.html">
-    <img src="assets/video/ssi_video_preview.svg" alt="Play the 33-second SSI explainer video" width="800">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://atheavenma.github.io/Spectral-Spatial-Interpretation/video.html">▶ Play SSI video (33 seconds)</a> &nbsp;·&nbsp;
-  <a href="https://media.githubusercontent.com/media/AtheavenMa/Spectral-Spatial-Interpretation/main/assets/video/SSI_video.mp4">MP4</a>
-</p>
+[🎞️ SSI Video (MP4)](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/blob/main/assets/video/SSI_video.mp4)
 
 ### 🎞️ 5-Minute Tutorial
 
