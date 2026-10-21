@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spectral-spatial-interpretation"
+version = "0.1.0"
+description = "Spectral-Spatial Interpretation with observed-context Shapley values"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = ["numpy>=1.24,<3"]
+classifiers = ["Programming Language :: Python :: 3"]
+
+[project.optional-dependencies]
+torch = ["torch>=2.6,<3"]
+
+[tool.setuptools]
+py-modules = ["ssi"]
