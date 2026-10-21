@@ -18,7 +18,7 @@ python -m pip install -r requirements_lab.txt
 python -m lab.cli atlas \
   --family hls-unet \
   --checkpoint assets/checkpoints/hls_unet.pt \
-  --image assets/examples/hls_sample.npz \
+  --image assets/samples/hls_sample.npz \
   --grid 4 --baseline mean --method permutation --permutations 1 --seed 0 \
   --output outputs/atlas_hls
 ~~~~
@@ -28,8 +28,8 @@ python -m lab.cli atlas \
 ~~~~bash
 python -m lab.cli atlas \
   --family paviau \
-  --checkpoint assets/lab/checkpoints/paviau_unet.pt \
-  --image assets/lab/samples/paviau_0008.npz \
+  --checkpoint assets/checkpoints/paviau_unet.pt \
+  --image assets/samples/paviau_0008.npz \
   --grid 4 --baseline mean --permutations 1 \
   --output outputs/atlas_paviau
 ~~~~
@@ -54,8 +54,8 @@ For the direct RGB image path, this adapter resizes to 448×448 with bicubic fil
 from lab.atlas_api import explain_artifacts
 
 files = explain_artifacts(
-    checkpoint="assets/lab/checkpoints/salinas_unet.pt",
-    image="assets/lab/samples/salinas_0000.npz",
+    checkpoint="assets/checkpoints/salinas_unet.pt",
+    image="assets/samples/salinas_0000.npz",
     family="salinas",
     output="outputs/atlas_salinas",
     grid=4,

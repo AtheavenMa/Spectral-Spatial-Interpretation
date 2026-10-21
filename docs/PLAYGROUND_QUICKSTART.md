@@ -4,7 +4,7 @@
 
 [**Open the browser SSI Playground ↗**](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/)
 
-The static page uses the genuine bundled HLS checkpoint exported to ONNX, the real input tensor, and browser CPU inference. It recomputes SSI when the grid, baseline or sampling settings change. The full six-model Python Playground is below.
+The static page has six verified ONNX model families and 57 registered Atlas samples, plus a separate bundled HLS example. Each ready sample uses its original input tensor and target, and SSI is recomputed in the browser when the settings change. The Python API for six model families is below.
 
 ## Local Python
 

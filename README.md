@@ -15,8 +15,6 @@
 </p>
 <p>A spatial heatmap shows <strong>where</strong> evidence appears; a global spectral ranking shows <strong>which channels</strong> matter overall. SSI retains both axes instead of assuming the same channel profile at every location.</p>
 
-[🎞️ SSI Video (MP4)](https://github.com/AtheavenMa/Spectral-Spatial-Interpretation/blob/main/assets/video/SSI_video_github.mp4)
-
 https://github.com/user-attachments/assets/f9697c02-6253-441b-9c15-96abec099b7b
 
 
@@ -153,7 +151,7 @@ assert np.allclose(r.spatial, r.position_contrasts)
 💡 This game has two cells and two channels, with interactions both within and between cells. Each cell's channel
 scores sum to its masking contrast: 20 for the first cell and 8 for the second.
 
-On a real model, supply `value_fn(masks)` returning one scalar per coalition. Keep the target, baseline and any region of interest fixed for all calls. [hls.py](hls.py) is a complete image-to-model adapter with bounded batch sizes.
+On a real model, supply `value_fn(masks)` returning one scalar per coalition. Keep the target, baseline and any region of interest fixed for all calls. [HLS adapter](lab/adapters/hls.py) is a complete image-to-model adapter with bounded batch sizes.
 
 👉 On HLS Burn Scar
 
@@ -187,6 +185,7 @@ The demo saves a visualization, NumPy attribution arrays, and a JSON summary. Se
 | [Atlas API](docs/ATLAS_API.md) | Generate Atlas PNG and JSON from a supported checkpoint and input |
 | [Core API](ssi.py) | Standalone NumPy implementation |
 | [Unit tests](tests/) | Mathematical and adapter regression checks |
+| [Repository structure](docs/REPOSITORY_STRUCTURE.md) | Code layout, assets and deployment boundaries |
 
 ### 🙏 Appreciation
 

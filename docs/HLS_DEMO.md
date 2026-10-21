@@ -33,10 +33,10 @@ The default uses a **128 × 128 image, 6 bands, an 8 × 8 grid and 10 permutatio
 
 The scalar target is the **burn-class logit averaged over the fixed ground-truth burn region**. This example requires a GT mask. The mask is not recomputed from perturbed predictions, and the result explains a regional segmentation score rather than each output pixel separately.
 
-Bands are ordered **Blue, Green, Red, NIR, SWIR1, SWIR2** (B02, B03, B04, B8A, B11, B12). The prepared image stores reflectance before normalization. The demo multiplies it by 10,000 and applies the means/stds in `hls.py`.
+Bands are ordered **Blue, Green, Red, NIR, SWIR1, SWIR2** (B02, B03, B04, B8A, B11, B12). The prepared image stores reflectance before normalization. The demo multiplies it by 10,000 and applies the means/stds in `lab/adapters/hls.py`.
 
 The sample is the first image encountered in the pinned official dataset archive, selected before evaluation. It belongs to the **training split** and is an illustrative example, not held-out evidence. The supplied demo weights were exported from a `train_1` checkpoint without retraining. See
-[sample metadata](../assets/examples/metadata.json) and [model metadata](../assets/checkpoints/metadata.json)
+[sample metadata](../assets/samples/hls_metadata.json) and [model metadata](../assets/checkpoints/metadata.json)
 for hashes and provenance.
 
 **MIT model implementation.** The demo assembles its two-level network from the convolution blocks in a pinned MIT-licensed U-Net source. Historical checkpoint keys are mapped at load time without changing the weights. No training framework or original project dependency is required.
@@ -63,17 +63,17 @@ The demo saves `demo_output.png`, `attribution.npz` and `summary.json` under `ou
 
 Useful controls: `--device cpu|cuda|mps|auto`, `--batch-size 32`, `--threads 4`, `--grid 8`, `--permutations 10`, `--seed 0`, `--sample PATH`, `--weights PATH`. Auto selects CUDA when available, otherwise CPU. Explicitly select MPS on supported Macs.
 
-A custom `--sample` must be an NPZ with `image` shaped `(6, H, W)` in reflectance units and `mask` shaped `(H, W)`, with labels 0 (unburned), 1 (burned) and optionally 255 (no data). Both dimensions must be divisible by `--grid`, and the mask must contain burned pixels. Custom weights must match the architecture in `model.py`; both the bundled historical key layout and native adapter state dictionaries are accepted; other models can use the core through their own scoring adapter.
+A custom `--sample` must be an NPZ with `image` shaped `(6, H, W)` in reflectance units and `mask` shaped `(H, W)`, with labels 0 (unburned), 1 (burned) and optionally 255 (no data). Both dimensions must be divisible by `--grid`, and the mask must contain burned pixels. Custom weights must match the architecture in `lab/models/hls_unet.py`; both the bundled historical key layout and native adapter state dictionaries are accepted; other models can use the core through their own scoring adapter.
 
 ## Repository layout and checks
 
 ```text
 ssi.py                  Independent NumPy core
-hls.py                  HLS preprocessing and batched scoring adapter
-model.py                MIT HLS model and historical weight-key conversion
+lab/adapters/hls.py      HLS preprocessing and batched scoring adapter
+lab/models/hls_unet.py   MIT HLS model and historical weight-key conversion
 third_party/            Pinned, unchanged MIT upstream source and provenance
 demo.py                 Command-line demo and visualization
-assets/examples/        Prepared reflectance image, GT mask and provenance
+assets/samples/         Prepared reflectance image, GT mask and provenance
 assets/checkpoints/     Tensor-only pretrained weights and provenance
 assets/figures/          Figures extracted from the supplied manuscript
 assets/demo_output.png  Verified demo preview

@@ -8,3 +8,12 @@ benchmarks
 docs
 *.md
 !README.md
+
+# The CPU API needs weights and NPZ samples, not website/media sources.
+assets/video/
+assets/figures/
+assets/tour_preview.*
+assets/demo_output.png
+tools/
+examples/
+deploy/

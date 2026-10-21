@@ -14,7 +14,7 @@ Open `http://localhost:8000/`. Use arrow keys, digits 1–7, `D` for details and
 
 ## Data and scientific scope
 
-- `assets/ssi-tour/result.json` is an unmodified copy of `assets/video/hls_burnscar_0163/result.json`.
+- `assets/ssi-tour/result.json` is the published, numerical SSI result for HLS sample 0163. The corresponding analysis and imagery are stored alongside it; optional video-production plates are generated separately.
 - The tutorial uses the real 16×16×6 SSI attribution tensor, mean baseline, five sampled permutations, seed 0 and HLS Burn Scars sample_0163.
 - The five permutation orders are reproduced from the browser runtime's seeded xorshift32/Fisher–Yates sampler in row-major cell order.
 - Local masked scores follow the exact within-cell aggregation identity; the interactive restoration paths form a consistent illustrative coalition game whose five-order averages match the stored SSI attribution values.

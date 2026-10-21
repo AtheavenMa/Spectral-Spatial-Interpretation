@@ -35,7 +35,7 @@ For each exported sample, execute the already supported command, using the corre
 ~~~~bash
 python -m lab.cli atlas \
   --family paviau \
-  --checkpoint assets/lab/checkpoints/paviau_unet.pt \
+  --checkpoint assets/checkpoints/paviau_unet.pt \
   --image /path/to/exported/sample_0010.npz \
   --grid 4 --baseline mean --permutations 1 \
   --output outputs/paviau_sample_0010

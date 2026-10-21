@@ -15,7 +15,7 @@ This is a machine-executable handoff specification for the local data/GPU agent.
 | Salinas hyperspectral segmentation | 204 | 10 | sample_0000, sample_0001, sample_0002, sample_0004, sample_0005, sample_0006, sample_0010, sample_0011, sample_0012, sample_0014 |
 | WHU-Hi-LongKou hyperspectral segmentation | 270 | 7 | sample_0000, sample_0001, sample_0002, sample_0003, sample_0004, sample_0005, sample_0006 |
 
-**Current status:** 57 indexed gallery examples are awaiting source-data registration; the separately bundled `hls-bundled` example has verified browser computation. Five original NPZ/checkpoint pairs exist in `assets/lab/` but **must be individually matched and visually verified** against their Atlas figure before promotion to `ready`. `HLS` bundle is not evidence that it matches any of the ten HLS gallery filenames.
+**Current status (October 2026):** All 57 gallery samples and six ONNX models are registered and marked `ready` in `docs/playground/compute-manifest.json`, in addition to the separate `hls-bundled` sample. Run the validation and browser tests before claiming a new export has identical results. The source-mapping JSON remains a re-import template, not the current readiness registry.
 
 ## 2. Required assets per dataset
 
@@ -36,12 +36,12 @@ Source checkpoint locations:
 
 | Model ID | Checkpoint | Browser ONNX destination |
 |---|---|---|
-| `cub-200` | `assets/lab/checkpoints/cub_resnet18.pt` | `docs/playground/assets/models/cub-200/model.onnx` |
-| `eurosat` | `assets/lab/checkpoints/eurosat_resnet18.pt` | `docs/playground/assets/models/eurosat/model.onnx` |
+| `cub-200` | `assets/checkpoints/cub_resnet18.pt` | `docs/playground/assets/models/cub-200/model.onnx` |
+| `eurosat` | `assets/checkpoints/eurosat_resnet18.pt` | `docs/playground/assets/models/eurosat/model.onnx` |
 | `hls-unet` | `assets/checkpoints/hls_unet.pt` | `docs/playground/assets/hls_unet.onnx` |
-| `paviau` | `assets/lab/checkpoints/paviau_unet.pt` | `docs/playground/assets/models/paviau/model.onnx` |
-| `salinas` | `assets/lab/checkpoints/salinas_unet.pt` | `docs/playground/assets/models/salinas/model.onnx` |
-| `whu-hi-longkou` | `assets/lab/checkpoints/longkou_unet.pt` | `docs/playground/assets/models/whu-hi-longkou/model.onnx` |
+| `paviau` | `assets/checkpoints/paviau_unet.pt` | `docs/playground/assets/models/paviau/model.onnx` |
+| `salinas` | `assets/checkpoints/salinas_unet.pt` | `docs/playground/assets/models/salinas/model.onnx` |
+| `whu-hi-longkou` | `assets/checkpoints/longkou_unet.pt` | `docs/playground/assets/models/whu-hi-longkou/model.onnx` |
 
 ## 3. Required local-agent execution
 
@@ -51,7 +51,7 @@ From a clean checkout, install the project, ONNX and ONNX Runtime libraries. Fir
 python tools/export_playground_assets.py validate
 ~~~~
 
-**Batch import:** fill the 57 `source` paths in `docs/playground/57_sources.template.json` with exact original NPZ files. Do not overwrite missing paths with other samples. Run:
+**Re-import only:** when rebuilding original browser assets, fill the 57 `source` paths in `docs/playground/57_sources.template.json` with exact original NPZ files. Do not overwrite missing paths with other samples. Run:
 
 ~~~~bash
 python tools/export_playground_assets.py batch \
@@ -59,14 +59,14 @@ python tools/export_playground_assets.py batch \
   --report outputs/atlas_57_import_report.json
 ~~~~
 
-The batch report lists successes, skipped missing sample paths and per-item errors. It does not promote an unverified sample. Individual commands below are useful for diagnosing a specific source.
+For re-imports, the batch report lists successes, skipped missing sample paths and per-item errors. It does not promote an unverified sample. Individual commands below are useful for diagnosing a specific source.
 
 For every model family with a real checkpoint and a matching real NPZ, export and verify:
 
 ~~~~bash
 python tools/export_playground_assets.py model --id paviau \
-  --checkpoint assets/lab/checkpoints/paviau_unet.pt \
-  --sample assets/lab/samples/paviau_0008.npz
+  --checkpoint assets/checkpoints/paviau_unet.pt \
+  --sample assets/samples/paviau_0008.npz
 ~~~~
 
 For **each of the 57 exact Atlas IDs**, export its full original input and provenance sidecar:
@@ -83,7 +83,7 @@ For one example per family, generate an independently inspectable numerical/visu
 
 ~~~~bash
 python -m lab.cli atlas --family paviau \
-  --checkpoint assets/lab/checkpoints/paviau_unet.pt \
+  --checkpoint assets/checkpoints/paviau_unet.pt \
   --image /path/to/original/validated/sample_0008.npz \
   --grid 4 --baseline mean --method permutation --permutations 1 --seed 0 \
   --output outputs/paviau_0008
@@ -91,7 +91,7 @@ python -m lab.cli atlas --family paviau \
 
 This produces `atlas.png`, `result.json` and `attribution.npz`. Compare sample input/target, orientation and model score against the original experimental code. The original Atlas figures may use different SSI parameters or sampling seeds; report such differences rather than modifying numerical results to match pixels.
 
-**Final completeness check, only once all assets are supplied:**
+**Final completeness check, for the current complete published assets:**
 
 ~~~~bash
 python tools/export_playground_assets.py validate --require-complete

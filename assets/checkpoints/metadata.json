@@ -13,7 +13,7 @@
   },
   "conversion": "Retain model.* tensors, remove model. prefix; discard optimizer, callbacks, training state and private paths. No retraining.",
   "runtime_implementation": {
-    "adapter": "model.py",
+    "adapter": "lab/models/hls_unet.py",
     "upstream_repository": "mateuszbuda/brain-segmentation-pytorch",
     "upstream_commit": "d45f8908ab2f0246ba204c702a6161c9eb25f902",
     "code_license": "MIT",

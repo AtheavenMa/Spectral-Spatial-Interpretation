@@ -1,10 +1,10 @@
 # SSI Playground deployment
 
-The repository includes a real CPU-compatible SSI Playground. It serves a minimal HTML interface and JSON API. The default model is the bundled HLS checkpoint and sample. CUB-200, EuroSAT, Pavia University, Salinas and WHU-Hi-LongKou are additional catalog entries under `assets/lab`.
+The repository includes a real CPU-compatible SSI Playground. It serves a minimal HTML interface and JSON API. The default model is the bundled HLS checkpoint and sample. CUB-200, EuroSAT, Pavia University, Salinas and WHU-Hi-LongKou are additional catalog entries under `assets/checkpoints` and `assets/samples`.
 
 ## Browser version
 
-[Open the standalone SSI HTML](https://atheavenma.github.io/ssi-playground/), which runs the original HLS example via browser-side ONNX inference. For the six-model or custom checkpoint API, run the Python service below.
+[Open the standalone SSI HTML](https://atheavenma.github.io/Spectral-Spatial-Interpretation/playground/), which runs the verified 57 Atlas samples and the bundled HLS example via browser-side ONNX inference. For the six-model or custom checkpoint API, run the Python service below.
 
 ## Local
 
