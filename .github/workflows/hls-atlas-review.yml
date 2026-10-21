@@ -5,18 +5,46 @@ on:
       - ".github/workflows/hls-atlas-review.yml"
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   package-images:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify archived HLS sample images
-        run: |
-          ls -lh examples/HLS_BurnScars/sample_*.png
-          test "$(find examples/HLS_BurnScars -name 'sample_*.png' | wc -l)" -eq 10
-      - uses: actions/upload-artifact@v4
         with:
-          name: hls-atlas-gallery-review
-          path: examples/HLS_BurnScars/sample_*.png
-          if-no-files-found: error
+          persist-credentials: true
+      - name: Analyze existing HLS Atlas spectral bars
+        run: |
+          python -m pip install pillow
+          python - <<'PY'
+          import json,glob
+          from PIL import Image
+          import numpy as np
+          names=['Blue','Green','Red','NIR','SWIR1','SWIR2']
+          reports=[]
+          for f in sorted(glob.glob('examples/HLS_BurnScars/sample_*.png')):
+              im=np.asarray(Image.open(f).convert('RGB')).astype(float)
+              H,W=im.shape[:2]
+              # Bottom row of the Atlas holds six signed spectral bars.
+              crop=im[int(H*.78):int(H*.985)]
+              red=np.all(np.abs(crop-np.array([189,67,74]))<35,axis=2)
+              blue=np.all(np.abs(crop-np.array([48,113,159]))<35,axis=2)
+              # Count red versus blue in the six x-axis columns.
+              cells=[]
+              for i,n in enumerate(names):
+                  a=int((.05 + i*.90/6)*W);b=int((.05+(i+1)*.90/6)*W)
+                  cr=int(red[:,a:b].sum());cb=int(blue[:,a:b].sum())
+                  cells.append(dict(name=n,positive_pixels=cr,negative_pixels=cb,sign='+' if cr>cb else '-' if cb>cr else '?'))
+              reports.append(dict(file=f,dimensions=[W,H],channels=cells))
+          with open('hls_atlas_review.json','w') as out:json.dump(reports,out,indent=2)
+          print(json.dumps(reports,indent=2))
+          PY
+      - name: Publish numeric screening on review branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add hls_atlas_review.json
+          if ! git diff --cached --quiet; then
+            git commit -m "analysis: inspect HLS Atlas signed bar colors"
+            git push origin HEAD:review/hls-burn-atlas-20261020
+          fi
