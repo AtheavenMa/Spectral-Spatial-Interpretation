@@ -123,10 +123,6 @@ def draw_atlas(
         .01, .45, "(d) Spectral SSI", ha="left", va="center",
         fontsize=17, color="#1b2937", transform=spectral_heading.transAxes
     )
-    spectral_heading.text(
-        .99, .45, "Shared signed channel scale", ha="right", va="center",
-        fontsize=11, color="#637481", transform=spectral_heading.transAxes
-    )
     thumbs = outer[2].subgridspec(1, count, wspace=.06)
     for position, c in enumerate(selected):
         ax = fig.add_subplot(thumbs[0, position])
