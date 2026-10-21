@@ -40,17 +40,15 @@
     $('pageCount').textContent=`${current+1} / ${slides.length}`;
     $('prevSlide').disabled=current===0;
     $('nextSlide').disabled=current===slides.length-1;
-    $('notesPanel').classList.remove('show');
     try { history.replaceState(null,'',location.pathname+location.search+`#${current+1}`); } catch (_) { /* file or sandboxed preview */ }
     if(result){if(current===2)renderLocal();if(current===3)renderOrders();if(current===4)renderJoint();if(current===5){renderSpectral();renderMatrix()}}
   }
   function toggleDetails(){slides[current].classList.toggle('drawer-open')}
-  function showNotes(){const panel=$('notesPanel');const open=!panel.classList.contains('show');panel.classList.toggle('show',open);if(open){const notes=slides[current].querySelector('.notes');$('notesContent').innerHTML=notes?notes.outerHTML:'<p>No notes for this slide.</p>'}}
   function showHelp(){ $('helpPanel').classList.toggle('show') }
-  function dismiss(){slides[current].classList.remove('drawer-open');$('notesPanel').classList.remove('show');$('helpPanel').classList.remove('show')}
+  function dismiss(){slides[current].classList.remove('drawer-open');$('helpPanel').classList.remove('show')}
   function registerControls(){
     $('prevSlide').onclick=()=>showSlide(current-1);$('nextSlide').onclick=()=>showSlide(current+1);
-    $('notesToggle').onclick=showNotes;$('helpToggle').onclick=showHelp;$('closeNotes').onclick=()=> $('notesPanel').classList.remove('show');$('closeHelp').onclick=()=> $('helpPanel').classList.remove('show');
+    $('helpToggle').onclick=showHelp;$('closeHelp').onclick=()=> $('helpPanel').classList.remove('show');
     document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',toggleDetails));
 
     const photo=$('photoInteractive');
@@ -84,10 +82,10 @@
       else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();showSlide(current-1)}
       else if(e.key==='Home')showSlide(0);else if(e.key==='End')showSlide(slides.length-1);
       else if(/^[1-7]$/.test(e.key))showSlide(Number(e.key)-1);
-      else if(e.key.toLowerCase()==='n')showNotes();else if(e.key.toLowerCase()==='d')toggleDetails();
+      else if(e.key.toLowerCase()==='d')toggleDetails();
       else if(e.key==='?'||e.key.toLowerCase()==='h')showHelp();else if(e.key==='Escape')dismiss();
     });
-    window.addEventListener('wheel',e=>{if($('notesPanel').classList.contains('show')||slides[current].classList.contains('drawer-open'))return;const now=Date.now();if(Math.abs(e.deltaY)>40 && now-lastWheel>800){lastWheel=now;showSlide(current+Math.sign(e.deltaY))}},{passive:true});
+    window.addEventListener('wheel',e=>{if(slides[current].classList.contains('drawer-open'))return;const now=Date.now();if(Math.abs(e.deltaY)>40 && now-lastWheel>800){lastWheel=now;showSlide(current+Math.sign(e.deltaY))}},{passive:true});
     window.addEventListener('touchstart',e=>{touchX=e.touches[0].clientX},{passive:true});
     window.addEventListener('touchend',e=>{if(touchX===null)return;const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>75)showSlide(current+(d<0?1:-1));touchX=null},{passive:true});
   }

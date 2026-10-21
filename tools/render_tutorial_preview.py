@@ -27,7 +27,9 @@ def self_contained_html() -> str:
     js = (DOCS / "tutorial.js").read_text(encoding="utf-8")
     data = (DOCS / "assets/ssi-tour/result.json").read_text(encoding="utf-8")
     html = re.sub(r'<link[^>]+(?:fonts\.googleapis|fonts\.gstatic)\.com[^>]*>', '', html)
-    html = html.replace('<link rel="stylesheet" href="./tutorial.css?v=20261021-click-gaussian">', f'<style>{css}</style>')
+    assert 'class="notes"' not in html and 'notesToggle' not in html and 'notesPanel' not in html
+    assert 'showNotes' not in js, "Presenter notes should not be included"
+    html = html.replace('<link rel="stylesheet" href="./tutorial.css?v=20261021-no-presenter-notes">', f'<style>{css}</style>')
     for name in ("input.png", "ground_truth.png", "spatial_ssi.png"):
         raw = (DOCS / "assets/ssi-tour" / name).read_bytes()
         src = "data:image/png;base64," + base64.b64encode(raw).decode("ascii")
@@ -35,7 +37,7 @@ def self_contained_html() -> str:
     old_fetch = "const response=await fetch('./assets/ssi-tour/result.json',{cache:'no-store'});"
     assert old_fetch in js, "Tutorial data loader changed"
     js = js.replace(old_fetch, "const response=new Response(JSON.stringify(window.__SSI_DATA__),{status:200});")
-    html = html.replace('<script src="./tutorial.js?v=20261021-click-gaussian"></script>',
+    html = html.replace('<script src="./tutorial.js?v=20261021-no-presenter-notes"></script>',
                         f'<script>window.__SSI_DATA__={data};</script><script>{js}</script>')
     return html
 

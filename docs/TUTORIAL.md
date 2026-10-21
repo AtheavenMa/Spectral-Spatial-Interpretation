@@ -1,6 +1,6 @@
 # SSI in Five Minutes
 
-The seven-slide interactive browser tutorial at [`index.html`](index.html) follows the presentation pattern used by [SAR](https://github.com/OpenSAE/SAE-Behavioral-Compositionality) and [RSS](https://github.com/OpenSAE/Redistribution-Sensitivity-Score): fixed 1920×1080 stage, alternating dark and light sections, keyboard navigation, slide details and a presenter-notes panel.
+The seven-slide interactive browser tutorial at [`index.html`](index.html) follows the presentation pattern used by [SAR](https://github.com/OpenSAE/SAE-Behavioral-Compositionality) and [RSS](https://github.com/OpenSAE/Redistribution-Sensitivity-Score): fixed 1920×1080 stage, alternating dark and light sections, keyboard navigation and slide details.
 
 ## Preview locally
 
@@ -10,7 +10,7 @@ From the repository root:
 python -m http.server 8000 --directory docs
 ```
 
-Open `http://localhost:8000/`. Use arrow keys, digits 1–7, `N` for presenter notes, `D` for details and `?` for help. The tutorial can be hosted as a static site; it needs no backend, GPU or model download.
+Open `http://localhost:8000/`. Use arrow keys, digits 1–7, `D` for details and `?` for help. The tutorial can be hosted as a static site; it needs no backend, GPU or model download.
 
 ## Data and scientific scope
 
