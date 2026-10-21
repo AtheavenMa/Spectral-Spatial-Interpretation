@@ -33,7 +33,7 @@ HLS_COMPUTE = {
 
 ROOT = Path(__file__).resolve().parents[1]
 CHECKPOINT = ROOT / "assets" / "checkpoints" / "hls_unet.pt"
-SAMPLE = ROOT / "assets" / "examples" / "hls_sample.npz"
+SAMPLE = ROOT / "assets" / "samples" / "hls_sample.npz"
 MODEL_ID = "hls-unet"
 SAMPLE_ID = "hls-burn-scar"
 GRIDS = (4, 8, 16)
@@ -52,7 +52,7 @@ def catalog() -> dict:
             "samples": [{
                 "id": SAMPLE_ID,
                 "label": "HLS Burn Scar · bundled sample",
-                "input": "assets/examples/hls_sample.npz",
+                "input": "assets/samples/hls_sample.npz",
             }],
             "channels": list(BAND_NAMES),
             "grids": list(GRIDS),

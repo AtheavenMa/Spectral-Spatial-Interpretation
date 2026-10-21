@@ -79,7 +79,7 @@ def plot_result(image, mask, prediction, result, grid, baseline, path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--sample", type=Path, default=ROOT/"assets/examples/hls_sample.npz")
+    parser.add_argument("--sample", type=Path, default=ROOT/"assets/samples/hls_sample.npz")
     parser.add_argument("--weights", type=Path, default=ROOT/"assets/checkpoints/hls_unet.pt")
     parser.add_argument("--output", type=Path, default=ROOT/"outputs/hls_demo")
     parser.add_argument("--grid", type=int, default=8, help="Cells per spatial side (128 px / 8 = 16 px per cell)")
@@ -115,7 +115,7 @@ def main():
     elapsed = time.perf_counter() - start
     args.output.mkdir(parents=True, exist_ok=True)
     sample_digest = sha256(args.sample)
-    bundled_sample = sample_digest == sha256(ROOT/"assets/examples/hls_sample.npz")
+    bundled_sample = sample_digest == sha256(ROOT/"assets/samples/hls_sample.npz")
     payload = {
         "sample_sha256":sample_digest, "weights_sha256":sha256(args.weights),
         "model_implementation":"MIT HLS adapter with pinned mateuszbuda convolution blocks",

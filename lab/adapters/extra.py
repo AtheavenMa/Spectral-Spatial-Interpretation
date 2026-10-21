@@ -22,7 +22,7 @@ from lab.models.hls_unet import UNet, convert_legacy_state_dict
 from ssi import explain as explain_ssi
 
 ROOT = Path(__file__).resolve().parents[2]
-ASSETS = ROOT / "assets" / "lab"
+ASSETS = ROOT / "assets"
 
 PAVIA_NAMES = {
     1: "Asphalt", 2: "Meadows", 3: "Gravel", 4: "Trees",
@@ -183,12 +183,12 @@ def catalog_entries() -> list[dict]:
         entries.append({
             "id": spec["model_id"],
             "label": spec["label"],
-            "checkpoint": f"assets/lab/checkpoints/{spec['weight_file']}",
+            "checkpoint": f"assets/checkpoints/{spec['weight_file']}",
             "adapter": spec["model_id"],
             "samples": [{
                 "id": spec["sample_id"],
                 "label": spec["sample_label"],
-                "input": f"assets/lab/samples/{spec['sample_file']}",
+                "input": f"assets/samples/{spec['sample_file']}",
             }],
             "channels": list(spec["channels"]),
             "grids": list(spec.get("grids", (4, 8, 16))),

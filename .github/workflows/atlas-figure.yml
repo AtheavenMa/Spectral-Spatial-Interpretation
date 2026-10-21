@@ -28,13 +28,13 @@ jobs:
           python -m lab.cli atlas \
             --family hls-unet \
             --checkpoint assets/checkpoints/hls_unet.pt \
-            --image assets/examples/hls_sample.npz \
+            --image assets/samples/hls_sample.npz \
             --grid 4 --permutations 1 \
             --output /tmp/atlas-showcase/hls
           python -m lab.cli atlas \
             --family paviau \
-            --checkpoint assets/lab/checkpoints/paviau_unet.pt \
-            --image assets/lab/samples/paviau_0008.npz \
+            --checkpoint assets/checkpoints/paviau_unet.pt \
+            --image assets/samples/paviau_0008.npz \
             --grid 4 --permutations 1 \
             --output /tmp/atlas-showcase/paviau
           python - <<'PY'

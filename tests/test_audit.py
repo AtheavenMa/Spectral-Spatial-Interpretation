@@ -21,7 +21,7 @@ def _sha(path) -> str:
 
 class PlaygroundAudit(unittest.TestCase):
     def test_lab_manifest_hashes_match_files(self):
-        manifest = json.loads((engine.ROOT / "assets" / "lab" / "manifest.json").read_text())
+        manifest = json.loads((engine.ROOT / "assets" / "metadata" / "model_manifest.json").read_text())
         self.assertIn("region_agreement", manifest["records"]["whu-hi-longkou"])
         self.assertLess(manifest["records"]["whu-hi-longkou"]["region_agreement"], 1)
         for relative, meta in manifest["files"].items():
@@ -105,8 +105,8 @@ class PlaygroundAudit(unittest.TestCase):
         rejected = subprocess.run(
             [sys.executable, "-m", "lab.cli", "explain-files",
              "--family", "cub-200",
-             "--checkpoint", "assets/lab/checkpoints/paviau_unet.pt",
-             "--sample", "assets/lab/samples/cub_0158.npz",
+             "--checkpoint", "assets/checkpoints/paviau_unet.pt",
+             "--sample", "assets/samples/cub_0158.npz",
              "--grid", "4", "--permutations", "1"],
             cwd=engine.ROOT, capture_output=True, text=True,
         )

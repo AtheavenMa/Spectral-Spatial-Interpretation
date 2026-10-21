@@ -22,7 +22,7 @@ class ModelMigrationTests(unittest.TestCase):
         torch.set_num_threads(4)
         cls.weights = ROOT / "assets/checkpoints/hls_unet.pt"
         cls.model = load_model(cls.weights, torch.device("cpu"))
-        _, cls.mask, cls.x = load_sample(ROOT / "assets/examples/hls_sample.npz")
+        _, cls.mask, cls.x = load_sample(ROOT / "assets/samples/hls_sample.npz")
         with np.load(ROOT / "tests/fixtures/hls_legacy_reference.npz", allow_pickle=False) as data:
             cls.reference = {key: data[key].copy() for key in data.files}
 

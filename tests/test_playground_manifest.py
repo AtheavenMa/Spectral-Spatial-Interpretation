@@ -48,7 +48,7 @@ class PlaygroundManifestTests(unittest.TestCase):
     def test_wrong_image_provenance_is_rejected_before_export(self):
         # The source file can have the right dimensions and still belong to
         # the wrong sample ID. Reject before creating any assets/ready entries.
-        source = ROOT / "assets/lab/samples/paviau_0008.npz"
+        source = ROOT / "assets/samples/paviau_0008.npz"
         before = json.loads(MANIFEST.read_text())
         previous = next(x for x in before["samples"] if x["id"] == "PaviaU/sample_0010")["status"]
         with tempfile.TemporaryDirectory() as tmp:
@@ -67,7 +67,7 @@ class PlaygroundManifestTests(unittest.TestCase):
         import tools.export_playground_assets as exporter
         from unittest.mock import patch
 
-        original = ROOT / "assets/lab/samples/paviau_0008.npz"
+        original = ROOT / "assets/samples/paviau_0008.npz"
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
             manifest_path = workspace / "compute-manifest.json"

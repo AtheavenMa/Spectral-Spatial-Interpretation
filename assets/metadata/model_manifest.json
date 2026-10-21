@@ -20,63 +20,63 @@
     }
   },
   "files": {
-    "assets/lab/checkpoints/cub_resnet18.pt": {
+    "assets/checkpoints/cub_resnet18.pt": {
       "sha256": "d2fcb2b45c9c3d3f9abdfe82ff97780c1d9899b6fcd2607e3a6018b5129d2f6b",
       "bytes": 45193163
     },
-    "assets/lab/checkpoints/eurosat_resnet18.pt": {
+    "assets/checkpoints/eurosat_resnet18.pt": {
       "sha256": "0c3418bc3880d5b4f8f06e2299e59a2b097f26a31acd978e7351a5920bbfd19a",
       "bytes": 45847321
     },
-    "assets/lab/checkpoints/longkou_unet.pt": {
+    "assets/checkpoints/longkou_unet.pt": {
       "sha256": "9c6e25d6e49ae94da5309595a7c7948e3b91f0b296cf8332411f6c240e5e059a",
       "bytes": 6708029
     },
-    "assets/lab/checkpoints/paviau_unet.pt": {
+    "assets/checkpoints/paviau_unet.pt": {
       "sha256": "1a4726c4cabd79061d9d54d97d3b47375b5d54743eb0a794a25db3ce312751a7",
       "bytes": 6323193
     },
-    "assets/lab/checkpoints/salinas_unet.pt": {
+    "assets/checkpoints/salinas_unet.pt": {
       "sha256": "d70867420f742e8f0fe5bf8d88742d84f4cd1f82312cf899d9a4107cedd5921c",
       "bytes": 6557821
     },
-    "assets/lab/samples/cub_0158.json": {
+    "assets/samples/cub_0158.json": {
       "sha256": "fa2d540dcc97c02485bf120105920e3aa5a171ac8055f4135b3981d69e181adf",
       "bytes": 4014
     },
-    "assets/lab/samples/cub_0158.npz": {
+    "assets/samples/cub_0158.npz": {
       "sha256": "630a1b33cf4f199a2383985cc4786d37f601a40b33dcb909ea6ad71085362fc3",
       "bytes": 693437
     },
-    "assets/lab/samples/eurosat_1294.json": {
+    "assets/samples/eurosat_1294.json": {
       "sha256": "56f170666eb5f71d90b08661ec1ec702168e79e784a45f3bf590737dfc4f949c",
       "bytes": 224
     },
-    "assets/lab/samples/eurosat_1294.npz": {
+    "assets/samples/eurosat_1294.npz": {
       "sha256": "88803a657152d076a7fb01e09066c3431a54abf39b2f7f17884037629de62c75",
       "bytes": 121073
     },
-    "assets/lab/samples/longkou_0000.json": {
+    "assets/samples/longkou_0000.json": {
       "sha256": "5e4cc903689e3ddcbf0ba484566d696578ec3fe43b083d586486cb648ddd8fab",
       "bytes": 65
     },
-    "assets/lab/samples/longkou_0000.npz": {
+    "assets/samples/longkou_0000.npz": {
       "sha256": "1f1db1b8407ee82c00e619f511dfbdadc78c0b65245b036c3d2865190eeba5a9",
       "bytes": 874715
     },
-    "assets/lab/samples/paviau_0008.json": {
+    "assets/samples/paviau_0008.json": {
       "sha256": "9d7b8cca2c45eee170b400a7499d92f5e8ccbde330083cf731127054340bf151",
       "bytes": 67
     },
-    "assets/lab/samples/paviau_0008.npz": {
+    "assets/samples/paviau_0008.npz": {
       "sha256": "020c916b87693a9464c635514713a5d4e5d508ee974d1b51486be197da45db55",
       "bytes": 346035
     },
-    "assets/lab/samples/salinas_0000.json": {
+    "assets/samples/salinas_0000.json": {
       "sha256": "32d4d8264bbe1cc48aafeb18f8c60879a808183096c7dfd3bf3533314b47e462",
       "bytes": 68
     },
-    "assets/lab/samples/salinas_0000.npz": {
+    "assets/samples/salinas_0000.npz": {
       "sha256": "0213309260412a6ec074bb9d5ccdb8673fcd6c5122d5497ef3dbe61b0054d08e",
       "bytes": 342486
     }

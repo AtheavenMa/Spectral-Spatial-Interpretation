@@ -7,8 +7,8 @@ on:
       - 'lab/engine.py'
       - 'lab/adapters/**'
       - 'benchmarks/spectral_stability.py'
-      - 'assets/lab/checkpoints/**'
-      - 'assets/lab/samples/**'
+      - 'assets/checkpoints/**'
+      - 'assets/samples/**'
 permissions:
   contents: read
 jobs:

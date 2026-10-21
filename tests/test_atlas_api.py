@@ -52,8 +52,8 @@ class AtlasArtifactsTest(unittest.TestCase):
             self.assertGreater(result["fixed_region_pixels"], 0)
 
     def test_high_band_real_checkpoint(self):
-        ckpt = ROOT / "assets/lab/checkpoints/paviau_unet.pt"
-        image = ROOT / "assets/lab/samples/paviau_0008.npz"
+        ckpt = ROOT / "assets/checkpoints/paviau_unet.pt"
+        image = ROOT / "assets/samples/paviau_0008.npz"
         with tempfile.TemporaryDirectory() as d:
             out = explain_artifacts(
                 ckpt, image, family="paviau", output=Path(d) / "paviau",
@@ -65,8 +65,8 @@ class AtlasArtifactsTest(unittest.TestCase):
             self.assertGreater(result["fixed_region_pixels"], 0)
 
     def test_rgb_image_and_explicit_class(self):
-        ckpt = ROOT / "assets/lab/checkpoints/cub_resnet18.pt"
-        bundled = ROOT / "assets/lab/samples/cub_0158.npz"
+        ckpt = ROOT / "assets/checkpoints/cub_resnet18.pt"
+        bundled = ROOT / "assets/samples/cub_0158.npz"
         with np.load(bundled, allow_pickle=False) as archive:
             rgb = np.asarray(archive["rgb"], dtype=np.uint8)
             target = int(archive["target_class"])
@@ -85,10 +85,10 @@ class AtlasArtifactsTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "photo.png"
             PILImage.new("RGB", (448, 448)).save(p)
-            cub = ROOT / "assets/lab/checkpoints/cub_resnet18.pt"
+            cub = ROOT / "assets/checkpoints/cub_resnet18.pt"
             with self.assertRaisesRegex(ValueError, "requires --target-class"):
                 prepare("cub-200", cub, p)
-            pavia = ROOT / "assets/lab/checkpoints/paviau_unet.pt"
+            pavia = ROOT / "assets/checkpoints/paviau_unet.pt"
             with self.assertRaisesRegex(ValueError, "requires an NPZ"):
                 prepare("paviau", pavia, p, target_class=8)
 

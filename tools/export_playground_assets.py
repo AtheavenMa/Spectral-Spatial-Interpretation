@@ -3,10 +3,10 @@
 Examples (from repository root):
   python tools/export_playground_assets.py validate
   python tools/export_playground_assets.py sample --id PaviaU/sample_0008 \
-    --source assets/lab/samples/paviau_0008.npz
+    --source assets/samples/paviau_0008.npz
   python tools/export_playground_assets.py model --id paviau \
-    --checkpoint assets/lab/checkpoints/paviau_unet.pt \
-    --sample assets/lab/samples/paviau_0008.npz
+    --checkpoint assets/checkpoints/paviau_unet.pt \
+    --sample assets/samples/paviau_0008.npz
   python tools/export_playground_assets.py validate --require-complete
 
 No model is marked ready until ONNX/PyTorch inference parity has been checked

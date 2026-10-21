@@ -116,7 +116,7 @@ class SSILabTests(unittest.TestCase):
 
     def test_extra_models_match_recorded_reference(self):
         import json
-        reference = json.loads((engine.ROOT / "assets" / "lab" / "references.json").read_text())
+        reference = json.loads((engine.ROOT / "tests" / "fixtures" / "model_references.json").read_text())
         models = self.client.get("/api/catalog").json()["models"]
         self.assertEqual(
             [model["id"] for model in models],

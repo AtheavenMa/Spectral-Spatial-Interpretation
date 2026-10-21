@@ -13,7 +13,7 @@
       "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
-      "checkpoint_repo_path": "assets/lab/checkpoints/cub_resnet18.pt",
+      "checkpoint_repo_path": "assets/checkpoints/cub_resnet18.pt",
       "allowed_grids": [
         4,
         8,
@@ -50,7 +50,7 @@
       "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
-      "checkpoint_repo_path": "assets/lab/checkpoints/eurosat_resnet18.pt",
+      "checkpoint_repo_path": "assets/checkpoints/eurosat_resnet18.pt",
       "allowed_grids": [
         4,
         8,
@@ -118,7 +118,7 @@
       "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
-      "checkpoint_repo_path": "assets/lab/checkpoints/paviau_unet.pt",
+      "checkpoint_repo_path": "assets/checkpoints/paviau_unet.pt",
       "allowed_grids": [
         4,
         8
@@ -154,7 +154,7 @@
       "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
-      "checkpoint_repo_path": "assets/lab/checkpoints/salinas_unet.pt",
+      "checkpoint_repo_path": "assets/checkpoints/salinas_unet.pt",
       "allowed_grids": [
         4,
         8
@@ -190,7 +190,7 @@
       "onnx_state": "verified",
       "input_name": "image",
       "output_name": "logits",
-      "checkpoint_repo_path": "assets/lab/checkpoints/longkou_unet.pt",
+      "checkpoint_repo_path": "assets/checkpoints/longkou_unet.pt",
       "allowed_grids": [
         4,
         8
@@ -236,7 +236,7 @@
         "original_sample_sha256": "c10a6dce62bc5889d6c3179fb3ced2f924057a16748d7b81c70b32b2914523fa"
       },
       "target_class": 1,
-      "python_source": "assets/examples/hls_sample.npz",
+      "python_source": "assets/samples/hls_sample.npz",
       "source_sha256": "c10a6dce62bc5889d6c3179fb3ced2f924057a16748d7b81c70b32b2914523fa"
     },
     {
