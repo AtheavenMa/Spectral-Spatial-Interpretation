@@ -22,7 +22,7 @@ import numpy as np
 from PIL import Image
 import torch
 
-from hls import HLS_MEAN, HLS_STD, TRAIN_MEAN_NORMALIZED, load_model, load_sample
+from lab.adapters.hls import HLS_MEAN, HLS_STD, TRAIN_MEAN_NORMALIZED, load_model, load_sample
 from lab.engine import CHECKPOINT, SAMPLE, ROOT
 
 

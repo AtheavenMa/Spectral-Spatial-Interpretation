@@ -9,7 +9,7 @@ import time
 import numpy as np
 import torch
 
-from hls import BAND_NAMES, HLSValueFunction, load_model, load_sample
+from lab.adapters.hls import BAND_NAMES, HLSValueFunction, load_model, load_sample
 from ssi import explain
 
 ROOT = Path(__file__).resolve().parent
@@ -119,7 +119,7 @@ def main():
     payload = {
         "sample_sha256":sample_digest, "weights_sha256":sha256(args.weights),
         "model_implementation":"MIT HLS adapter with pinned mateuszbuda convolution blocks",
-        "model_source_sha256":sha256(ROOT/"model.py"),
+        "model_source_sha256":sha256(ROOT/"lab/models/hls_unet.py"),
         "image_shape":list(image.shape), "grid":[args.grid,args.grid], "bands":list(BAND_NAMES),
         "target":"mean burn-class logit over the fixed ground-truth burn region",
         "baseline":args.baseline, "baseline_normalized":vf.baseline.cpu().numpy().ravel().tolist(),

@@ -24,7 +24,7 @@ import numpy as np
 from PIL import Image
 import torch
 
-from hls import BAND_NAMES, HLSValueFunction, load_model, load_sample
+from lab.adapters.hls import BAND_NAMES, HLSValueFunction, load_model, load_sample
 from lab.adapters.extra import SPECS, _Value, _load_model
 from ssi import explain as ssi_explain
 

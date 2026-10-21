@@ -16,7 +16,7 @@ import numpy as np
 from PIL import Image
 import torch
 
-from hls import BAND_NAMES, HLSValueFunction, load_model, load_sample
+from lab.adapters.hls import BAND_NAMES, HLSValueFunction, load_model, load_sample
 from lab.commands import explain_command
 from lab.runtime import wrap_value
 from ssi import explain as explain_ssi

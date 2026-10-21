@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 import torch
 
-from hls import HLSValueFunction, HLS_MEAN, HLS_STD
+from lab.adapters.hls import HLSValueFunction, HLS_MEAN, HLS_STD
 from ssi import explain
 
 

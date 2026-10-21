@@ -15,10 +15,10 @@ from PIL import Image, ImageDraw
 import torch
 import torch.nn.functional as F
 
-from lab.adapters.backbones import ResNet18Classifier
+from lab.models.resnet18 import ResNet18Classifier
 from lab.commands import explain_command
 from lab.runtime import raise_if_cancelled, wrap_value
-from model import UNet, convert_legacy_state_dict
+from lab.models.hls_unet import UNet, convert_legacy_state_dict
 from ssi import explain as explain_ssi
 
 ROOT = Path(__file__).resolve().parents[2]

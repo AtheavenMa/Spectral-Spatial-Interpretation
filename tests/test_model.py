@@ -9,8 +9,8 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from hls import HLSValueFunction, load_model, load_sample
-from model import UNet, convert_legacy_state_dict
+from lab.adapters.hls import HLSValueFunction, load_model, load_sample
+from lab.models.hls_unet import UNet, convert_legacy_state_dict
 from ssi import explain
 
 ROOT = Path(__file__).resolve().parents[1]

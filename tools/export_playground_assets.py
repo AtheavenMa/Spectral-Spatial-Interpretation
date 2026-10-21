@@ -28,7 +28,7 @@ import numpy as np
 from PIL import Image
 import torch
 
-from hls import BAND_NAMES, HLS_MEAN, HLS_STD, TRAIN_MEAN_NORMALIZED, load_model, load_sample
+from lab.adapters.hls import BAND_NAMES, HLS_MEAN, HLS_STD, TRAIN_MEAN_NORMALIZED, load_model, load_sample
 from lab.adapters.extra import SPECS, _load_model
 from lab.atlas_api import true_color
 

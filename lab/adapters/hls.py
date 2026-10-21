@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as F
 
 from lab.runtime import raise_if_cancelled
-from model import UNet, convert_legacy_state_dict
+from lab.models.hls_unet import UNet, convert_legacy_state_dict
 
 BAND_NAMES = ("Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2")
 # Original dataset loader uses these statistics on reflectance * 10,000.
