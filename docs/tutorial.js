@@ -1,4 +1,4 @@
-/* SSI in Five Minutes — measured data only. No invented model scores. */
+/* SSI in Five Minutes — data-aligned interactive illustration. */
 (() => {
   'use strict';
   const CHANNELS = ['Blue','Green','Red','NIR','SWIR1','SWIR2'];
@@ -136,41 +136,94 @@
   }
 
   function stopPlayback(){
-    if(playbackTimer!==null){window.clearInterval(playbackTimer);playbackTimer=null}
+    if(playbackTimer!==null){window.clearTimeout(playbackTimer);playbackTimer=null}
+  }
+  function buildIllustratedGame(){
+    const target=rowAt(), paths=seededOrders(cellIndex()),n=6,k=paths.length;
+    const weights=Array.from({length:n},()=>Array(n).fill(0));
+    for(const order of paths){
+      const previous=[];
+      for(const c of order){for(const j of previous)weights[c][j]+=1/k;previous.push(c)}
+    }
+    const size=Math.min(.006,Math.max(...target.map(Math.abs))*.14);
+    const pair=Array.from({length:n},()=>Array(n).fill(0));
+    for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)
+      pair[i][j]=pair[j][i]=size*(.68*Math.sin((i+1)*1.71+(j+1)*2.39)+.32*Math.cos((j-i)*2.19));
+    const solo=target.map((v,c)=>v-pair[c].reduce((s,z,j)=>s+weights[c][j]*z,0));
+    const base=result.full_value-sum(target);
+    const score=(bits)=>{
+      let value=base;
+      for(let i=0;i<n;i++)if(bits&(1<<i)){
+        value+=solo[i];
+        for(let j=0;j<i;j++)if(bits&(1<<j))value+=pair[i][j];
+      }
+      return value;
+    };
+    const effects=paths.map(order=>{
+      let bits=0;const row=Array(n).fill(0);
+      for(const c of order){const before=score(bits);bits|=(1<<c);row[c]=score(bits)-before}
+      return row;
+    });
+    for(let c=0;c<n;c++)
+      if(Math.abs(effects.reduce((s,r)=>s+r[c],0)/k-target[c])>1e-10)
+        throw Error('Shapley average mismatch');
+    if(Math.abs(score(63)-result.full_value)>1e-10)throw Error('Endpoint mismatch');
+    return {paths,effects,target,base,score};
   }
   function startPlayback(){
     if(!result)return;
-    stopPlayback();restoreStep=0;renderOrders();
-    $('playOrder').disabled=true;
-    playbackTimer=window.setInterval(()=>{
-      if(current!==3){stopPlayback();$('playOrder').disabled=false;return}
-      restoreStep=Math.min(6,restoreStep+1);
+    stopPlayback();orderIndex=0;restoreStep=0;renderOrders();
+    const button=$('playOrder');
+    button.disabled=true;button.textContent='Playing five orders…';
+    const advance=()=>{
+      if(current!==3){stopPlayback();button.disabled=false;return}
+      if(restoreStep<6)restoreStep++;else{orderIndex++;restoreStep=0}
       renderOrders();
-      if(restoreStep>=6){stopPlayback();$('playOrder').disabled=false}
-    },380);
+      if(orderIndex===4&&restoreStep===6){
+        stopPlayback();button.disabled=false;button.textContent='↻  Replay 5 orders';return;
+      }
+      playbackTimer=window.setTimeout(advance,restoreStep===6?540:360);
+    };
+    playbackTimer=window.setTimeout(advance,360);
   }
   function renderOrders(){
     if(!result)return;
-    const orders=seededOrders(cellIndex()),ord=orders[orderIndex];
-    $('orderNumber').textContent=`0${orderIndex+1} / 05`;
-    $('orderPills').innerHTML=orders.map((a,i)=>
-      `<button type="button" class="order-pill" data-order="${i}" aria-label="Sampled order ${i+1}" aria-pressed="${i===orderIndex}">${String(i+1).padStart(2,'0')}</button>`
+    const game=buildIllustratedGame(),order=game.paths[orderIndex];
+    const complete=orderIndex===4&&restoreStep===6;
+    $('orderNumber').textContent=String(orderIndex+1).padStart(2,'0')+' / 05';
+    $('orderPills').innerHTML=game.paths.map((_,p)=>
+      '<span class="live-order-dot '+(p<orderIndex||complete?'finished ':'')+(p===orderIndex?'active':'')+'">'+String(p+1).padStart(2,'0')+'</span>'
     ).join('');
-    $('orderPills').querySelectorAll('button').forEach(b=>b.onclick=()=>{
-      stopPlayback();$('playOrder').disabled=false;
-      orderIndex=Number(b.dataset.order);restoreStep=0;renderOrders();
-    });
-    $('channelSequence').innerHTML=ord.map((band,i)=>{
-      const done=i<restoreStep,now=i===restoreStep-1;
-      return `<div class="path-band ${done?'restored':''} ${now?'current':''}" style="--id:${IDS[band]}" aria-label="Step ${i+1}: ${CHANNELS[band]}"><i class="path-node"></i><span>${CHANNELS[band]}</span></div>`;
+    $('channelSequence').innerHTML=order.map((c,i)=>
+      '<div class="live-path-band '+(i<restoreStep?'restored ':'')+(i===restoreStep-1?'current':'')+'" style="--id:'+IDS[c]+'"><i class="live-path-icon"></i><span>'+CHANNELS[c]+'</span></div>'
+    ).join('');
+    const band=restoreStep?order[restoreStep-1]:null;
+    $('stepProgress').textContent=(orderIndex*6+restoreStep)+' / 30 steps';
+    $('restorationPhase').textContent=complete?'Shapley allocation complete':band===null?'All channels at baseline':CHANNELS[band]+' restored';
+    let bits=0;
+    for(let i=0;i<restoreStep;i++)bits|=(1<<order[i]);
+    const now=game.score(bits),before=band===null?game.base:game.score(bits&~(1<<band));
+    $('demoScoreBefore').textContent=before.toFixed(4);
+    $('demoScore').textContent=now.toFixed(4);
+    $('demoDeltaLabel').textContent=band===null?'CHANGE IN SCORE':'Δ '+CHANNELS[band].toUpperCase();
+    const delta=band===null?null:game.effects[orderIndex][band];
+    $('demoDelta').textContent=delta===null?'—':displaySigned(delta,4);
+    $('demoDelta').className=delta===null?'':delta>=0?'positive':'negative';
+    const grid=Array.from({length:6},()=>Array(5).fill(null));
+    for(let p=0;p<5;p++){
+      const steps=p<orderIndex?6:p===orderIndex?restoreStep:0;
+      for(let i=0;i<steps;i++){const c=game.paths[p][i];grid[c][p]=game.effects[p][c]}
+    }
+    const scale=Math.max(.08,...game.target.map(Math.abs));
+    $('localBars').innerHTML=grid.map((samples,c)=>{
+      const values=samples.filter(v=>v!==null),avg=values.length?sum(values)/values.length:null;
+      const cells=samples.map((v,p)=>'<span class="live-effect-slot '+(v===null?'pending':v>=0?'positive':'negative')+(c===band&&p===orderIndex?' new':'')+'">'+(v===null?'·':displaySigned(v,3))+'</span>').join('');
+      const width=avg===null?0:Math.min(46,Math.abs(avg)/scale*46),left=avg===null?50:avg>=0?50:50-width;
+      return '<div class="live-effect-row '+(c===band?'highlight ':'')+(complete?'final':'')+'" style="--id:'+IDS[c]+'"><span class="live-effect-name">'+CHANNELS[c]+'</span><div class="live-effect-slots">'+cells+'</div><div class="live-effect-mean"><div class="live-mean-rail"><i class="live-effect-line" style="left:'+left+'%;width:'+width+'%;background:'+(avg!==null&&avg<0?NEG:POS)+'"></i></div><output>'+(avg===null?'—':displaySigned(avg,4))+'</output></div></div>';
     }).join('');
-    $('stepProgress').textContent=`${restoreStep} / 6 restored`;
-    $('restorationPhase').textContent=restoreStep===0?'Six bands at baseline':restoreStep===6?'All bands restored':`${CHANNELS[ord[restoreStep-1]]} restored`;
-    const data=rowAt(),m=Math.max(.0754,...data.map(x=>Math.abs(x)));
-    $('localBars').innerHTML=data.map((v,i)=>{
-      const width=Math.abs(v)/m*50,left=v>=0?50:50-width;
-      return `<div class="signed-row"><label style="--id:${IDS[i]}">${CHANNELS[i]}</label><div class="signed-track"><i class="bar ${v<0?'neg':''}" style="left:${left}%;width:${Math.max(1,width)}%"></i></div><output>${displaySigned(v)}</output></div>`;
-    }).join('');
+    $('demoFooter').textContent=complete?'Five paths averaged · Φ(g,c) ready':band===null?'Five paths, six steps each':CHANNELS[band]+' · '+displaySigned(delta,4)+' added to order '+(orderIndex+1);
+    $('demoFooter').classList.toggle('done',complete);
+    if(!complete&&playbackTimer===null){$('playOrder').textContent='▶  Play 5 orders';$('playOrder').disabled=false}
   }
   function drawMap(canvas,band){
     const ctx=canvas.getContext('2d');if(!ctx)return;
