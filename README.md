@@ -20,7 +20,7 @@ A spatial heatmap shows **where** evidence appears; a global spectral ranking sh
 ## 🖼️ SSI in Action
 
 <p align="center">
-  <a href="https://atheavenma.github.io/ssi-playground/"><img src="examples/HLS_BurnScars/sample_0163.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="900"></a>
+  <a href="https://atheavenma.github.io/ssi-playground/"><img src="examples/HLS_BurnScars/sample_0163_mean_g16_k5.png" alt="HLS Burn Scars: original image, target region and SSI attribution overlays" width="900"></a>
 </p>
 
 **[🎛️ Play with SSI ↗](https://atheavenma.github.io/ssi-playground/)** · [Visual Atlas — 57 examples](examples/README.md)
