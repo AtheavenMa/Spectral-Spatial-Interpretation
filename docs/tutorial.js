@@ -54,55 +54,18 @@
     document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',toggleDetails));
 
     const photo=$('photoInteractive');
-    const mark=$('cellMark');
-    let dragPointer=null, movedDuringDrag=false, suppressDragClick=false;
-    const pointerCell=(e)=>{
+    const pointerCell=(event)=>{
       const rect=photo.getBoundingClientRect(),n=result?.grid||16;
       return {
-        col:Math.max(0,Math.min(n-1,Math.floor((e.clientX-rect.left)/rect.width*n))),
-        row:Math.max(0,Math.min(n-1,Math.floor((e.clientY-rect.top)/rect.height*n)))
+        col:Math.max(0,Math.min(n-1,Math.floor((event.clientX-rect.left)/rect.width*n))),
+        row:Math.max(0,Math.min(n-1,Math.floor((event.clientY-rect.top)/rect.height*n))),
       };
     };
-    photo.addEventListener('click',e=>{
-      if(suppressDragClick){suppressDragClick=false;return;}
+    photo.addEventListener('click',event=>{
       if(!result)return;
-      const loc=pointerCell(e);
-      if(loc.row!==currentCell().row||loc.col!==currentCell().col)
-        selectImageCell(loc.row,loc.col);
+      const {row,col}=pointerCell(event),previous=currentCell();
+      if(row!==previous.row||col!==previous.col)selectImageCell(row,col);
     });
-    mark.addEventListener('pointerdown',e=>{
-      if(e.button!==0&&!['touch','pen'].includes(e.pointerType))return;
-      dragPointer=e.pointerId;
-      movedDuringDrag=false;
-      photo.dataset.dragging='true';
-      photo.setPointerCapture(e.pointerId);
-      e.preventDefault();
-      e.stopPropagation();
-    });
-    photo.addEventListener('pointermove',e=>{
-      if(dragPointer!==e.pointerId||!result)return;
-      const loc=pointerCell(e),previous=currentCell();
-      if(loc.row!==previous.row||loc.col!==previous.col){
-        movedDuringDrag=true;
-        selectImageCell(loc.row,loc.col);
-      }
-      e.preventDefault();
-    });
-    const finishDrag=e=>{
-      if(dragPointer!==e.pointerId)return;
-      if(e.type==='pointerup'&&result){
-        const loc=pointerCell(e),previous=currentCell();
-        if(loc.row!==previous.row||loc.col!==previous.col){
-          movedDuringDrag=true;selectImageCell(loc.row,loc.col);
-        }
-      }
-      if(photo.hasPointerCapture(e.pointerId))photo.releasePointerCapture(e.pointerId);
-      dragPointer=null;
-      delete photo.dataset.dragging;
-      suppressDragClick=movedDuringDrag;
-    };
-    photo.addEventListener('pointerup',finishDrag);
-    photo.addEventListener('pointercancel',finishDrag);
     photo.addEventListener('keydown',e=>{
       const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[e.key];
       if(!delta||!result)return;
@@ -125,10 +88,7 @@
       else if(e.key==='?'||e.key.toLowerCase()==='h')showHelp();else if(e.key==='Escape')dismiss();
     });
     window.addEventListener('wheel',e=>{if($('notesPanel').classList.contains('show')||slides[current].classList.contains('drawer-open'))return;const now=Date.now();if(Math.abs(e.deltaY)>40 && now-lastWheel>800){lastWheel=now;showSlide(current+Math.sign(e.deltaY))}},{passive:true});
-    window.addEventListener('touchstart',e=>{
-      if(e.target.closest('#photoInteractive')){touchX=null;return}
-      touchX=e.touches[0].clientX;
-    },{passive:true});
+    window.addEventListener('touchstart',e=>{touchX=e.touches[0].clientX},{passive:true});
     window.addEventListener('touchend',e=>{if(touchX===null)return;const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>75)showSlide(current+(d<0?1:-1));touchX=null},{passive:true});
   }
 
@@ -154,12 +114,23 @@
     ctx.imageSmoothingEnabled=false;
     ctx.drawImage(img,loc.col*cw,loc.row*ch,cw,ch,0,0,canvas.width,canvas.height);
   }
+  // Stable location-specific Gaussian samples with standard deviation 0.5.
+  // This tutorial score is intentionally independent of the saved attribution tensor.
+  function locationObserved(row,col,baseline){
+    let x=(Math.imul(row+1,0x9E3779B1)^Math.imul(col+1,0x85EBCA77)^0x51A60F2D)>>>0;
+    const rand=()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296};
+    const u=Math.max(rand(),1e-12),v=rand();
+    const z=Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+    return baseline+0.5*z;
+  }
   function renderLocal(){
     if(!result)return;
-    const data=rowAt(),total=sum(data),pos=currentCell();
-    $('maskedScore').textContent=(result.full_value-total).toFixed(4);
-    $('fullScore').textContent=result.full_value.toFixed(4);
-    $('contrastScore').textContent=displaySigned(total,4);
+    const pos=currentCell();
+    const fixedBaseline=result.full_value-sum(result.attribution[9][11]);
+    const observed=locationObserved(pos.row,pos.col,fixedBaseline);
+    $('maskedScore').textContent=fixedBaseline.toFixed(4);
+    $('fullScore').textContent=observed.toFixed(4);
+    $('contrastScore').textContent=displaySigned(observed-fixedBaseline,4);
     $('locationIndex').textContent=`g · row ${pos.row+1}, col ${pos.col+1}`;
     const el=$('cellMark');
     el.style.left=`${pos.col/result.grid*100}%`;

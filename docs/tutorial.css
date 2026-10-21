@@ -333,3 +333,9 @@ h1{margin-top:56px;font:400 98px/1.07 var(--serif);letter-spacing:-.04em}h1 em{c
 .local-scene-v3 .photo-interactive[data-dragging="true"]{cursor:grabbing}
 .local-scene-v3 .context-banner{padding-bottom:25px}
 .local-scene-v3 .context-banner strong{font:400 39px/1.14 var(--serif);color:#C8A870;letter-spacing:-.01em}
+
+/* Location selection is click-based. */
+.local-scene-v3 .photo-interactive{cursor:crosshair;touch-action:manipulation}
+.local-scene-v3 .cell-mark{pointer-events:none;cursor:inherit;touch-action:auto}
+.local-scene-v3 .photo-interactive[data-dragging="true"]{cursor:crosshair}
+.local-scene-v3 .photo-interactive[data-dragging="true"] .cell-mark{cursor:inherit}

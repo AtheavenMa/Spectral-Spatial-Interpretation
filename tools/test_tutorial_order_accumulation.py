@@ -101,17 +101,20 @@ def main():
         # Selecting a different spatial cell resets to the empty initial state.
         page.keyboard.press("3")
         photo=page.locator("#photoInteractive")
-        marker=page.locator("#cellMark")
-        old=page.locator("#locationIndex").inner_text()
-        box=marker.bounding_box()
-        assert box is not None
-        page.mouse.move(box["x"]+box["width"]/2,box["y"]+box["height"]/2)
-        page.mouse.down()
-        page.mouse.move(box["x"]+box["width"]/2+150,box["y"]+box["height"]/2+90,steps=8)
-        page.mouse.up()
-        assert page.locator("#locationIndex").inner_text()!=old, "The selection box should actually drag"
-        assert page.locator("#photoInteractive").get_attribute("data-dragging") is None
+        assert page.locator(".context-banner strong").inner_text()=="Click to move location"
+        baseline=float(page.locator("#maskedScore").inner_text())
+        start=float(page.locator("#fullScore").inner_text())
+        start_cell=page.locator("#locationIndex").inner_text()
         photo.click(position={"x":125,"y":120})
+        assert page.locator("#locationIndex").inner_text()!=start_cell
+        assert float(page.locator("#maskedScore").inner_text())==baseline
+        moved=float(page.locator("#fullScore").inner_text())
+        assert moved!=start
+        photo.click(position={"x":125,"y":120})
+        assert float(page.locator("#fullScore").inner_text())==moved, "Same location must have stable random value"
+        photo.click(position={"x":345,"y":345})
+        assert float(page.locator("#maskedScore").inner_text())==baseline
+        assert float(page.locator("#fullScore").inner_text())!=moved
         page.keyboard.press("4")
         assert play.is_disabled()
         assert all(row["sum"]==0 for row in totals(page))

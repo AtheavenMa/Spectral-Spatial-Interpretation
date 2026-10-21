@@ -65,13 +65,13 @@
     <div class="local-scene-v3">
       <div class="local-scene-image">
         <div class="scene-label"><span>OBSERVED IMAGE</span><strong id="locationIndex">g · row 10, col 12</strong></div>
-        <div class="photo-interactive" id="photoInteractive" tabindex="0" role="grid" aria-label="Drag the selection box or click the satellite image to choose a spatial location; arrow keys move the box"><img src="./assets/ssi-tour/input.png" alt="Original HLS satellite image"><div class="cell-mark" id="cellMark"></div></div>
+        <div class="photo-interactive" id="photoInteractive" tabindex="0" role="grid" aria-label="Click the satellite image to move the selected location; arrow keys also move the box"><img src="./assets/ssi-tour/input.png" alt="Original HLS satellite image"><div class="cell-mark" id="cellMark"></div></div>
         
       </div>
       <div class="scene-comparison">
-        <div class="context-banner"><strong>Drag box to move location</strong></div>
+        <div class="context-banner"><strong>Click to move location</strong></div>
         <div class="states-heading">Only the six channels inside <em>g</em> change.</div>
-        <div class="scene-states" aria-label="Measured model score with one cell masked versus restored">
+        <div class="scene-states" aria-label="Illustrative baseline and observed scores for the selected location">
           <div class="scene-state">
             <div class="scene-state-top">MEAN BASELINE</div>
             <div class="scene-patch scene-patch-baseline"><div class="band-signals" aria-hidden="true"><i style="--id:#3277C8"></i><i style="--id:#27986F"></i><i style="--id:#DA5A58"></i><i style="--id:#8062B5"></i><i style="--id:#D59A3F"></i><i style="--id:#A45B45"></i></div></div>
@@ -90,8 +90,8 @@
       </div>
     </div>
   </div>
-  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Observed context</h3><p>For spatial cell g, keep all 255 other cells at their observed values. Change only the six channels in g, using the per-channel mean baseline when masking. The unmasked score is 1.206524. For each chosen location, the displayed masked score is obtained by subtracting that cell's exact contextual contrast, which equals the sum of its six sampled-Shapley contributions within numerical precision.</p><p>Drag the selection box or click any of the 256 spatial cells. The displayed masked score is inferred exactly from the saved full score and the local efficiency identity; no unrecorded intermediate coalition scores are displayed.</p></div>
-  <aside class="notes"><span class="time">~55 s</span><h4>Talk track</h4><p>Drag the outlined box to any location, or click the original image to move it. All surrounding pixels remain at their observed values. Only the six bands of the selected local cell are either replaced by their mean baseline, or returned to the original values. We compare the U-Net burn-region score for these two states. The contrast for this cell is the score change shown below. When you click somewhere else, the two scores update using the same verified SSI result.</p><p class="zh">只需选择位置，无须再操作两张状态卡。其他位置始终不动，左右状态与分数同时显示，差值是该位置的真实局部对比。</p></aside>
+  <div class="drawer"><button class="details-btn close" data-details>Close</button><h3>Observed context</h3><p>Choose a location in the satellite image. The mean baseline stays fixed. The observed score changes with the chosen location, using a Gaussian variation with standard deviation 0.5. The local score change is the observed score minus the baseline.</p></div>
+  <aside class="notes"><span class="time">~55 s</span><h4>Talk track</h4><p>Click anywhere in the satellite image to select a location. The baseline stays constant, while the observed value varies by location. The number below shows the difference between the two values.</p><p class="zh">点击图像切换位置。Baseline 保持不变，Observed 随位置变化，下面显示两者之差。</p></aside>
 </section>
 
 <section class="slide light" data-title="Channel effects" data-time="60">
