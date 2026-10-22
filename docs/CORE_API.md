@@ -97,13 +97,13 @@ explicitly.
 
 ## Research and legacy interfaces
 
-\`from ssi import explain\` remains the direct NumPy oracle API.
-It accepts \`value_fn(masks)\` and explicit cell/channel counts and does
+`from ssi import explain` remains the direct NumPy oracle API.
+It accepts `value_fn(masks)` and explicit cell/channel counts and does
 not perform input resizing or choose any baseline. This preserves published
 numerical regression tests and model adapters. The old demo and registered
-six-model CLI continue to use \`--grid\` as a **grid count**, solely for their
-recorded experiment configurations; the new public \`SSI\` image interface uses
-\`grid_size\` in **pixels**, with no independent grid-count parameter.
+six-model CLI continue to use `--grid` as a **grid count**, solely for their
+recorded experiment configurations; the new public `SSI` image interface uses
+`grid_size` in **pixels**, with no independent grid-count parameter.
 
 Run the added tests with:
 
